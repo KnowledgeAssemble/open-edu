@@ -5,8 +5,14 @@ import {
   InteractiveLessonView,
   buildOpenEduBridge,
   buildSemanticTokens,
+  AlternativeList,
+  extractAlternativeRows,
 } from '@open-edu/interactive-runtime';
-import type { OpenEduBridge } from '@open-edu/interactive-runtime';
+import type {
+  OpenEduBridge,
+  InteractiveNodeHandle,
+  AlternativeRowLike,
+} from '@open-edu/interactive-runtime';
 import { Button } from '@open-edu/design-system';
 import { useRuntimeOptional } from '../context/RuntimeContext';
 import { useTranslation } from '@open-edu/i18n';
@@ -25,6 +31,25 @@ type EngineEvent = {
   instanceId: string;
   action?: unknown;
 };
+
+interface EngineSceneNode {
+  id: string;
+  kind?: string;
+  bounds?: { x: number; y: number; width: number; height: number };
+  metadata?: Record<string, unknown>;
+  children?: EngineSceneNode[];
+  hidden?: boolean;
+}
+
+interface EngineSnapshot {
+  scene?: { nodes?: EngineSceneNode[] };
+  svgResult?: { alternative?: unknown[] };
+}
+
+/** Lifecycle events after which the host re-reads the engine snapshot (L3). */
+export function shouldRefreshSnapshot(eventName: string): boolean {
+  return eventName === 'engine-ready' || eventName.endsWith('state-changed');
+}
 
 function isComposedLesson(node: InteractiveNode): boolean {
   return Array.isArray(node.engines);
@@ -65,8 +90,32 @@ export function InteractiveRenderer({
   const runtimeRef = useRef(runtime);
   runtimeRef.current = runtime;
 
+  const engineHandleRef = useRef<InteractiveNodeHandle | null>(null);
+  const [engineSnapshot, setEngineSnapshot] = useState<EngineSnapshot | null>(null);
+
+  const refreshSnapshot = useCallback(() => {
+    const snapshot = engineHandleRef.current?.snapshot() as EngineSnapshot | undefined;
+    if (snapshot) {
+      setEngineSnapshot(snapshot);
+      return;
+    }
+    // instantiate() emits engine-ready synchronously, before the handle's
+    // instance ref is populated — re-read on the next macrotask.
+    window.setTimeout(refreshSnapshot, 0);
+  }, []);
+
+  const handleNodeReady = useCallback((handle: InteractiveNodeHandle) => {
+    engineHandleRef.current = handle; // single-engine only (L5)
+    setIsReady(true);
+  }, []);
+
+  const handleLessonReady = useCallback(() => {
+    setIsReady(true); // composed: no handle, no layers (L5)
+  }, []);
+
   const handleEngineEvent = useCallback(
     (event: EngineEvent) => {
+      if (shouldRefreshSnapshot(event.name)) refreshSnapshot();
       const isUserInteraction = event.action != null;
       if (isUserInteraction) setInteractions((n) => n + 1);
       const rawAction = event.action as { type?: string } | undefined;
@@ -80,7 +129,7 @@ export function InteractiveRenderer({
         data: { event: event.name },
       });
     },
-    [nodeId],
+    [nodeId, refreshSnapshot],
   );
 
   const bridge: OpenEduBridge = useMemo(
@@ -103,10 +152,6 @@ export function InteractiveRenderer({
       }),
     [locale, handleEngineEvent],
   );
-
-  const handleReady = useCallback(() => {
-    setIsReady(true);
-  }, []);
 
   const handleComplete = (): void => {
     runtime?.saveAnswer(nodeId, {
@@ -155,17 +200,26 @@ export function InteractiveRenderer({
               bindings: node.bindings ?? [],
             }}
             bridge={bridge}
-            onReady={handleReady}
+            onReady={handleLessonReady}
           />
         ) : (
           <InteractiveNodeView
             spec={node.spec}
             engineType={node.engine ?? 'visual'}
             bridge={bridge}
-            onReady={handleReady}
+            onReady={handleNodeReady}
           />
         )}
       </WidgetErrorBoundary>
+      {!isComposedLesson(node) && (
+        <AlternativeList
+          title={t('runtime.interactive.alternative.title')}
+          cycleLabel={t('runtime.interactive.alternative.cycleLabel')}
+          rows={extractAlternativeRows(
+            engineSnapshot?.svgResult?.alternative as AlternativeRowLike[],
+          )}
+        />
+      )}
       <div className="mt-4 flex justify-end">
         <Button type="button" onClick={handleComplete} disabled={!isReady}>
           {t('runtime.interactive.mark_complete')}

@@ -1,9 +1,9 @@
 import { describe, it, expect, vi } from 'vitest';
-import { render, fireEvent, cleanup, waitFor } from '@testing-library/react';
+import { render, fireEvent, cleanup, waitFor, within } from '@testing-library/react';
 import type { ReactNode } from 'react';
 import axe from 'axe-core';
 import type { InteractiveNode } from '@open-edu/schemas';
-import { InteractiveRenderer } from './InteractiveRenderer';
+import { InteractiveRenderer, shouldRefreshSnapshot } from './InteractiveRenderer';
 import { RuntimeProvider } from '../context/RuntimeContext';
 import type { LoadedPackage, LoadedNode } from '@open-edu/core';
 import type { WorkflowEngine, WorkflowEvent } from '@open-edu/workflow';
@@ -46,6 +46,39 @@ function interactiveNode(): InteractiveNode {
     type: 'interactive',
     engine: 'visual',
     spec: NUMBER_LINE_SPEC,
+  };
+}
+
+const DIAGRAM_CYCLE_SPEC = {
+  type: 'diagram',
+  version: '1.0.0',
+  id: 'simple-cycle-figure',
+  metadata: { title: 'Two-stage water cycle' },
+  purpose: { learningObjective: 'Understand a cyclical process' },
+  content: {
+    kind: 'cycle',
+    nodes: [
+      { id: 'a', label: 'Stage A', description: 'Water enters the cycle.' },
+      { id: 'b', label: 'Stage B', description: 'Water leaves the cycle.' },
+    ],
+    edges: [
+      { from: 'a', to: 'b', relationship: 'leads-to' },
+      { from: 'b', to: 'a', relationship: 'leads-to' },
+    ],
+  },
+  interaction: { mode: 'explore', actions: ['select', 'deselect', 'focus', 'reset'] },
+  questions: [],
+  sources: [{ class: 'illustrative' }],
+  accessibility: { label: 'Simple cycle between Stage A and Stage B' },
+} as const;
+
+function diagramNode(): InteractiveNode {
+  return {
+    id: 'diagram-cycle',
+    title: 'Two-stage water cycle',
+    type: 'interactive',
+    engine: 'diagram',
+    spec: DIAGRAM_CYCLE_SPEC,
   };
 }
 
@@ -269,11 +302,77 @@ describe('InteractiveRenderer', () => {
         </RuntimeProvider>
       </I18nProvider>
     );
-    const { getByTestId } = render(
+    const { getByTestId, queryByTestId } = render(
       <InteractiveRenderer node={composedNode} nodeId="nodes/composed.json" />,
       { wrapper },
     );
     expect(getByTestId('interactive-renderer')).toBeInTheDocument();
+    expect(queryByTestId('interactive-alternative')).not.toBeInTheDocument();
+  });
+
+  describe('shouldRefreshSnapshot', () => {
+    it('refreshes on engine-ready', () => {
+      expect(shouldRefreshSnapshot('engine-ready')).toBe(true);
+    });
+
+    it('refreshes on any name ending in state-changed', () => {
+      expect(shouldRefreshSnapshot('state-changed')).toBe(true);
+      expect(shouldRefreshSnapshot('timeline.state-changed')).toBe(true);
+    });
+
+    it('does not refresh on interaction or mount events', () => {
+      expect(shouldRefreshSnapshot('interaction-started')).toBe(false);
+      expect(shouldRefreshSnapshot('interaction-completed')).toBe(false);
+      expect(shouldRefreshSnapshot('engine-mounted')).toBe(false);
+      expect(shouldRefreshSnapshot('')).toBe(false);
+    });
+  });
+
+  it('renders the alternative list with cycles and descriptions for a diagram node', async () => {
+    const pkg = makePackage([{ relativePath: 'nodes/diagram.json', node: diagramNode() }]);
+    const wrapper = ({ children }: { children: ReactNode }) => (
+      <I18nProvider locale="en" dictionaries={{ en: { runtime: runtimeDict } }}>
+        <RuntimeProvider loadedPackage={pkg} engine={makeEngine('nodes/diagram.json')}>
+          {children}
+        </RuntimeProvider>
+      </I18nProvider>
+    );
+    const { findByTestId } = render(
+      <InteractiveRenderer node={diagramNode()} nodeId="nodes/diagram.json" />,
+      { wrapper },
+    );
+    const region = await findByTestId('interactive-alternative');
+    expect(within(region).getByText(/Cycle: /)).toBeInTheDocument();
+    expect(within(region).getByText('Water enters the cycle.')).toBeInTheDocument();
+    expect(within(region).getByText('Water leaves the cycle.')).toBeInTheDocument();
+  });
+
+  it('does not duplicate the engine node label inside the alternative region', async () => {
+    const pkg = makePackage([{ relativePath: 'nodes/diagram.json', node: diagramNode() }]);
+    const wrapper = ({ children }: { children: ReactNode }) => (
+      <I18nProvider locale="en" dictionaries={{ en: { runtime: runtimeDict } }}>
+        <RuntimeProvider loadedPackage={pkg} engine={makeEngine('nodes/diagram.json')}>
+          {children}
+        </RuntimeProvider>
+      </I18nProvider>
+    );
+    const { container, findByTestId } = render(
+      <InteractiveRenderer node={diagramNode()} nodeId="nodes/diagram.json" />,
+      { wrapper },
+    );
+    const region = await findByTestId('interactive-alternative');
+    expect(within(region).queryByText('Stage A')).not.toBeInTheDocument();
+    expect(container.textContent).toContain('Stage A');
+  });
+
+  it('renders no alternative list for a visual engine node', async () => {
+    const { queryByTestId, getByRole } = renderWithProvider(
+      <InteractiveRenderer node={interactiveNode()} nodeId="nodes/nl-01.md" />,
+      'nodes/nl-01.md',
+    );
+    await waitFor(() => expect(getByRole('button', { name: 'Mark complete' })).not.toBeDisabled());
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    expect(queryByTestId('interactive-alternative')).not.toBeInTheDocument();
   });
 
   afterEach(() => {
