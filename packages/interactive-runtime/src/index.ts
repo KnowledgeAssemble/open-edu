@@ -15,6 +15,8 @@ export type {
   AlternativeRowView,
 } from './alternative-list.js';
 
+export { normalizeAssetKey, isDataAssetId } from './asset-resolution.js';
+
 export type {
   InteractiveEngineType,
   InteractiveActionType,
