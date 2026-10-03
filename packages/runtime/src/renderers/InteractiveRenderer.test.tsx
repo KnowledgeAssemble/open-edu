@@ -82,6 +82,15 @@ function diagramNode(): InteractiveNode {
   };
 }
 
+function diagramFigureNode(): InteractiveNode {
+  return {
+    ...diagramNode(),
+    figures: {
+      a: { ref: 'assets/water-cycle.svg', altKey: 'interactive.figure.demo.waterCycle' },
+    },
+  };
+}
+
 const GEOMAP_SPEC = {
   type: 'geomap',
   version: '1.0.0',
@@ -204,6 +213,37 @@ function renderWithProvider(
   );
   const utils = render(ui, { wrapper });
   return { ...utils, engine };
+}
+
+function renderInteractiveNode(
+  node: InteractiveNode,
+  relativePath: string,
+  opts: {
+    assetMap?: Map<string, ArrayBuffer>;
+    onTelemetryEvent?: (event: unknown) => void;
+  } = {},
+) {
+  const pkg = makePackage([{ relativePath, node }], opts.assetMap);
+  const wrapper = ({ children }: { children: ReactNode }) => (
+    <I18nProvider locale="en" dictionaries={{ en: { runtime: runtimeDict } }}>
+      <RuntimeProvider
+        loadedPackage={pkg}
+        engine={makeEngine(relativePath)}
+        onTelemetryEvent={opts.onTelemetryEvent}
+      >
+        {children}
+      </RuntimeProvider>
+    </I18nProvider>
+  );
+  return render(<InteractiveRenderer node={node} nodeId={relativePath} />, { wrapper });
+}
+
+function stubBlobUrl() {
+  vi.stubGlobal('URL', {
+    ...globalThis.URL,
+    createObjectURL: vi.fn(() => `blob:mock/${Math.random().toString(36).slice(2)}`),
+    revokeObjectURL: vi.fn(),
+  });
 }
 
 async function runAxe(container: HTMLElement) {
@@ -465,6 +505,103 @@ describe('InteractiveRenderer', () => {
     await new Promise((resolve) => setTimeout(resolve, 0));
     expect(queryByRole('alert')).not.toBeInTheDocument();
     expect(container.querySelector('svg')).not.toBeNull();
+  });
+
+  it('renders the figure overlay beside a diagram node with a resolvable asset', async () => {
+    stubBlobUrl();
+    const assetMap = new Map<string, ArrayBuffer>([
+      ['water-cycle.svg', new TextEncoder().encode('<svg/>').buffer],
+    ]);
+    const { container, findByTestId } = renderInteractiveNode(
+      diagramFigureNode(),
+      'nodes/diagram.json',
+      { assetMap },
+    );
+    const overlay = await findByTestId('figure-overlay');
+    const img = overlay.querySelector('img')!;
+    expect(img).toBeInTheDocument();
+    expect(img.getAttribute('alt')).toBe('runtime.interactive.figure.demo.waterCycle');
+    expect(container.querySelector('[data-testid="interactive-alternative"]')).toBeInTheDocument();
+  });
+
+  it('emits zero engine events when a figure is clicked', async () => {
+    stubBlobUrl();
+    const onTelemetryEvent = vi.fn();
+    const assetMap = new Map<string, ArrayBuffer>([
+      ['water-cycle.svg', new TextEncoder().encode('<svg/>').buffer],
+    ]);
+    const { findByTestId } = renderInteractiveNode(diagramFigureNode(), 'nodes/diagram.json', {
+      assetMap,
+      onTelemetryEvent,
+    });
+    const overlay = await findByTestId('figure-overlay');
+    const img = overlay.querySelector('img')!;
+    const before = onTelemetryEvent.mock.calls.length;
+    fireEvent.click(img);
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    expect(onTelemetryEvent.mock.calls.length).toBe(before);
+  });
+
+  it('degrades an unresolvable figure ref to the caption with no img', async () => {
+    const { findByTestId, container } = renderInteractiveNode(
+      diagramFigureNode(),
+      'nodes/diagram.json',
+    );
+    const overlay = await findByTestId('figure-overlay');
+    const img = overlay.querySelector('img')!;
+    fireEvent.error(img);
+    const caption = await findByTestId('figure-caption');
+    expect(caption.textContent).toBe('runtime.interactive.figure.demo.waterCycle');
+    expect(container.querySelector('img')).toBeNull();
+  });
+
+  it('renders no figure overlay for a composed lesson', async () => {
+    const composedNode: InteractiveNode = {
+      type: 'interactive',
+      id: 'independence-narrative-demo',
+      title: 'Timeline drives visual focus',
+      engines: [
+        {
+          instanceId: 'timeline-independence',
+          engine: 'timeline',
+          spec: {
+            type: 'timeline',
+            version: '1.0.0',
+            id: 'timeline-independence',
+            metadata: { title: 'Timeline' },
+            purpose: { learningObjective: 'Explore events', reasoningMode: 'sequence' },
+            content: {
+              kind: 'events',
+              events: [{ id: 'event-1947', label: 'Independence', date: '1947-08-15' }],
+            },
+            interaction: { mode: 'explore', actions: ['select'] },
+            accessibility: { label: 'Timeline' },
+          },
+        },
+        {
+          instanceId: 'visual-independence',
+          engine: 'visual',
+          spec: {
+            type: 'visual',
+            version: '1.0.0',
+            id: 'visual-independence',
+            content: {
+              kind: 'illustration',
+              entities: [{ id: 'figure-independence', label: 'Independence' }],
+            },
+            interaction: { mode: 'explore', actions: ['focus', 'reset'] },
+            accessibility: { label: 'Illustration' },
+          },
+        },
+      ],
+      bindings: [],
+      figures: {
+        'event-1947': { ref: 'assets/timeline.svg', altKey: 'interactive.figure.demo.waterCycle' },
+      },
+    };
+    const { queryByTestId } = renderInteractiveNode(composedNode, 'nodes/composed.json');
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    expect(queryByTestId('figure-overlay')).not.toBeInTheDocument();
   });
 
   afterEach(() => {

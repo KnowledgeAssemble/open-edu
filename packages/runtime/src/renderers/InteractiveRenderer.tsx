@@ -7,11 +7,13 @@ import {
   buildSemanticTokens,
   AlternativeList,
   extractAlternativeRows,
+  FigureOverlay,
 } from '@open-edu/interactive-runtime';
 import type {
   OpenEduBridge,
   InteractiveNodeHandle,
   AlternativeRowLike,
+  SceneNodeLike,
 } from '@open-edu/interactive-runtime';
 import { Button } from '@open-edu/design-system';
 import { useRuntimeOptional } from '../context/RuntimeContext';
@@ -92,6 +94,7 @@ export function InteractiveRenderer({
 
   const engineHandleRef = useRef<InteractiveNodeHandle | null>(null);
   const [engineSnapshot, setEngineSnapshot] = useState<EngineSnapshot | null>(null);
+  const surfaceRef = useRef<HTMLDivElement>(null);
 
   const refreshSnapshot = useCallback(() => {
     const snapshot = engineHandleRef.current?.snapshot() as EngineSnapshot | undefined;
@@ -190,27 +193,38 @@ export function InteractiveRenderer({
           {node.prompt && <p className="text-body-ui text-muted-foreground mt-1">{node.prompt}</p>}
         </div>
       )}
-      <WidgetErrorBoundary widgetId={interactiveId} message={t('runtime.interactive.load_error')}>
-        {isComposedLesson(node) ? (
-          <InteractiveLessonView
-            lesson={{
-              id: node.id ?? 'interactive-lesson',
-              title: node.title,
-              engines: node.engines ?? [],
-              bindings: node.bindings ?? [],
-            }}
-            bridge={bridge}
-            onReady={handleLessonReady}
-          />
-        ) : (
-          <InteractiveNodeView
-            spec={node.spec}
-            engineType={node.engine ?? 'visual'}
-            bridge={bridge}
-            onReady={handleNodeReady}
+      <div className="relative" ref={surfaceRef}>
+        <WidgetErrorBoundary widgetId={interactiveId} message={t('runtime.interactive.load_error')}>
+          {isComposedLesson(node) ? (
+            <InteractiveLessonView
+              lesson={{
+                id: node.id ?? 'interactive-lesson',
+                title: node.title,
+                engines: node.engines ?? [],
+                bindings: node.bindings ?? [],
+              }}
+              bridge={bridge}
+              onReady={handleLessonReady}
+            />
+          ) : (
+            <InteractiveNodeView
+              spec={node.spec}
+              engineType={node.engine ?? 'visual'}
+              bridge={bridge}
+              onReady={handleNodeReady}
+            />
+          )}
+        </WidgetErrorBoundary>
+        {!isComposedLesson(node) && engineSnapshot && node.figures && (
+          <FigureOverlay
+            figures={node.figures}
+            snapshotNodes={engineSnapshot.scene?.nodes as SceneNodeLike[] | undefined}
+            surfaceRef={surfaceRef}
+            resolve={(ref) => runtimeRef.current?.resolveEngineAsset(ref) ?? `/assets/${ref}`}
+            translate={(altKey) => tRef.current(`runtime.${altKey}`)}
           />
         )}
-      </WidgetErrorBoundary>
+      </div>
       {!isComposedLesson(node) && (
         <AlternativeList
           title={t('runtime.interactive.alternative.title')}

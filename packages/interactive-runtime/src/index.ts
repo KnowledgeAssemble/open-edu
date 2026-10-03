@@ -17,6 +17,15 @@ export type {
 
 export { normalizeAssetKey, isDataAssetId } from './asset-resolution.js';
 
+export { FigureOverlay, collectFigurePlacements, authoredIdOf } from './figure-overlay.js';
+export type {
+  FigureOverlayProps,
+  FigurePlacement,
+  FigureSpecView,
+  SceneBounds,
+  SceneNodeLike,
+} from './figure-overlay.js';
+
 export type {
   InteractiveEngineType,
   InteractiveActionType,
