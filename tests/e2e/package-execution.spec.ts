@@ -408,7 +408,6 @@ test.describe('interactive-demo (interactive engine nodes)', () => {
 
     await page.getByRole('button', { name: 'Next' }).click();
     await page.getByRole('button', { name: 'Mark complete' }).click();
-    await page.getByRole('button', { name: 'Next' }).click();
 
     await expect(page.getByTestId('interactive-renderer')).toBeVisible({ timeout: 5000 });
     await expect(page.getByRole('heading', { name: 'Number line practice' })).toBeVisible();
@@ -421,23 +420,52 @@ test.describe('interactive-demo (interactive engine nodes)', () => {
     await page.goto(server.url);
     await openStudioPreview(page);
 
-    await page.getByRole('button', { name: 'Next' }).click();
-    await expect(page.getByTestId('interactive-renderer')).toBeVisible({ timeout: 5000 });
-    await expect(page.getByRole('button', { name: 'Mark complete' })).toBeEnabled({
+    await page.getByRole('button', { name: 'Next' }).click(); // intro → number-line
+    for (const heading of [
+      'Number line',
+      'Number line practice',
+      'Timeline drives visual focus',
+      'Identify Odisha (guided)',
+      'Two-stage water cycle',
+    ]) {
+      await expect(page.getByRole('heading', { name: heading })).toBeVisible({ timeout: 5000 });
+      const markComplete = page.getByRole('button', { name: 'Mark complete' });
+      await expect(markComplete).toBeEnabled({ timeout: 5000 });
+      await markComplete.click();
+    }
+    await expect(page.getByRole('button', { name: 'Identify the Capital of Odisha' })).toBeVisible({
       timeout: 5000,
     });
-    await page.getByRole('button', { name: 'Mark complete' }).click();
-    await expect(page.getByRole('button', { name: 'Next' })).toBeEnabled({ timeout: 5000 });
-    await page.getByRole('button', { name: 'Next' }).click();
+  });
 
-    await expect(page.getByTestId('interactive-renderer')).toBeVisible({ timeout: 5000 });
-    await expect(page.getByRole('button', { name: 'Mark complete' })).toBeEnabled({
+  test('renders host figures and the text alternative beside diagram nodes', async ({ page }) => {
+    await page.goto(server.url);
+    await openStudioPreview(page);
+
+    await page.getByRole('button', { name: 'Next' }).click();
+    for (const heading of [
+      'Number line',
+      'Number line practice',
+      'Timeline drives visual focus',
+      'Identify Odisha (guided)',
+    ]) {
+      await expect(page.getByRole('heading', { name: heading })).toBeVisible({ timeout: 5000 });
+      const markComplete = page.getByRole('button', { name: 'Mark complete' });
+      await expect(markComplete).toBeEnabled({ timeout: 5000 });
+      await markComplete.click();
+    }
+
+    await expect(page.getByRole('heading', { name: 'Two-stage water cycle' })).toBeVisible({
       timeout: 5000,
     });
-    await page.getByRole('button', { name: 'Mark complete' }).click();
-    await expect(page.getByRole('button', { name: 'Next' })).toBeEnabled({ timeout: 5000 });
-    await page.getByRole('button', { name: 'Next' }).click();
 
-    await expect(page.getByText('You have completed this learning experience.')).toBeVisible();
+    const img = page.locator('[data-testid="figure-overlay"] img');
+    await expect(img).toBeVisible();
+    await expect(img).toHaveAttribute('alt', 'Simple sketch of the water cycle');
+
+    const alternative = page.getByTestId('interactive-alternative');
+    await alternative.locator('summary').click();
+    await expect(alternative).toContainText('Cycle');
+    await expect(alternative).toContainText('Water enters the cycle.');
   });
 });
