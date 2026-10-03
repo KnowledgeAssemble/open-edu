@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type RefObject } from 'react';
+import { useEffect, useState, type RefObject } from 'react';
 
 export interface SceneBounds {
   x: number;
@@ -74,6 +74,10 @@ export function collectFigurePlacements(
   return placements;
 }
 
+function isPositiveFinite(value: number | undefined): value is number {
+  return typeof value === 'number' && Number.isFinite(value) && value > 0;
+}
+
 export interface FigureOverlayProps {
   figures: Record<string, FigureSpecView>;
   snapshotNodes: SceneNodeLike[] | undefined;
@@ -92,22 +96,16 @@ export function FigureOverlay({
 }: FigureOverlayProps): JSX.Element | null {
   const [canvas, setCanvas] = useState<{ width: number; height: number } | null>(null);
   const [failed, setFailed] = useState<ReadonlySet<string>>(new Set());
-  const failureVersion = useRef(0);
 
   useEffect(() => {
-    failureVersion.current += 1;
     setFailed(new Set());
     const viewBox = surfaceRef.current?.querySelector('svg')?.getAttribute('viewBox');
     const parts = (viewBox ?? '').split(/[\s,]+/).map(Number);
     const width = parts[2];
     const height = parts[3];
     setCanvas(
-      parts.length === 4 &&
-        Number.isFinite(width) &&
-        Number.isFinite(height) &&
-        width! > 0 &&
-        height! > 0
-        ? { width: width!, height: height! }
+      parts.length === 4 && isPositiveFinite(width) && isPositiveFinite(height)
+        ? { width, height }
         : null,
     );
   }, [surfaceRef, snapshotNodes]);

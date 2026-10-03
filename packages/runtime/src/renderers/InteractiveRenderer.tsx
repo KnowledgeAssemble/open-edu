@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { InteractiveNode } from '@open-edu/schemas';
 import {
   InteractiveNodeView,
@@ -95,6 +95,7 @@ export function InteractiveRenderer({
   const engineHandleRef = useRef<InteractiveNodeHandle | null>(null);
   const [engineSnapshot, setEngineSnapshot] = useState<EngineSnapshot | null>(null);
   const surfaceRef = useRef<HTMLDivElement>(null);
+  const pendingRetryRef = useRef<number | null>(null);
 
   const refreshSnapshot = useCallback(() => {
     const snapshot = engineHandleRef.current?.snapshot() as EngineSnapshot | undefined;
@@ -102,9 +103,30 @@ export function InteractiveRenderer({
       setEngineSnapshot(snapshot);
       return;
     }
-    // instantiate() emits engine-ready synchronously, before the handle's
-    // instance ref is populated — re-read on the next macrotask.
-    window.setTimeout(refreshSnapshot, 0);
+    // `engine.instantiate()` emits engine-ready synchronously, before
+    // InteractiveNode assigns its instance ref, so the first read can come back
+    // empty. Defer one re-read to the next macrotask, by which time the handle
+    // is populated.
+    //
+    // Both guards matter. A composed lesson never populates engineHandleRef
+    // (see handleLessonReady), so re-reading it is pointless and would reschedule
+    // forever. And the pending check keeps this to a single deferral in flight
+    // rather than one per engine event.
+    if (isComposedLesson(nodeRef.current)) return;
+    if (pendingRetryRef.current !== null) return;
+    pendingRetryRef.current = window.setTimeout(() => {
+      pendingRetryRef.current = null;
+      refreshSnapshot();
+    }, 0);
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      if (pendingRetryRef.current !== null) {
+        window.clearTimeout(pendingRetryRef.current);
+        pendingRetryRef.current = null;
+      }
+    };
   }, []);
 
   const handleNodeReady = useCallback((handle: InteractiveNodeHandle) => {
