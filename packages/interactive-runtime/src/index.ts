@@ -8,6 +8,13 @@ export type {
   InteractiveLessonHandle,
 } from './views.js';
 
+export { AlternativeList, extractAlternativeRows } from './alternative-list.js';
+export type {
+  AlternativeListProps,
+  AlternativeRowLike,
+  AlternativeRowView,
+} from './alternative-list.js';
+
 export type {
   InteractiveEngineType,
   InteractiveActionType,
