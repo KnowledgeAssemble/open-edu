@@ -501,4 +501,72 @@ describe('InteractiveNodeSchema', () => {
     };
     expect(validateInteractiveNode(node).valid).toBe(true);
   });
+
+  describe('figures map', () => {
+    const base = {
+      type: 'interactive' as const,
+      engine: 'diagram' as const,
+      title: 'Two-stage water cycle',
+      spec: {
+        type: 'diagram',
+        version: '1.0.0',
+        id: 'simple-cycle',
+        metadata: { title: 'Two-stage water cycle' },
+        purpose: { learningObjective: 'Understand a cyclical process' },
+        content: {
+          kind: 'cycle',
+          nodes: [
+            { id: 'a', label: 'Stage A', description: 'Water enters the cycle.' },
+            { id: 'b', label: 'Stage B', description: 'Water leaves the cycle.' },
+          ],
+          edges: [
+            { from: 'a', to: 'b', relationship: 'leads-to' },
+            { from: 'b', to: 'a', relationship: 'leads-to' },
+          ],
+        },
+        interaction: { mode: 'explore', actions: ['select', 'deselect', 'focus', 'reset'] },
+        questions: [],
+        sources: [{ class: 'illustrative' }],
+        accessibility: { label: 'Simple cycle between Stage A and Stage B' },
+      },
+    };
+
+    it.each([
+      ['meaningful figure', { a: { ref: 'a.svg', altKey: 'k' } }],
+      [
+        'meaningful figure with decorative false',
+        { a: { ref: 'a.svg', altKey: 'k', decorative: false } },
+      ],
+      ['decorative figure', { a: { ref: 'a.svg', decorative: true } }],
+    ])('accepts a %s', (_label, figures) => {
+      expect(validateInteractiveNode({ ...base, figures }).valid).toBe(true);
+    });
+
+    it.each([
+      ['decorative figure with altKey', { a: { ref: 'a.svg', decorative: true, altKey: 'k' } }],
+      ['figure without altKey or decorative', { a: { ref: 'a.svg' } }],
+      ['figure with empty ref', { a: { ref: '', altKey: 'k' } }],
+      ['figure without ref', { a: { altKey: 'k' } }],
+      ['figure with an unknown key', { a: { ref: 'a.svg', altKey: 'k', surprise: 1 } }],
+    ])('rejects a %s', (_label, figures) => {
+      expect(validateInteractiveNode({ ...base, figures }).valid).toBe(false);
+      expect(() => InteractiveNodeSchema.parse({ ...base, figures })).toThrow();
+    });
+
+    it('accepts a node without figures (optional)', () => {
+      expect(validateInteractiveNode(base).valid).toBe(true);
+    });
+
+    it('keeps the inferred figure spec type readable', () => {
+      const parsed = InteractiveNodeSchema.parse({
+        ...base,
+        figures: { a: { ref: 'a.svg', altKey: 'interactive.figure.demo.waterCycle' } },
+      });
+      const spec = parsed.figures?.['a'];
+      expect(spec?.ref).toBe('a.svg');
+      if (spec && spec.decorative !== true) {
+        expect(spec.altKey).toBe('interactive.figure.demo.waterCycle');
+      }
+    });
+  });
 });

@@ -104,6 +104,19 @@ const InteractiveBindingSchema = z
   })
   .strict();
 
+const FigureSpecSchema = z.discriminatedUnion('decorative', [
+  z.object({ ref: z.string().min(1), decorative: z.literal(true) }).strict(),
+  z
+    .object({
+      ref: z.string().min(1),
+      altKey: z.string().min(1),
+      decorative: z.literal(false).optional(),
+    })
+    .strict(),
+]);
+
+export type FigureSpec = z.infer<typeof FigureSpecSchema>;
+
 const interactiveConfigShape = {
   engine: InteractiveEngineTypeSchema.optional(),
   spec: z.record(z.unknown()).optional(),
@@ -112,6 +125,7 @@ const interactiveConfigShape = {
   prompt: z.string().min(1).max(1024).optional(),
   engines: z.array(InteractiveEngineEntrySchema).min(1).optional(),
   bindings: z.array(InteractiveBindingSchema).optional(),
+  figures: z.record(z.string(), FigureSpecSchema).optional(),
 } as const;
 
 type InteractiveConfigValue = {
@@ -122,6 +136,7 @@ type InteractiveConfigValue = {
   prompt?: string;
   engines?: Array<z.infer<typeof InteractiveEngineEntrySchema>>;
   bindings?: Array<z.infer<typeof InteractiveBindingSchema>>;
+  figures?: Record<string, FigureSpec>;
 };
 
 function refineInteractiveNodeConfig(value: InteractiveConfigValue, ctx: z.RefinementCtx): void {
