@@ -148,7 +148,7 @@ export function InteractiveRenderer({
         },
         announce: (message) => announceRef.current(message),
         onEvent: handleEngineEvent,
-        resolveAsset: (id) => runtimeRef.current?.resolveAsset(id) ?? `/assets/${id}`,
+        resolveAsset: (id) => runtimeRef.current?.resolveEngineAsset(id) ?? `/assets/${id}`,
       }),
     [locale, handleEngineEvent],
   );

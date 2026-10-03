@@ -640,4 +640,132 @@ describe('RuntimeProvider', () => {
       expect(revokeObjectURLSpy).toHaveBeenCalledWith(url);
     });
   });
+
+  describe('resolveEngineAsset', () => {
+    let createObjectURLSpy: ReturnType<typeof vi.fn<any[], string>>;
+    let revokeObjectURLSpy: ReturnType<typeof vi.fn>;
+
+    beforeEach(() => {
+      createObjectURLSpy = vi.fn(() => `blob:mock/${Math.random().toString(36).slice(2)}`);
+      revokeObjectURLSpy = vi.fn();
+      vi.stubGlobal('URL', {
+        ...globalThis.URL,
+        createObjectURL: createObjectURLSpy,
+        revokeObjectURL: revokeObjectURLSpy,
+      });
+    });
+
+    afterEach(() => {
+      vi.restoreAllMocks();
+    });
+
+    function makePackageWithAssets(
+      assets: Array<{ path: string; data: ArrayBuffer }>,
+    ): LoadedPackage {
+      const assetMap = new Map<string, ArrayBuffer>();
+      for (const a of assets) {
+        assetMap.set(a.path, a.data);
+      }
+      return {
+        rootDir: '/tmp/test',
+        manifest: {
+          id: 'test-asset',
+          title: 'Test Asset',
+          version: '1.0.0',
+          author: 'A',
+          entry: 'nodes/lesson-01.md',
+        },
+        workflow: { routing: {} },
+        rewards: null,
+        cards: null,
+        nodes: [
+          {
+            path: '/tmp/nodes/lesson-01.md',
+            relativePath: 'nodes/lesson-01.md',
+            content: '# Hello',
+            node: { type: 'lesson', skills: undefined } as never,
+          },
+        ],
+        assetPaths: assets.map((a) => a.path),
+        assetMap,
+      };
+    }
+
+    it('returns decoded file contents for a .geojson data asset', () => {
+      const geojson = '{"type":"FeatureCollection","features":[]}';
+      const assetPkg = makePackageWithAssets([
+        {
+          path: 'data/india/states.geojson',
+          data: new TextEncoder().encode(geojson).buffer as ArrayBuffer,
+        },
+      ]);
+      const wrapper = ({ children }: { children: ReactNode }) => (
+        <RuntimeProvider loadedPackage={assetPkg} engine={engine}>
+          {children}
+        </RuntimeProvider>
+      );
+      const { result } = renderHook(() => useRuntime(), { wrapper });
+      expect(result.current.resolveEngineAsset('data/india/states.geojson')).toBe(geojson);
+    });
+
+    it('resolves both assets/foo.json and foo.json keys to the same data asset', () => {
+      const assetPkg = makePackageWithAssets([
+        { path: 'foo.json', data: new TextEncoder().encode('{"a":1}').buffer as ArrayBuffer },
+      ]);
+      const wrapper = ({ children }: { children: ReactNode }) => (
+        <RuntimeProvider loadedPackage={assetPkg} engine={engine}>
+          {children}
+        </RuntimeProvider>
+      );
+      const { result } = renderHook(() => useRuntime(), { wrapper });
+      expect(result.current.resolveEngineAsset('assets/foo.json')).toBe('{"a":1}');
+      expect(result.current.resolveEngineAsset('foo.json')).toBe('{"a":1}');
+    });
+
+    it('resolves an image id to a URL string, never bytes', () => {
+      const assetPkg = makePackageWithAssets([
+        { path: 'figure.svg', data: new TextEncoder().encode('<svg/>').buffer as ArrayBuffer },
+      ]);
+      const wrapper = ({ children }: { children: ReactNode }) => (
+        <RuntimeProvider loadedPackage={assetPkg} engine={engine}>
+          {children}
+        </RuntimeProvider>
+      );
+      const { result } = renderHook(() => useRuntime(), { wrapper });
+      const url = result.current.resolveEngineAsset('assets/figure.svg');
+      expect(typeof url).toBe('string');
+      expect(url).toMatch(/^blob:/);
+    });
+
+    it('returns an empty string for a missing data asset', () => {
+      const assetPkg = makePackageWithAssets([]);
+      const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+      const wrapper = ({ children }: { children: ReactNode }) => (
+        <RuntimeProvider loadedPackage={assetPkg} engine={engine}>
+          {children}
+        </RuntimeProvider>
+      );
+      const { result } = renderHook(() => useRuntime(), { wrapper });
+      expect(result.current.resolveEngineAsset('data/missing.geojson')).toBe('');
+      warnSpy.mockRestore();
+    });
+
+    it('never returns bytes for any asset id', () => {
+      const assetPkg = makePackageWithAssets([
+        {
+          path: 'data.json',
+          data: new TextEncoder().encode('{"a":1}').buffer as ArrayBuffer,
+        },
+        { path: 'img.png', data: new Uint8Array([0x89, 0x50]).buffer as ArrayBuffer },
+      ]);
+      const wrapper = ({ children }: { children: ReactNode }) => (
+        <RuntimeProvider loadedPackage={assetPkg} engine={engine}>
+          {children}
+        </RuntimeProvider>
+      );
+      const { result } = renderHook(() => useRuntime(), { wrapper });
+      expect(result.current.resolveEngineAsset('data.json')).toBe('{"a":1}');
+      expect(typeof result.current.resolveEngineAsset('img.png')).toBe('string');
+    });
+  });
 });

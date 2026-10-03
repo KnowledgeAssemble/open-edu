@@ -82,6 +82,52 @@ function diagramNode(): InteractiveNode {
   };
 }
 
+const GEOMAP_SPEC = {
+  type: 'geomap',
+  version: '1.0.0',
+  id: 'geomap-data-asset',
+  metadata: { title: 'Data asset geomap' },
+  purpose: { learningObjective: 'Locate a feature', reasoningMode: 'identify' },
+  content: {
+    viewport: { fit: 'content', padding: 0.08 },
+    projection: { type: 'equirectangular' },
+    geography: {
+      sources: [
+        { id: 'states', type: 'geojson', class: 'authoritative', uri: 'assets/data.geojson' },
+      ],
+    },
+    entities: [
+      {
+        id: 'odisha',
+        type: 'state',
+        name: 'Odisha',
+        location: { source: 'states', featureId: 'IN-OD' },
+      },
+    ],
+    layers: [
+      {
+        id: 'states-layer',
+        type: 'region',
+        items: [{ entity: 'odisha', interactive: true, label: true }],
+      },
+    ],
+  },
+  interaction: { mode: 'identify', actions: ['select', 'focus', 'deselect', 'reset'] },
+  questions: [],
+  sources: [{ class: 'authoritative' }],
+  accessibility: { label: 'Map with one state', description: 'Select the state.' },
+} as const;
+
+function geomapNode(): InteractiveNode {
+  return {
+    id: 'geomap-node',
+    title: 'Locate Odisha',
+    type: 'interactive',
+    engine: 'geomap',
+    spec: GEOMAP_SPEC,
+  };
+}
+
 function makeLoadedNode(relativePath: string, node: LoadedNode['node'], content = ''): LoadedNode {
   return {
     path: `/tmp/${relativePath}`,
@@ -93,6 +139,7 @@ function makeLoadedNode(relativePath: string, node: LoadedNode['node'], content 
 
 function makePackage(
   nodes: Array<{ relativePath: string; node: LoadedNode['node'] }>,
+  assetMap?: Map<string, ArrayBuffer>,
 ): LoadedPackage {
   return {
     rootDir: '/tmp/test',
@@ -107,7 +154,8 @@ function makePackage(
     rewards: null,
     cards: null,
     nodes: nodes.map((n) => makeLoadedNode(n.relativePath, n.node)),
-    assetPaths: [],
+    assetPaths: assetMap ? Array.from(assetMap.keys()) : [],
+    assetMap,
   };
 }
 
@@ -373,6 +421,50 @@ describe('InteractiveRenderer', () => {
     await waitFor(() => expect(getByRole('button', { name: 'Mark complete' })).not.toBeDisabled());
     await new Promise((resolve) => setTimeout(resolve, 0));
     expect(queryByTestId('interactive-alternative')).not.toBeInTheDocument();
+  });
+
+  it('mounts a geomap node whose source uri points at a package-relative geojson', async () => {
+    const geojson = JSON.stringify({
+      type: 'FeatureCollection',
+      features: [
+        {
+          type: 'Feature',
+          id: 'IN-OD',
+          properties: { name: 'Odisha' },
+          geometry: {
+            type: 'Polygon',
+            coordinates: [
+              [
+                [83, 18],
+                [87, 18],
+                [87, 22],
+                [83, 22],
+                [83, 18],
+              ],
+            ],
+          },
+        },
+      ],
+    });
+    const assetMap = new Map<string, ArrayBuffer>([
+      ['data.geojson', new TextEncoder().encode(geojson).buffer],
+    ]);
+    const pkg = makePackage([{ relativePath: 'nodes/geomap.json', node: geomapNode() }], assetMap);
+    const wrapper = ({ children }: { children: ReactNode }) => (
+      <I18nProvider locale="en" dictionaries={{ en: { runtime: runtimeDict } }}>
+        <RuntimeProvider loadedPackage={pkg} engine={makeEngine('nodes/geomap.json')}>
+          {children}
+        </RuntimeProvider>
+      </I18nProvider>
+    );
+    const { container, queryByRole, getByRole } = render(
+      <InteractiveRenderer node={geomapNode()} nodeId="nodes/geomap.json" />,
+      { wrapper },
+    );
+    await waitFor(() => expect(getByRole('button', { name: 'Mark complete' })).not.toBeDisabled());
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    expect(queryByRole('alert')).not.toBeInTheDocument();
+    expect(container.querySelector('svg')).not.toBeNull();
   });
 
   afterEach(() => {

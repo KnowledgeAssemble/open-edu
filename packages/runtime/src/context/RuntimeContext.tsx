@@ -13,6 +13,7 @@ import type { WorkflowEngine, WorkflowEvent } from '@open-edu/workflow';
 import type { WidgetRegistry, WidgetResolver } from '@open-edu/widgets';
 import { LiveRegionProvider, useLiveRegion } from '@open-edu/accessibility';
 import { useTranslation } from '@open-edu/i18n';
+import { normalizeAssetKey, isDataAssetId } from '@open-edu/interactive-runtime';
 import type {
   ProgressSnapshot,
   SkillGraph,
@@ -67,6 +68,7 @@ export interface RuntimeContextValue {
   getSkillMastery: (skillId: string) => MasteryLevel;
   skillGraph: SkillGraph | undefined;
   resolveAsset: (path: string) => string;
+  resolveEngineAsset: (id: string) => string;
   emitTelemetry?: (event: DistributiveOmit<TelemetryEvent, 'timestamp'>) => void;
 }
 
@@ -267,6 +269,24 @@ export function RuntimeProvider({
     [loadedPackage.assetMap, loadedPackage.manifest.id],
   );
 
+  const resolveEngineAsset = useCallback(
+    (id: string): string => {
+      const normalized = normalizeAssetKey(id);
+      if (!normalized) return '';
+      if (isDataAssetId(normalized)) {
+        const data = loadedPackage.assetMap?.get(normalized);
+        if (data) return new TextDecoder().decode(data);
+        console.warn(
+          `[resolveEngineAsset] data asset "${normalized}" not found for "${loadedPackage.manifest.id}". Available keys:`,
+          loadedPackage.assetMap ? Array.from(loadedPackage.assetMap.keys()) : 'no assetMap',
+        );
+        return '';
+      }
+      return resolveAsset(normalized);
+    },
+    [loadedPackage.assetMap, loadedPackage.manifest.id, resolveAsset],
+  );
+
   const emitTelemetry = useCallback(
     (event: DistributiveOmit<TelemetryEvent, 'timestamp'>) => {
       onTelemetryEvent?.({ ...event, timestamp: Date.now() } as TelemetryEvent);
@@ -294,6 +314,7 @@ export function RuntimeProvider({
       getSkillMastery: getContextSkillMastery,
       skillGraph,
       resolveAsset,
+      resolveEngineAsset,
       emitTelemetry,
       progressSnapshot: buildProgressSnapshot(
         packageId ?? loadedPackage.manifest.id,
@@ -320,6 +341,7 @@ export function RuntimeProvider({
       getContextSkillMastery,
       skillGraph,
       resolveAsset,
+      resolveEngineAsset,
       emitTelemetry,
       packageId,
       packageVersion,
