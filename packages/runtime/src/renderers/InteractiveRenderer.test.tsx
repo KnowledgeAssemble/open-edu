@@ -520,7 +520,7 @@ describe('InteractiveRenderer', () => {
     const overlay = await findByTestId('figure-overlay');
     const img = overlay.querySelector('img')!;
     expect(img).toBeInTheDocument();
-    expect(img.getAttribute('alt')).toBe('runtime.interactive.figure.demo.waterCycle');
+    expect(img.getAttribute('alt')).toBe('Simple sketch of the water cycle');
     expect(container.querySelector('[data-testid="interactive-alternative"]')).toBeInTheDocument();
   });
 
@@ -551,7 +551,7 @@ describe('InteractiveRenderer', () => {
     const img = overlay.querySelector('img')!;
     fireEvent.error(img);
     const caption = await findByTestId('figure-caption');
-    expect(caption.textContent).toBe('runtime.interactive.figure.demo.waterCycle');
+    expect(caption.textContent).toBe('Simple sketch of the water cycle');
     expect(container.querySelector('img')).toBeNull();
   });
 

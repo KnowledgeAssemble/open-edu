@@ -1,0 +1,30 @@
+{
+  "type": "interactive",
+  "title": "Two-stage water cycle",
+  "engine": "diagram",
+  "figures": {
+    "a": { "ref": "assets/water-cycle.svg", "altKey": "interactive.figure.demo.waterCycle" }
+  },
+  "spec": {
+    "type": "diagram",
+    "version": "1.0.0",
+    "id": "simple-cycle-figure",
+    "metadata": { "title": "Two-stage water cycle" },
+    "purpose": { "learningObjective": "Understand a cyclical process" },
+    "content": {
+      "kind": "cycle",
+      "nodes": [
+        { "id": "a", "label": "Stage A", "description": "Water enters the cycle." },
+        { "id": "b", "label": "Stage B", "description": "Water leaves the cycle." }
+      ],
+      "edges": [
+        { "from": "a", "to": "b", "relationship": "leads-to" },
+        { "from": "b", "to": "a", "relationship": "leads-to" }
+      ]
+    },
+    "interaction": { "mode": "explore", "actions": ["select", "deselect", "focus", "reset"] },
+    "questions": [],
+    "sources": [{ "class": "illustrative" }],
+    "accessibility": { "label": "Simple cycle between Stage A and Stage B" }
+  }
+}

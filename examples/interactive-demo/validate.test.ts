@@ -9,12 +9,13 @@ describe('interactive-demo example', () => {
     const pkg = await loadPackage(resolve(__dirname));
     expect(pkg.manifest.id).toBe('interactive-demo');
     expect(pkg.manifest.title).toBe('Interactive Engine Demo');
-    expect(pkg.nodes).toHaveLength(5);
+    expect(pkg.nodes).toHaveLength(7);
     expect(pkg.workflow).not.toBeNull();
     expect(pkg.workflow!.routing).toHaveProperty('nodes/number-line.json');
     expect(pkg.workflow!.routing).toHaveProperty('nodes/number-line-practice.json');
     expect(pkg.workflow!.routing).toHaveProperty('nodes/composed-lesson.json');
     expect(pkg.workflow!.routing).toHaveProperty('nodes/geomap-identify-odisha.json');
+    expect(pkg.workflow!.routing).toHaveProperty('nodes/diagram-figure.json');
 
     const numberLine = pkg.nodes.find((n) => n.relativePath === 'nodes/number-line.json');
     expect(numberLine?.node.type).toBe('interactive');
@@ -78,6 +79,14 @@ describe('interactive-demo example', () => {
       expect(odishaItem?.interactive).toBe(true);
       const allInteractive = spec.content?.layers?.[0]?.items?.filter((i) => i.interactive);
       expect(allInteractive).toHaveLength(1);
+    }
+
+    const figure = pkg.nodes.find((n) => n.relativePath === 'nodes/diagram-figure.json');
+    expect(figure?.node.type).toBe('interactive');
+    if (figure?.node.type === 'interactive') {
+      expect(figure.node.engine).toBe('diagram');
+      expect(figure.node.figures?.a?.ref).toBe('assets/water-cycle.svg');
+      expect(figure.node.figures?.a?.altKey).toBe('interactive.figure.demo.waterCycle');
     }
   });
 });

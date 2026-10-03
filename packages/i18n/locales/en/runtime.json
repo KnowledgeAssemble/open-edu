@@ -63,5 +63,6 @@
   "interactive.interactions": "{{count}} interactions",
   "interactive.iframe_title": "Interactive activity: {{engine}}",
   "interactive.alternative.title": "Text alternative",
-  "interactive.alternative.cycleLabel": "Cycle"
+  "interactive.alternative.cycleLabel": "Cycle",
+  "interactive.figure.demo.waterCycle": "Simple sketch of the water cycle"
 }
