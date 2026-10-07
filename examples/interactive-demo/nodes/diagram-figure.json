@@ -3,7 +3,7 @@
   "title": "Two-stage water cycle",
   "engine": "diagram",
   "figures": {
-    "a": { "ref": "assets/water-cycle.svg", "altKey": "interactive.figure.demo.waterCycle" }
+    "a": { "ref": "assets/water-cycle.svg", "alt": "Simple sketch of the water cycle" }
   },
   "spec": {
     "type": "diagram",

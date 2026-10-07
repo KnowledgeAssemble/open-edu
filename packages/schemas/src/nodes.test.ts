@@ -532,10 +532,10 @@ describe('InteractiveNodeSchema', () => {
     };
 
     it.each([
-      ['meaningful figure', { a: { ref: 'a.svg', altKey: 'k' } }],
+      ['meaningful figure', { a: { ref: 'a.svg', alt: 'k' } }],
       [
         'meaningful figure with decorative false',
-        { a: { ref: 'a.svg', altKey: 'k', decorative: false } },
+        { a: { ref: 'a.svg', alt: 'k', decorative: false } },
       ],
       ['decorative figure', { a: { ref: 'a.svg', decorative: true } }],
     ])('accepts a %s', (_label, figures) => {
@@ -543,11 +543,11 @@ describe('InteractiveNodeSchema', () => {
     });
 
     it.each([
-      ['decorative figure with altKey', { a: { ref: 'a.svg', decorative: true, altKey: 'k' } }],
-      ['figure without altKey or decorative', { a: { ref: 'a.svg' } }],
-      ['figure with empty ref', { a: { ref: '', altKey: 'k' } }],
-      ['figure without ref', { a: { altKey: 'k' } }],
-      ['figure with an unknown key', { a: { ref: 'a.svg', altKey: 'k', surprise: 1 } }],
+      ['decorative figure with alt', { a: { ref: 'a.svg', decorative: true, alt: 'k' } }],
+      ['figure without alt or decorative', { a: { ref: 'a.svg' } }],
+      ['figure with empty ref', { a: { ref: '', alt: 'k' } }],
+      ['figure without ref', { a: { alt: 'k' } }],
+      ['figure with an unknown key', { a: { ref: 'a.svg', alt: 'k', surprise: 1 } }],
     ])('rejects a %s', (_label, figures) => {
       expect(validateInteractiveNode({ ...base, figures }).valid).toBe(false);
       expect(() => InteractiveNodeSchema.parse({ ...base, figures })).toThrow();
@@ -560,12 +560,12 @@ describe('InteractiveNodeSchema', () => {
     it('keeps the inferred figure spec type readable', () => {
       const parsed = InteractiveNodeSchema.parse({
         ...base,
-        figures: { a: { ref: 'a.svg', altKey: 'interactive.figure.demo.waterCycle' } },
+        figures: { a: { ref: 'a.svg', alt: 'Simple sketch of the water cycle' } },
       });
       const spec = parsed.figures?.['a'];
       expect(spec?.ref).toBe('a.svg');
       if (spec && spec.decorative !== true) {
-        expect(spec.altKey).toBe('interactive.figure.demo.waterCycle');
+        expect(spec.alt).toBe('Simple sketch of the water cycle');
       }
     });
   });

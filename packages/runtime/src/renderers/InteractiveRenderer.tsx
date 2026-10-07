@@ -243,7 +243,6 @@ export function InteractiveRenderer({
             snapshotNodes={engineSnapshot.scene?.nodes as SceneNodeLike[] | undefined}
             surfaceRef={surfaceRef}
             resolve={(ref) => runtimeRef.current?.resolveEngineAsset(ref) ?? `/assets/${ref}`}
-            translate={(altKey) => tRef.current(`runtime.${altKey}`)}
           />
         )}
       </div>

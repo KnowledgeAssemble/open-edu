@@ -18,7 +18,7 @@ export interface SceneNodeLike {
 
 export interface FigureSpecView {
   ref: string;
-  altKey?: string;
+  alt?: string;
   decorative?: boolean;
 }
 
@@ -84,7 +84,6 @@ export interface FigureOverlayProps {
   /** Ref to the wrapper element that contains the engine's live <svg>. */
   surfaceRef: RefObject<HTMLElement | null>;
   resolve: (ref: string) => string;
-  translate: (altKey: string) => string;
 }
 
 export function FigureOverlay({
@@ -92,7 +91,6 @@ export function FigureOverlay({
   snapshotNodes,
   surfaceRef,
   resolve,
-  translate,
 }: FigureOverlayProps): JSX.Element | null {
   const [canvas, setCanvas] = useState<{ width: number; height: number } | null>(null);
   const [failed, setFailed] = useState<ReadonlySet<string>>(new Set());
@@ -126,7 +124,7 @@ export function FigureOverlay({
           margin: 0,
         };
         if (failed.has(key)) {
-          if (spec.decorative === true || !spec.altKey) return null;
+          if (spec.decorative === true || !spec.alt) return null;
           return (
             <span
               key={key}
@@ -134,7 +132,7 @@ export function FigureOverlay({
               data-testid="figure-caption"
               className="text-body-ui text-muted-foreground"
             >
-              {translate(spec.altKey)}
+              {spec.alt}
             </span>
           );
         }
@@ -142,7 +140,7 @@ export function FigureOverlay({
           <figure key={key} style={{ ...style, width: `${width}%`, height: `${height}%` }}>
             <img
               src={resolve(spec.ref)}
-              alt={spec.decorative === true ? '' : spec.altKey ? translate(spec.altKey) : ''}
+              alt={spec.decorative === true ? '' : (spec.alt ?? '')}
               aria-hidden={spec.decorative === true || undefined}
               className="h-full w-full object-contain"
               onError={() => setFailed((prev) => (prev.has(key) ? prev : new Set(prev).add(key)))}

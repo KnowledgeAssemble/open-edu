@@ -86,7 +86,7 @@ function diagramFigureNode(): InteractiveNode {
   return {
     ...diagramNode(),
     figures: {
-      a: { ref: 'assets/water-cycle.svg', altKey: 'interactive.figure.demo.waterCycle' },
+      a: { ref: 'assets/water-cycle.svg', alt: 'Simple sketch of the water cycle' },
     },
   };
 }
@@ -596,7 +596,7 @@ describe('InteractiveRenderer', () => {
       ],
       bindings: [],
       figures: {
-        'event-1947': { ref: 'assets/timeline.svg', altKey: 'interactive.figure.demo.waterCycle' },
+        'event-1947': { ref: 'assets/timeline.svg', alt: 'Simple sketch of the water cycle' },
       },
     };
     const { queryByTestId } = renderInteractiveNode(composedNode, 'nodes/composed.json');

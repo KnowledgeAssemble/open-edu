@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" width="40" height="40" role="img">
+  <title>Adult frog: a broad body, raised eyes and four strong legs</title>
+  <path d="M9 22 Q9 12 20 12 Q31 12 31 22 Q31 29 20 29 Q9 29 9 22 Z" fill="none" stroke="currentColor"/>
+  <circle cx="14" cy="13.5" r="2.2" fill="none" stroke="currentColor"/>
+  <circle cx="26" cy="13.5" r="2.2" fill="none" stroke="currentColor"/>
+  <path d="M13 21 Q20 24.5 27 21" fill="none" stroke="currentColor"/>
+  <path d="M10 27 L5 32 M30 27 L35 32 M15 28.5 L13 35 M25 28.5 L27 35" fill="none" stroke="currentColor" stroke-linecap="round"/>
+</svg>

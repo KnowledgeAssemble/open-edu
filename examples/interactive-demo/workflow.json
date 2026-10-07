@@ -16,6 +16,9 @@
       "onComplete": "nodes/diagram-figure.json"
     },
     "nodes/diagram-figure.json": {
+      "onComplete": "nodes/diagram-frog-lifecycle.json"
+    },
+    "nodes/diagram-frog-lifecycle.json": {
       "onComplete": "nodes/practice-1789269990946.json"
     },
     "nodes/practice-1789269990946.json": {

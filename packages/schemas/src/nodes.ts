@@ -109,7 +109,7 @@ const FigureSpecSchema = z.discriminatedUnion('decorative', [
   z
     .object({
       ref: z.string().min(1),
-      altKey: z.string().min(1),
+      alt: z.string().min(1),
       decorative: z.literal(false).optional(),
     })
     .strict(),

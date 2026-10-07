@@ -32,10 +32,10 @@ describe('authoredIdOf', () => {
 });
 
 describe('collectFigurePlacements', () => {
-  const figures: Record<string, { ref: string; altKey?: string; decorative?: boolean }> = {
-    a: { ref: 'a.svg', altKey: 'k' },
-    r1: { ref: 'chart.svg', altKey: 'k' },
-    orphan: { ref: 'm.svg', altKey: 'k' },
+  const figures: Record<string, { ref: string; alt?: string; decorative?: boolean }> = {
+    a: { ref: 'a.svg', alt: 'k' },
+    r1: { ref: 'chart.svg', alt: 'k' },
+    orphan: { ref: 'm.svg', alt: 'k' },
   };
 
   it('computes percentage positions from scene bounds and canvas', () => {
@@ -124,7 +124,7 @@ describe('collectFigurePlacements', () => {
 
 interface HostProps {
   viewBox?: string | null;
-  figures: Record<string, { ref: string; altKey?: string; decorative?: boolean }>;
+  figures: Record<string, { ref: string; alt?: string; decorative?: boolean }>;
   nodes: SceneNodeLike[];
   children?: ReactNode;
 }
@@ -139,7 +139,6 @@ function Host({ viewBox, figures, nodes, children }: HostProps) {
         snapshotNodes={nodes}
         surfaceRef={ref}
         resolve={(r) => `resolved:${r}`}
-        translate={(k) => `t:${k}`}
       />
       {children}
     </div>
@@ -161,7 +160,7 @@ describe('FigureOverlay', () => {
     const { findByTestId } = render(
       <Host
         viewBox="0 0 760 400"
-        figures={{ a: { ref: 'water-cycle.svg', altKey: 'interactive.figure.demo.waterCycle' } }}
+        figures={{ a: { ref: 'water-cycle.svg', alt: 'Simple sketch of the water cycle' } }}
         nodes={[NODE]}
       />,
     );
@@ -169,7 +168,7 @@ describe('FigureOverlay', () => {
     const img = overlay.querySelector('img')!;
     expect(img).toBeInTheDocument();
     expect(img.getAttribute('src')).toBe('resolved:water-cycle.svg');
-    expect(img.getAttribute('alt')).toBe('t:interactive.figure.demo.waterCycle');
+    expect(img.getAttribute('alt')).toBe('Simple sketch of the water cycle');
   });
 
   it('marks a decorative figure aria-hidden with an empty alt', async () => {
@@ -188,7 +187,7 @@ describe('FigureOverlay', () => {
 
   it('renders nothing for an absent or invalid viewBox', () => {
     const { queryByTestId } = render(
-      <Host viewBox={null} figures={{ a: { ref: 'a.svg', altKey: 'k' } }} nodes={[NODE]} />,
+      <Host viewBox={null} figures={{ a: { ref: 'a.svg', alt: 'k' } }} nodes={[NODE]} />,
     );
     expect(queryByTestId('figure-overlay')).not.toBeInTheDocument();
   });
@@ -197,7 +196,7 @@ describe('FigureOverlay', () => {
     const { findByTestId, container } = render(
       <Host
         viewBox="0 0 760 400"
-        figures={{ a: { ref: 'a.svg', altKey: 'interactive.figure.demo.waterCycle' } }}
+        figures={{ a: { ref: 'a.svg', alt: 'Simple sketch of the water cycle' } }}
         nodes={[NODE]}
       />,
     );
@@ -205,7 +204,7 @@ describe('FigureOverlay', () => {
     const img = overlay.querySelector('img')!;
     fireEvent.error(img);
     const caption = await findByTestId('figure-caption');
-    expect(caption.textContent).toBe('t:interactive.figure.demo.waterCycle');
+    expect(caption.textContent).toBe('Simple sketch of the water cycle');
     expect(container.querySelector('img')).toBeNull();
     expect(container.querySelector('figcaption')).toBeNull();
   });
@@ -231,7 +230,7 @@ describe('FigureOverlay', () => {
       <Host
         viewBox="0 0 760 400"
         figures={{
-          a: { ref: 'meaningful.svg', altKey: 'interactive.figure.demo.waterCycle' },
+          a: { ref: 'meaningful.svg', alt: 'Simple sketch of the water cycle' },
           b: { ref: 'decorative.svg', decorative: true },
         }}
         nodes={[

@@ -374,8 +374,11 @@ beside an engine surface.
 The interactive node config accepts an optional `figures` map keyed by the
 engine's **authored node id** (diagram `metadata.nodeId`, geomap
 `metadata.entityId`, chart `metadata.rowId`, timeline `event-marker` ids).
-Each entry is either `{ ref, altKey }` or `{ ref, decorative: true }`; a
-decorative figure renders with an empty `alt` and `aria-hidden`.
+Each entry is either `{ ref, alt }` or `{ ref, decorative: true }`; `alt` is
+literal authored copy (figure alt text is course content, like `title` and
+`prompt`, so it never goes through `t()` and never lives in the framework
+locale files), and a decorative figure renders with an empty `alt` and
+`aria-hidden`.
 
 Figures anchor to scene nodes that carry `bounds` (diagram `kind: "node"`).
 At most one figure renders per `figures` key (chart rows expand to one node per
