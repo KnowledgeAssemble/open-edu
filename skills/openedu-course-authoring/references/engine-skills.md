@@ -3,7 +3,7 @@
 > GENERATED reference — do not hand-edit. Regenerate with `pnpm --filter @open-edu/domain-guidance generate`.
 > Source of truth: `@knowledgeassemble/engine-skills manifest.json`.
 
-Package: `@knowledgeassemble/engine-skills` v0.1.0; Schema Version: 1
+Package: `@knowledgeassemble/engine-skills` v0.1.2; Schema Version: 1
 
 ### visual (`educational-visual`)
 
