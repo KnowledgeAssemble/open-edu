@@ -29,7 +29,7 @@ pnpm --filter @open-edu/cli build
 node packages/cli/dist/cli.js dev ./examples/hello-world
 ```
 
-Useful CLI commands after building:
+Useful CLI commands after building — run them with `pnpm exec edu`, or with a bare `edu` if you install the CLI globally:
 
 ```bash
 edu validate ./examples/fractions
@@ -46,6 +46,8 @@ docker compose up --build
 
 - **Learner:** http://localhost:4001
 - **Studio:** http://localhost:4000
+
+Verify the stack end-to-end with `./docker/smoke-test.sh`.
 
 Optional AI keys: copy `.env.example` to `.env`. AI features degrade gracefully without keys.
 
