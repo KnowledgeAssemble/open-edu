@@ -3,7 +3,6 @@ export const NAMESPACES = [
   'learner',
   'widgets',
   'schemas',
-  'website',
   'studio',
 ] as const;
 

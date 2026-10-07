@@ -17,7 +17,6 @@ const SCAN_DIRS = [
   join(import.meta.dirname, '../../../packages/runtime/src/layout'),
   join(import.meta.dirname, '../../../packages/runtime/src/components'),
   join(import.meta.dirname, '../../../apps/learner/src'),
-  join(import.meta.dirname, '../../../apps/website/src'),
 ];
 
 function loadAllDictionaries(): Record<string, Record<string, string>> {
@@ -104,7 +103,7 @@ describe('i18n key validation', () => {
       const dotIndex = key.indexOf('.');
       if (dotIndex <= 0) return true;
       const namespace = key.slice(0, dotIndex);
-      return !['runtime', 'learner', 'widgets', 'schemas', 'website', 'notes'].includes(namespace);
+      return !['runtime', 'learner', 'widgets', 'schemas', 'notes'].includes(namespace);
     });
 
     if (invalidKeys.length > 0) {

@@ -23,7 +23,6 @@ const SCAN_ROOTS = [
   'packages/runtime/src/layout',
   'packages/runtime/src/components',
   'apps/learner/src',
-  'apps/website/src',
 ];
 const EXCLUDE_REGEX = /\.(?:test|spec|stories)\.[jt]sx$|\.d\.ts$/;
 const STRICT = process.argv.includes('--strict');

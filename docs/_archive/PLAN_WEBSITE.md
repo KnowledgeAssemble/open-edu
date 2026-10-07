@@ -1,5 +1,7 @@
 # OpenEdu Marketing Website — Implementation Plan
 
+> **Archived / superseded (October 2026):** The in-repo `apps/website` marketing app was removed. Future marketing will live in a separate repository. This document is retained for historical context only.
+
 ## Overview
 
 Build `apps/website` — a high-impact marketing site for the OpenEdu framework using **React 18**, **Vite**, **TypeScript**, **Tailwind CSS**, **React Router v6** (matching the learner app convention), **OpenEdu design tokens & primitives**, **`@open-edu/runtime`** (RuntimeThemeProvider), and **`@open-edu/i18n`**. The design mirrors the prototype with 10 interactive landing page sections, 3-theme support (Light/Dark/Zen), and full a11y/i18n compliance.
