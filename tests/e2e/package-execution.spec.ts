@@ -427,6 +427,7 @@ test.describe('interactive-demo (interactive engine nodes)', () => {
       'Timeline drives visual focus',
       'Identify Odisha (guided)',
       'Two-stage water cycle',
+      'Frog lifecycle',
     ]) {
       await expect(page.getByRole('heading', { name: heading })).toBeVisible({ timeout: 5000 });
       const markComplete = page.getByRole('button', { name: 'Mark complete' });
