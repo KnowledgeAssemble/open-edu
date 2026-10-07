@@ -52,7 +52,7 @@ export function createInteractiveAuthoringSkills(): CompanionSkill[] {
   const data = getEngineSkillsData();
   return data.engines.map((entry) => ({
     id: `interactive-${entry.type}`,
-    description: `Author \{type:"interactive", engine:"${entry.type}"\} lesson nodes (skill: ${entry.skill}).`,
+    description: `Author {type:"interactive", engine:"${entry.type}"} lesson nodes (skill: ${entry.skill}).`,
     instructions: buildInstruction(entry),
     tools: ['generate_item', 'edit_item'],
     permissions: ['item.generate', 'item.edit'],

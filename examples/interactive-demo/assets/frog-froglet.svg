@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" width="40" height="40" role="img">
+  <title>Froglet: four legs and a shrinking tail</title>
+  <ellipse cx="19" cy="21" rx="8" ry="6.5" fill="none" stroke="currentColor"/>
+  <circle cx="15" cy="15.5" r="1.8" fill="none" stroke="currentColor"/>
+  <circle cx="23" cy="15.5" r="1.8" fill="none" stroke="currentColor"/>
+  <path d="M12 26 L8 31 M26 26 L30 31 M15 27.5 L14 33 M23 27.5 L24 33" fill="none" stroke="currentColor" stroke-linecap="round"/>
+  <path d="M27 20 Q32 20.5 34 23" fill="none" stroke="currentColor"/>
+</svg>

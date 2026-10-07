@@ -352,6 +352,49 @@ Business logic belongs to:
 
 ---
 
+# Host-Side Interactive Rendering
+
+Interactive engines are asset-free by contract. The OpenEdu host owns asset
+resolution, figure layout, alt text, and failure handling for everything drawn
+beside an engine surface.
+
+## Asset resolution
+
+`resolveEngineAsset` distinguishes data from media by extension:
+
+- `.json`, `.geojson`, `.topojson` → the decoded file **contents** as a string
+  (geomap parses its own `source.uri` JSON at mount, so a blob URL would throw).
+- everything else → a URL string via `resolveAsset` (blob URL cache + `/assets/`
+  fallback).
+- never bytes, and no `openedu://` branch — the loader inlines those URIs into
+  `source.data` at load time.
+
+## `figures` map
+
+The interactive node config accepts an optional `figures` map keyed by the
+engine's **authored node id** (diagram `metadata.nodeId`, geomap
+`metadata.entityId`, chart `metadata.rowId`, timeline `event-marker` ids).
+Each entry is either `{ ref, alt }` or `{ ref, decorative: true }`; `alt` is
+literal authored copy (figure alt text is course content, like `title` and
+`prompt`, so it never goes through `t()` and never lives in the framework
+locale files), and a decorative figure renders with an empty `alt` and
+`aria-hidden`.
+
+Figures anchor to scene nodes that carry `bounds` (diagram `kind: "node"`).
+At most one figure renders per `figures` key (chart rows expand to one node per
+measure), and hidden scene nodes are skipped. On a load error a meaningful
+figure degrades to its caption text; a decorative figure renders nothing.
+
+## Text alternative
+
+`AlternativeList` renders the `svgResult.alternative` rows that add content
+beyond the already-live `a11y` label channel: cycle rows and node
+`description`s. Edge rows are never rendered — the live region already
+announces the relationship. It is a plain (non-live) disclosure; composed
+lessons get neither the alternative list nor the figure overlay in v1.
+
+---
+
 # Accessibility Engine
 
 ## Technology

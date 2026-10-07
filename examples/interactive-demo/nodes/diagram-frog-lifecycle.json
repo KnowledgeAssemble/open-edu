@@ -1,0 +1,87 @@
+{
+  "type": "interactive",
+  "title": "Frog lifecycle",
+  "engine": "diagram",
+  "figures": {
+    "eggs": {
+      "ref": "assets/frog-eggs.svg",
+      "alt": "Frog spawn: a jelly clump holding several embryos"
+    },
+    "tadpole": {
+      "ref": "assets/frog-tadpole.svg",
+      "alt": "Newly hatched tadpole: round body, swimming tail, no legs"
+    },
+    "tadpoleLegs": {
+      "ref": "assets/frog-tadpole-legs.svg",
+      "alt": "Tadpole growing legs: a body, a tail and two back legs"
+    },
+    "froglet": {
+      "ref": "assets/frog-froglet.svg",
+      "alt": "Froglet: four legs and a shrinking tail"
+    },
+    "adult": {
+      "ref": "assets/frog-adult.svg",
+      "alt": "Adult frog: broad body, raised eyes, four strong legs"
+    }
+  },
+  "spec": {
+    "type": "diagram",
+    "version": "1.0.0",
+    "id": "frog-lifecycle",
+    "metadata": { "title": "Frog lifecycle" },
+    "purpose": {
+      "learningObjective": "Describe how a frog changes as it grows from egg to adult"
+    },
+    "content": {
+      "kind": "cycle",
+      "nodes": [
+        {
+          "id": "eggs",
+          "label": "Eggs",
+          "description": "The female frog lays a clump of eggs in water. Each embryo sits inside a jelly coating.",
+          "media": { "kind": "figure" }
+        },
+        {
+          "id": "tadpole",
+          "label": "Tadpole",
+          "description": "The egg hatches into a tadpole with a round body and a swimming tail, but no legs.",
+          "media": { "kind": "figure" }
+        },
+        {
+          "id": "tadpoleLegs",
+          "label": "Tadpole with legs",
+          "description": "The tadpole grows two back legs. It still swims with its tail and breathes through gills.",
+          "media": { "kind": "figure" }
+        },
+        {
+          "id": "froglet",
+          "label": "Froglet",
+          "description": "Front legs appear and the tail gets shorter. The froglet starts to breathe air and hop.",
+          "media": { "kind": "figure" }
+        },
+        {
+          "id": "adult",
+          "label": "Adult frog",
+          "description": "The tail has gone. The adult frog has four legs, can breathe air, and will lay eggs to start the cycle again.",
+          "media": { "kind": "figure" }
+        }
+      ],
+      "edges": [
+        { "from": "eggs", "to": "tadpole", "relationship": "transforms-to" },
+        { "from": "tadpole", "to": "tadpoleLegs", "relationship": "transforms-to" },
+        { "from": "tadpoleLegs", "to": "froglet", "relationship": "transforms-to" },
+        { "from": "froglet", "to": "adult", "relationship": "transforms-to" },
+        { "from": "adult", "to": "eggs", "relationship": "produces" }
+      ]
+    },
+    "interaction": {
+      "mode": "explore",
+      "actions": ["select", "deselect", "focus", "reset"]
+    },
+    "questions": [],
+    "sources": [{ "class": "illustrative" }],
+    "accessibility": {
+      "label": "Frog lifecycle cycle: eggs change into a tadpole, then a tadpole with legs, then a froglet, then an adult frog, which produces eggs"
+    }
+  }
+}

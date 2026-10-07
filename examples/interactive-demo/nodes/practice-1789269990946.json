@@ -1,0 +1,11 @@
+{
+  "type": "exercise",
+  "title": "Identify the Capital of Odisha",
+  "widget": "social.map",
+  "config": {
+    "question": "Select the capital city of Odisha on the map.",
+    "correctAnswer": "Bhubaneswar",
+    "mapSource": "path/to/odisha-map.json",
+    "markerColor": "blue"
+  }
+}

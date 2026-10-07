@@ -3229,6 +3229,10 @@ video {
   letter-spacing: -0.025em;
 }
 
+.tracking-wide {
+  letter-spacing: 0.025em;
+}
+
 .tracking-wider {
   letter-spacing: 0.05em;
 }
@@ -3882,10 +3886,6 @@ body,
 
 .hover\:bg-primary\/85:hover {
   background-color: rgb(var(--oe-color-primary-rgb) / 0.85);
-}
-
-.hover\:bg-primary\/90:hover {
-  background-color: rgb(var(--oe-color-primary-rgb) / var(--oe-opacity-90));
 }
 
 .hover\:bg-secondary\/80:hover {

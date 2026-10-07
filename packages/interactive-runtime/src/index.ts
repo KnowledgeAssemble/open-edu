@@ -8,6 +8,24 @@ export type {
   InteractiveLessonHandle,
 } from './views.js';
 
+export { AlternativeList, extractAlternativeRows } from './alternative-list.js';
+export type {
+  AlternativeListProps,
+  AlternativeRowLike,
+  AlternativeRowView,
+} from './alternative-list.js';
+
+export { normalizeAssetKey, isDataAssetId } from './asset-resolution.js';
+
+export { FigureOverlay, collectFigurePlacements, authoredIdOf } from './figure-overlay.js';
+export type {
+  FigureOverlayProps,
+  FigurePlacement,
+  FigureSpecView,
+  SceneBounds,
+  SceneNodeLike,
+} from './figure-overlay.js';
+
 export type {
   InteractiveEngineType,
   InteractiveActionType,

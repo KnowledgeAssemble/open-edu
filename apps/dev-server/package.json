@@ -27,7 +27,7 @@
   },
   "dependencies": {
     "@ai-sdk/react": "^4.0.0",
-    "@knowledgeassemble/engine-skills": "^0.1.0",
+    "@knowledgeassemble/engine-skills": "^0.1.2",
     "@open-edu/accessibility": "workspace:*",
     "@open-edu/companion": "workspace:*",
     "@open-edu/core": "workspace:*",
