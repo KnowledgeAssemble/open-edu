@@ -60,7 +60,7 @@ The learner app composes these runtime components with design-system patterns. T
 
 ## Theme and token system
 
-The design system underpins the 3-theme system described in the root README and AGENTS instructions.
+The design system underpins the 3-theme system described in `apps/docs/docs/runtime.md` and the AGENTS instructions.
 
 Relevant files:
 

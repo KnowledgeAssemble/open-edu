@@ -11,7 +11,7 @@ This repository models learning content as portable package directories rather t
 
 ## Package model
 
-The package authoring guide and root README describe the core package shape:
+The package authoring guide describes the core package shape:
 
 - `package.json` manifest with id, title, version, author, and entry node
 - `workflow.json` for routing and branching
@@ -32,7 +32,7 @@ The repo supports several node types:
 - exercise nodes backed by widgets
 - custom JSON nodes for specialized integrations
 
-Workflow routing can be linear or conditional. The examples in `README.md` and `docs/PACKAGE_AUTHORING.md` show:
+Workflow routing can be linear or conditional. The examples in `docs/PACKAGE_AUTHORING.md` show:
 
 - sequential completion chains
 - score-based branching
@@ -72,7 +72,7 @@ The recent rename from `Card` to `KnowledgeCard` in `packages/runtime` reflects 
 
 Bundles extend single-package learning into multi-module curricula.
 
-The root README describes bundles as collections of standard packages with prerequisite chaining between modules. This affects both the runtime and the learner app:
+Bundles are collections of standard packages with prerequisite chaining between modules; the `bundle.json` manifest format is documented in `apps/docs/docs/package-format.md`. This affects both the runtime and the learner app:
 
 - bundle summary and overview surfaces live in the learner catalog
 - per-module status is tracked through bundle progress snapshots
