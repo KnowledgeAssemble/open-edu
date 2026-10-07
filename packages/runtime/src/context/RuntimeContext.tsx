@@ -277,8 +277,7 @@ export function RuntimeProvider({
         const data = loadedPackage.assetMap?.get(normalized);
         if (data) return new TextDecoder().decode(data);
         console.warn(
-          `[resolveEngineAsset] data asset "${normalized}" not found for "${loadedPackage.manifest.id}". Available keys:`,
-          loadedPackage.assetMap ? Array.from(loadedPackage.assetMap.keys()) : 'no assetMap',
+          `[resolveEngineAsset] data asset "${normalized}" not found for "${loadedPackage.manifest.id}"`,
         );
         return '';
       }
