@@ -117,14 +117,7 @@ Expected: FAIL — `studio` not in `NAMESPACES`
 `packages/i18n/src/namespaces.ts`:
 
 ```ts
-export const NAMESPACES = [
-  'runtime',
-  'learner',
-  'widgets',
-  'schemas',
-  'website',
-  'studio',
-] as const;
+export const NAMESPACES = ['runtime', 'learner', 'widgets', 'schemas', 'studio'] as const;
 ```
 
 `packages/i18n/locales/en/studio.json`:

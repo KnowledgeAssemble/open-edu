@@ -158,7 +158,6 @@ Stages 3–4 are complete. Product design has begun with the Learner App.
 | -------------- | ------ | ------------------------------------------------- |
 | Learner App    | 🟡     | Core layout aligned, hero, stats, cards, dividers |
 | Authoring App  | 🔲     |                                                   |
-| Website        | 🔲     |                                                   |
 | AI Experiences | 🔲     |                                                   |
 | Reward Engine  | 🔲     |                                                   |
 

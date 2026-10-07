@@ -1,10 +1,4 @@
-export const NAMESPACES = [
-  'runtime',
-  'learner',
-  'widgets',
-  'schemas',
-  'studio',
-] as const;
+export const NAMESPACES = ['runtime', 'learner', 'widgets', 'schemas', 'studio'] as const;
 
 export type Namespace = (typeof NAMESPACES)[number];
 

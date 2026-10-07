@@ -124,7 +124,6 @@ Examples:
 
 - Learner App
 - Authoring App
-- Website
 - Reward Engine
 - AI Experiences
 
