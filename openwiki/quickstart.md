@@ -110,7 +110,7 @@ The UI is intentionally split between low-level primitives and opinionated visua
 ## Navigation notes for future agents
 
 - Read this page first, then follow the section pages that match the area you need to change.
-- Prefer `README.md`, `docs/ARCHITECTURE.md`, `docs/PACKAGE_AUTHORING.md`, and `docs/COMPONENT_GUIDE.md` as source-of-truth references when you need more detail.
+- Start from `README.md` for the overview, then treat `docs/ARCHITECTURE.md`, `docs/PACKAGE_AUTHORING.md`, and `docs/COMPONENT_GUIDE.md` as source-of-truth references when you need more detail.
 - Watch for the distinction between runtime packages and the learner app: many learner pages compose reusable runtime/design-system components rather than reimplementing them.
 
 ## Backlog

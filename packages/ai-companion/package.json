@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "description": "AI Learning Companion — search, dictionary, and provider interfaces for Open-Edu",
+  "license": "MIT",
   "type": "module",
   "main": "./src/index.ts",
   "types": "./src/index.ts",

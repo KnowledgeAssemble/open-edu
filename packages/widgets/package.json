@@ -4,6 +4,7 @@
   "private": true,
   "type": "module",
   "description": "Widget SDK and built-in widgets for Open-Edu",
+  "license": "MIT",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {

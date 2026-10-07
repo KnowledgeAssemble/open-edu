@@ -2,6 +2,7 @@
   "name": "open-edu",
   "version": "0.1.0",
   "private": true,
+  "license": "MIT",
   "description": "Open-Edu Framework: An open runtime for educational experiences",
   "engines": {
     "node": ">=18",

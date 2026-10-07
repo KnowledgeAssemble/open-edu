@@ -2,6 +2,7 @@
   "name": "@open-edu/logger",
   "version": "0.1.0",
   "description": "Structured isomorphic logging engine for Open-Edu",
+  "license": "MIT",
   "publishConfig": {
     "access": "public"
   },

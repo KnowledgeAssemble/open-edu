@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "description": "OpenEdu Course Creator Studio (local hybrid authoring + preview)",
+  "license": "MIT",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {

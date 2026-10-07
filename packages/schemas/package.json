@@ -2,6 +2,7 @@
   "name": "@open-edu/schemas",
   "version": "0.1.0",
   "description": "Zod schemas and TypeScript type generation for Open-Edu",
+  "license": "MIT",
   "publishConfig": {
     "access": "public"
   },
