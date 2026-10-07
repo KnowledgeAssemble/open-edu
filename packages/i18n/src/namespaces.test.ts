@@ -18,10 +18,6 @@ describe('namespaces', () => {
     expect(NAMESPACES).toContain('schemas');
   });
 
-  it('includes website namespace', () => {
-    expect(NAMESPACES).toContain('website');
-  });
-
   it('includes studio namespace', () => {
     expect(NAMESPACES).toContain('studio');
   });

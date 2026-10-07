@@ -4,7 +4,7 @@ import { readFileSync, statSync, readdirSync } from 'node:fs';
 import { join, relative } from 'node:path';
 
 const ROOT = process.cwd();
-const SCAN_ROOTS = ['packages/runtime/src', 'packages/design-system/src', 'apps/website/src'];
+const SCAN_ROOTS = ['packages/runtime/src', 'packages/design-system/src'];
 const EXCLUDE_REGEX = /\.(?:test|stories)\.tsx$|\.d\.ts$/;
 const STRICT = process.argv.includes('--strict');
 

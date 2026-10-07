@@ -157,7 +157,6 @@ Examples:
 
 - Learner App
 - Authoring App
-- Website
 - AI Experiences
 - Reward Engine
 

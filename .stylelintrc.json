@@ -6,7 +6,6 @@
     "**/build/**",
     "**/tailwind.css",
     "apps/learner/src/index.css",
-    "apps/website/src/index.css",
     "apps/dev-server/src/index.css",
     "apps/docs/src/css/custom.css",
     "docs/superpowers/specs/course-creator-studio/wireframes/**"
