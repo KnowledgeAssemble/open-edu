@@ -30,6 +30,7 @@ export default {
     resolve(__dirname, '../../packages/runtime/src/**/*.{ts,tsx}'),
     resolve(__dirname, '../../packages/design-system/src/**/*.{ts,tsx}'),
     resolve(__dirname, '../../packages/widgets/src/**/*.{ts,tsx}'),
+    resolve(__dirname, '../../packages/interactive-runtime/src/**/*.{ts,tsx}'),
   ],
   theme: {
     extend: {

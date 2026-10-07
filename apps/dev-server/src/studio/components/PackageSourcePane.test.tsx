@@ -56,11 +56,7 @@ describe('PackageSourcePane', () => {
     const onOpenActivity = vi.fn();
     render(
       wrap(
-        <PackageSourcePane
-          api={api}
-          initialPath="nodes/a.md"
-          onOpenActivity={onOpenActivity}
-        />,
+        <PackageSourcePane api={api} initialPath="nodes/a.md" onOpenActivity={onOpenActivity} />,
       ),
     );
     const button = await screen.findByRole('button', { name: /open as activity/i });

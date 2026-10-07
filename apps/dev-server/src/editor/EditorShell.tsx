@@ -841,7 +841,9 @@ export const EditorShell = forwardRef<EditorShellHandle, EditorShellProps>(funct
                     ) : (
                       <Eye className="size-3.5" />
                     )}
-                    <span className="ml-1">{effectiveShowPreview ? 'Hide Preview' : 'Show Preview'}</span>
+                    <span className="ml-1">
+                      {effectiveShowPreview ? 'Hide Preview' : 'Show Preview'}
+                    </span>
                   </Button>
                 )}
                 <div className="flex-1" />

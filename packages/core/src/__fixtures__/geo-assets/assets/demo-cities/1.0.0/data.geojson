@@ -1,0 +1,11 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "id": "city-bbsr",
+      "properties": { "name": "Bhubaneswar" },
+      "geometry": { "type": "Point", "coordinates": [85.82, 20.3] }
+    }
+  ]
+}

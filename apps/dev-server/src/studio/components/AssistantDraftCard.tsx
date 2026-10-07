@@ -94,9 +94,7 @@ export function AssistantDraftCard({
         <DialogContent className="max-w-sm">
           <DialogHeader>
             <DialogTitle>{t('studio.assistant.draft.confirmTitle')}</DialogTitle>
-            <DialogDescription>
-              {t('studio.assistant.draft.confirmLede')}
-            </DialogDescription>
+            <DialogDescription>{t('studio.assistant.draft.confirmLede')}</DialogDescription>
           </DialogHeader>
           <DialogFooter>
             <Button variant="outline" size="sm" onClick={() => setShowConfirm(false)}>

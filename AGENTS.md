@@ -101,6 +101,7 @@ open-edu/
 │   ├── widgets/             # Widget SDK + registry + 28 built-in widgets + metadata enrichment + validation + catalog generation + remote loader + WidgetResolver + artifact cache
 │   ├── widget-sdk/          # Framework-agnostic community widget protocol SDK (no React dependency)
 │   ├── i18n/                # Internationalization — locale types, translation engine, React I18nProvider, namespaces, formatters, LanguageSwitcher
+│   ├── interactive-runtime/ # OpenEdu bridge + React mounts for @knowledgeassemble interactive engines
 │   ├── oep-distribution/    # .oep archive writer/reader, install coordinator, catalog loader, ZIP security, version compare
 │   ├── companion/           # AI companion contracts — chat schema + converters, tools, skills, tasks, permissions
 │   ├── domain-guidance/     # Authoring domain knowledge — learner profiles + quality rubric; generates skill references
@@ -111,6 +112,7 @@ open-edu/
 │   ├── autism-reading/
 │   ├── fractions/
 │   ├── hello-world/
+│   ├── interactive-demo/    # Single-engine + composed interactive lesson nodes
 │   ├── intro-javascript/
 │   ├── level-b-math/        # Multi-module bundle example (3 modules)
 │   ├── living-vs-nonliving/
@@ -195,7 +197,7 @@ All packages use the `@open-edu/` scope:
 - `@open-edu/schemas`, `@open-edu/core`, `@open-edu/workflow`, `@open-edu/runtime`
 - `@open-edu/accessibility`, `@open-edu/telemetry`, `@open-edu/rewards`, `@open-edu/cli`
 - `@open-edu/widgets`, `@open-edu/widget-sdk`, `@open-edu/dev-server`, `@open-edu/docs`, `@open-edu/course-compiler`
-- `@open-edu/llm-config`, `@open-edu/i18n`
+- `@open-edu/llm-config`, `@open-edu/i18n`, `@open-edu/interactive-runtime`
 - `@open-edu/design-system`, `@open-edu/ai-companion`
 - `@open-edu/companion`, `@open-edu/domain-guidance`
 - `@open-edu/logger`, `@open-edu/storage`, `@open-edu/pwa-core`
@@ -247,6 +249,7 @@ Epic 301 (Pipili AI Companion)
   └─► Epics 2, 3 (ai-companion pipili subsystem, llm-config model-factory, learner server-side endpoint, streaming chat UI)
 
 Epic 5 (Runtime Renderer) consumes @open-edu/design-system for UI primitives, tokens, and patterns.
+Epic 5 (Runtime Renderer) also consumes @open-edu/interactive-runtime for `{ type: "interactive" }` nodes.
 Epic 13 (Learner App) consumes @open-edu/ai-companion for AI companion services.
 @open-edu/companion and @open-edu/domain-guidance underpin the Course Creator Studio assistant (chat contracts) and authoring (profiles/rubric generation).
 ```

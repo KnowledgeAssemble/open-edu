@@ -9,6 +9,7 @@ import {
   type LearnerProfileDefinition,
 } from './types.js';
 import { buildDerivedSchemaFacts } from './schema-facts.js';
+import { getEngineSkillsData } from './engine-skills.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -262,6 +263,43 @@ export function generateAll(): void {
 
   console.log(`Generated domain guidance artifacts -> ${packageSrcDataDir}`);
   console.log(`Generated skill reference views -> ${skillRefDir}`);
+
+  // 3. Engine skills derived view (committed at src/data)
+  const engineSkillsData = getEngineSkillsData();
+  writeFileSync(
+    join(packageSrcDataDir, 'engine-skills.json'),
+    JSON.stringify(engineSkillsData, null, 2) + '\n',
+  );
+
+  // 4. Engine skills reference (generated, committed, CI-freshness-checked)
+  const engineSkillsMd = [
+    generatedHeader(
+      'OpenEdu Engine Skills Reference',
+      '@knowledgeassemble/engine-skills manifest.json',
+    ),
+    `Package: \`@knowledgeassemble/engine-skills\` v${engineSkillsData.version}; Schema Version: ${engineSkillsData.schemaVersion}`,
+    '',
+    ...engineSkillsData.engines.map((e) =>
+      [
+        `### ${e.type} (\`${e.skill}\`)`,
+        '',
+        `- **Skill name:** \`${e.skill}\``,
+        `- **Kinds:** ${e.kinds.length > 0 ? e.kinds.join(', ') : '*none*'}`,
+        `- **Schema:** \`${e.schema}\``,
+        `- **Example:** \`${e.example}\``,
+        `- **Validation contract:** \`${e.validationContract.package}.${e.validationContract.symbol}()\``,
+        `- **Namespaced events:** ${e.namespacedEvents.length > 0 ? e.namespacedEvents.join(', ') : '*none*'}`,
+        '',
+        "> Per-engine prose lives in the installed package's `SKILL.md`, loaded at runtime — never re-derived.",
+        '',
+      ].join('\n'),
+    ),
+    '',
+  ].join('\n');
+  writeFileSync(join(skillRefDir, 'engine-skills.md'), engineSkillsMd + '\n');
+
+  console.log(`Generated engine skills data -> ${packageSrcDataDir}`);
+  console.log(`Generated engine skills reference -> ${skillRefDir}`);
 }
 
 if (import.meta.url === `file://${process.argv[1]}`) {

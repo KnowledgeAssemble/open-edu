@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { loadNodes, parseNodeContent, loadNodesFromSource } from './nodes';
+import { loadNodes } from './nodes-fs';
+import { parseNodeContent, loadNodesFromSource } from './nodes';
 import { NodeLoadError } from './errors';
 import { resolve, join } from 'node:path';
 import { writeFile, mkdir, rm } from 'node:fs/promises';

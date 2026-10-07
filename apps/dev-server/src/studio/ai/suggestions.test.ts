@@ -92,11 +92,7 @@ describe('resolvePostCommitSuggestions', () => {
 
   it('returns next-step chips after accept', () => {
     const chips = resolvePostCommitSuggestions(mockT, []);
-    expect(chips.map((c) => c.id)).toEqual([
-      'post_add_activity',
-      'post_preview',
-      'post_share',
-    ]);
+    expect(chips.map((c) => c.id)).toEqual(['post_add_activity', 'post_preview', 'post_share']);
   });
 
   it('prepends fix-checks chip listing failed quality ids', () => {

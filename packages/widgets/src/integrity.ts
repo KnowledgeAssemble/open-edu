@@ -18,8 +18,7 @@ export function parseIntegrity(value: string): string {
 }
 
 export async function canonicalIntegrity(bytes: BufferSource): Promise<string> {
-  const input =
-    bytes instanceof ArrayBuffer ? new Uint8Array(bytes) : bytes;
+  const input = bytes instanceof ArrayBuffer ? new Uint8Array(bytes) : bytes;
   const hash = await crypto.subtle.digest('SHA-256', input);
   const hex = Array.from(new Uint8Array(hash))
     .map((b) => b.toString(16).padStart(2, '0'))

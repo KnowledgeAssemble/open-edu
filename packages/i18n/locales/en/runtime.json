@@ -55,5 +55,13 @@
   "reward.xp_gained": "Gained {{amount}} XP",
   "reward.generic": "{{type}} reward",
   "workflow.now_viewing": "Now viewing: {{title}}",
-  "workflow.completed": "Lesson completed"
+  "workflow.completed": "Lesson completed",
+  "interactive.loading": "Loading interactive activity…",
+  "interactive.load_error": "This interactive activity couldn't load.",
+  "interactive.mark_complete": "Mark complete",
+  "interactive.completed": "Interactive activity completed",
+  "interactive.interactions": "{{count}} interactions",
+  "interactive.iframe_title": "Interactive activity: {{engine}}",
+  "interactive.alternative.title": "Text alternative",
+  "interactive.alternative.cycleLabel": "Cycle"
 }

@@ -33,7 +33,9 @@ export class FakeWritable {
 
   async write(data: BufferSource): Promise<void> {
     this.handle.bytes =
-      data instanceof ArrayBuffer ? new Uint8Array(data) : new Uint8Array(data.buffer, data.byteOffset, data.byteLength);
+      data instanceof ArrayBuffer
+        ? new Uint8Array(data)
+        : new Uint8Array(data.buffer, data.byteOffset, data.byteLength);
   }
 
   async close(): Promise<void> {}
@@ -125,10 +127,7 @@ export class FakeDirHandle {
     return file;
   }
 
-  async removeEntry(
-    name: string,
-    options: FileSystemRemoveOptions = {},
-  ): Promise<void> {
+  async removeEntry(name: string, options: FileSystemRemoveOptions = {}): Promise<void> {
     const existing = this.children.get(name);
     if (!existing) throw notFound(name);
     if (existing.kind === 'directory' && existing.children.size > 0 && !options.recursive) {

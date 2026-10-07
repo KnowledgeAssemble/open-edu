@@ -19,6 +19,14 @@ import { buildAuthoredPromptView } from './generate.js';
 
 export * from './types.js';
 export { buildAuthoredPromptView, generateArtifactContractData } from './generate.js';
+export {
+  getEngineSkillsData,
+  loadEngineSkillDoc,
+  loadEngineSchema,
+  loadEngineExample,
+  validateSpec,
+  validateSkillExample,
+} from './engine-skills.js';
 
 export function getArtifactContractData(): ArtifactContractData {
   return ArtifactContractSchema.parse(artifactContractJson);

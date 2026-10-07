@@ -1,0 +1,28 @@
+{
+  "routing": {
+    "nodes/intro.md": {
+      "onComplete": "nodes/number-line.json"
+    },
+    "nodes/number-line.json": {
+      "onComplete": "nodes/number-line-practice.json"
+    },
+    "nodes/number-line-practice.json": {
+      "onComplete": "nodes/composed-lesson.json"
+    },
+    "nodes/composed-lesson.json": {
+      "onComplete": "nodes/geomap-identify-odisha.json"
+    },
+    "nodes/geomap-identify-odisha.json": {
+      "onComplete": "nodes/diagram-figure.json"
+    },
+    "nodes/diagram-figure.json": {
+      "onComplete": "nodes/diagram-frog-lifecycle.json"
+    },
+    "nodes/diagram-frog-lifecycle.json": {
+      "onComplete": "nodes/practice-1789269990946.json"
+    },
+    "nodes/practice-1789269990946.json": {
+      "onComplete": "COMPLETED"
+    }
+  }
+}

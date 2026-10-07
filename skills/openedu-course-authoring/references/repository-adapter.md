@@ -13,6 +13,7 @@ The script `scripts/discover-openedu.mjs` walks upward from the working director
 - `packages/widgets/` → widget catalog available
 - `packages/pipeline/` → PDF pipeline available
 - `packages/core/src/widget-catalog-data.json` → catalog data available
+- `node_modules/@knowledgeassemble/engine-skills/manifest.json` → engine skills catalog available
 
 **Repository mode requires executable CLI** (`dist/cli.js`), not just detected package directories. If the CLI package exists but `dist/cli.js` is missing, repository mode is not available — portable mode applies.
 
@@ -26,9 +27,9 @@ The script `scripts/discover-openedu.mjs` walks upward from the working director
     "compiler": true | false,
     "cli": true | false,
     "widgetCatalog": true | false,
+    "engineSkillsCatalog": true | false,
     "pipeline": true | false,
-    "examples": true | false,
-    "executable": true | false
+    "examples": true | false
   },
   "commands": {
     "compile": ["node", "/path/to/cli/dist/cli.js", "compile", "{spec}", "--output", "{dir}", "--validate"] | null,
@@ -36,7 +37,8 @@ The script `scripts/discover-openedu.mjs` walks upward from the working director
     "lintContent": ["node", "/path/to/cli/dist/cli.js", "lint-content", "{dir}"] | null,
     "dev": "edu dev {dir}" | null,
     "generateCatalog": "pnpm --filter @open-edu/widgets generate:catalog" | null,
-    "pipelineGenerate": "pnpm --filter @open-edu/pipeline curriculum:generate ..." | null
+    "pipelineGenerate": "pnpm --filter @open-edu/pipeline curriculum:generate ..." | null,
+    "installEngineSkills": ["pnpm", "add", "@knowledgeassemble/engine-skills"] | null
   },
   "paths": {
     "compilerRoot": "/path/to/course-compiler" | null,
@@ -45,9 +47,12 @@ The script `scripts/discover-openedu.mjs` walks upward from the working director
     "widgetsRoot": "/path/to/widgets" | null,
     "pipelineRoot": "/path/to/pipeline" | null,
     "catalogData": "/path/to/widget-catalog-data.json" | null,
-    "examplesDir": "/path/to/examples" | null
+    "guidanceData": "/path/to/domain-guidance/src/data" | null,
+    "examplesDir": "/path/to/examples" | null,
+    "engineSkillsManifest": "/path/to/engine-skills/manifest.json" | null,
+    "engineSkillsRoot": "/path/to/engine-skills" | null
   },
-  "unavailable": ["compiler", "pipeline"]
+  "unavailable": ["compiler", "pipeline", "engineSkillsCatalog"]
 }
 ```
 
@@ -101,6 +106,18 @@ pnpm --filter @open-edu/widgets generate:catalog
 ```
 
 If the catalog cannot be loaded, the skill MUST NOT invent widget IDs or configurations.
+
+## Engine Skills Catalog Discovery
+
+The engine skills catalog is discovered from `node_modules/@knowledgeassemble/engine-skills/manifest.json`. If the manifest exists, `capabilities.engineSkillsCatalog` is `true` and `paths.engineSkillsManifest` is set. The engine skills root path (`paths.engineSkillsRoot`) points to the package root for loading SKILL.md, schema.json, and skill-example.json files relative to the manifest.
+
+If the engine skills catalog is unavailable (portable mode, or package not installed), the capability flag is `false` and `unavailable` includes `'engineSkillsCatalog'`. To install:
+
+```bash
+pnpm add @knowledgeassemble/engine-skills
+```
+
+In this repository (development mode), the package is wired via `file:` override in `pnpm.overrides` — no separate install needed.
 
 ## Pipeline Integration
 

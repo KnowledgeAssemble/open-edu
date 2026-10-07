@@ -128,6 +128,10 @@ export function CreatorPreview({
     });
   }, []);
 
+  const handleTelemetryEvent = useCallback((event: TelemetryEvent) => {
+    telemetrySessionRef.current?.emit(event);
+  }, []);
+
   const definedRewards = useMemo(
     () =>
       pkg.rewards
@@ -159,7 +163,7 @@ export function CreatorPreview({
         initialProgress={initialProgress}
         onProgressChange={handleProgressChange}
         widgetRegistry={widgetRegistry}
-        onTelemetryEvent={(e) => telemetrySessionRef.current?.emit(e)}
+        onTelemetryEvent={handleTelemetryEvent}
       >
         <RewardEventBridge receipts$={rewardBridge.receipts$} />
         <div className="relative flex h-full flex-col">

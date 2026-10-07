@@ -7,6 +7,7 @@ import { MarkdownRenderer } from './MarkdownRenderer';
 import { QuizRenderer } from './QuizRenderer';
 import { ReflectionRenderer } from './ReflectionRenderer';
 import { WidgetRenderer } from './WidgetRenderer';
+import { InteractiveRenderer } from './InteractiveRenderer';
 import { PlaceholderRenderer } from './PlaceholderRenderer';
 import type { NodeAnswer, QuizAnswer, ReflectionAnswer } from '@open-edu/schemas';
 
@@ -83,6 +84,17 @@ export function NodeRenderer({ node, onComplete, onDiagnostic }: NodeRendererPro
       return (
         <FocusTrap key={node.relativePath}>
           <WidgetRenderer node={node.node} nodeId={node.relativePath} onDiagnostic={onDiagnostic} />
+        </FocusTrap>
+      );
+
+    case 'interactive':
+      return (
+        <FocusTrap key={node.relativePath}>
+          <InteractiveRenderer
+            node={node.node}
+            nodeId={node.relativePath}
+            onComplete={handleComplete}
+          />
         </FocusTrap>
       );
 

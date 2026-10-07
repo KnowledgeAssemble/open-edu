@@ -1,0 +1,12 @@
+{
+  "id": "demo/cities",
+  "version": "1.0.0",
+  "name": "Demo Cities",
+  "type": "point",
+  "format": "geojson",
+  "class": "reference",
+  "source": { "provider": "Fixture", "dataset": "Test only", "license": "Public Domain" },
+  "files": { "data": "1.0.0/data.geojson" },
+  "featureId": { "property": "id" },
+  "stats": { "featureCount": 1, "geometryTypes": { "Point": 1 } }
+}

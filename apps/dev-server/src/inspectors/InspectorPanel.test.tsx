@@ -35,17 +35,9 @@ const sampleRewardReceipts: RewardReceipt[] = [
 describe('InspectorPanel', () => {
   it('should render telemetry tab by default in the drawer', () => {
     render(
-      wrap(
-        <InspectorPanel
-          telemetryEvents={emptyEvents}
-          open={true}
-          onOpenChange={() => {}}
-        />,
-      ),
+      wrap(<InspectorPanel telemetryEvents={emptyEvents} open={true} onOpenChange={() => {}} />),
     );
-    expect(
-      screen.getByRole('complementary', { name: 'Preview DevTools' }),
-    ).toBeInTheDocument();
+    expect(screen.getByRole('complementary', { name: 'Preview DevTools' })).toBeInTheDocument();
     expect(screen.getByText('Telemetry')).toBeInTheDocument();
     expect(screen.getByText('Rewards')).toBeInTheDocument();
     expect(screen.getByText('A11y')).toBeInTheDocument();
@@ -53,13 +45,7 @@ describe('InspectorPanel', () => {
 
   it('renders nothing when closed', () => {
     render(
-      wrap(
-        <InspectorPanel
-          telemetryEvents={emptyEvents}
-          open={false}
-          onOpenChange={() => {}}
-        />,
-      ),
+      wrap(<InspectorPanel telemetryEvents={emptyEvents} open={false} onOpenChange={() => {}} />),
     );
     expect(screen.queryByRole('complementary')).not.toBeInTheDocument();
   });
@@ -67,13 +53,7 @@ describe('InspectorPanel', () => {
   it('should switch to accessibility tab on click', async () => {
     const user = userEvent.setup();
     render(
-      wrap(
-        <InspectorPanel
-          telemetryEvents={emptyEvents}
-          open={true}
-          onOpenChange={() => {}}
-        />,
-      ),
+      wrap(<InspectorPanel telemetryEvents={emptyEvents} open={true} onOpenChange={() => {}} />),
     );
     await user.click(screen.getByRole('tab', { name: 'A11y' }));
     expect(screen.getByRole('tab', { name: 'A11y' })).toHaveAttribute('data-state', 'active');
@@ -98,13 +78,7 @@ describe('InspectorPanel', () => {
 
   it('should show telemetry empty state', () => {
     render(
-      wrap(
-        <InspectorPanel
-          telemetryEvents={emptyEvents}
-          open={true}
-          onOpenChange={() => {}}
-        />,
-      ),
+      wrap(<InspectorPanel telemetryEvents={emptyEvents} open={true} onOpenChange={() => {}} />),
     );
     expect(
       screen.getByText('No telemetry events yet. Interact with the content above.'),
@@ -115,11 +89,7 @@ describe('InspectorPanel', () => {
     const onOpenChange = vi.fn();
     render(
       wrap(
-        <InspectorPanel
-          telemetryEvents={emptyEvents}
-          open={true}
-          onOpenChange={onOpenChange}
-        />,
+        <InspectorPanel telemetryEvents={emptyEvents} open={true} onOpenChange={onOpenChange} />,
       ),
     );
     fireEvent.click(screen.getByLabelText('Close DevTools'));
@@ -130,11 +100,7 @@ describe('InspectorPanel', () => {
     const onOpenChange = vi.fn();
     render(
       wrap(
-        <InspectorPanel
-          telemetryEvents={emptyEvents}
-          open={true}
-          onOpenChange={onOpenChange}
-        />,
+        <InspectorPanel telemetryEvents={emptyEvents} open={true} onOpenChange={onOpenChange} />,
       ),
     );
     fireEvent.keyDown(document, { key: 'Escape' });

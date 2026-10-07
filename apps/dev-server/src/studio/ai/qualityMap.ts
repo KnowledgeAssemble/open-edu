@@ -38,8 +38,7 @@ export function mapDiagnosticsToQuality(
       passed: objectivesPassed,
       detail: objectivesPassed
         ? undefined
-        : objectivesDiagnostic?.message ||
-          'One or more lessons are missing learning objectives.',
+        : objectivesDiagnostic?.message || 'One or more lessons are missing learning objectives.',
     },
     {
       id: 'assessment',

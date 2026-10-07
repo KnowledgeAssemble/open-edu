@@ -332,7 +332,10 @@ describe('WidgetRegistryStore', () => {
         store.install({
           publisher: 'publisher',
           widgetId: 'test\0evil',
-          manifestJson: validManifest({ id: 'test\0evil', publisher: { id: 'publisher', name: 'Test' } }),
+          manifestJson: validManifest({
+            id: 'test\0evil',
+            publisher: { id: 'publisher', name: 'Test' },
+          }),
           documentBytes: encode(SELF_CONTAINED_HTML),
         }),
       ).rejects.toBeInstanceOf(WidgetValidationError);
@@ -343,7 +346,10 @@ describe('WidgetRegistryStore', () => {
         store.install({
           publisher: 'publisher',
           widgetId: 'community.example.counter',
-          manifestJson: validManifest({ version: '..', publisher: { id: 'publisher', name: 'Test' } }),
+          manifestJson: validManifest({
+            version: '..',
+            publisher: { id: 'publisher', name: 'Test' },
+          }),
           documentBytes: encode(SELF_CONTAINED_HTML),
         }),
       ).rejects.toBeInstanceOf(WidgetValidationError);
@@ -354,7 +360,10 @@ describe('WidgetRegistryStore', () => {
         store.install({
           publisher: 'publisher',
           widgetId: 'community.example.counter',
-          manifestJson: validManifest({ version: '.', publisher: { id: 'publisher', name: 'Test' } }),
+          manifestJson: validManifest({
+            version: '.',
+            publisher: { id: 'publisher', name: 'Test' },
+          }),
           documentBytes: encode(SELF_CONTAINED_HTML),
         }),
       ).rejects.toBeInstanceOf(WidgetValidationError);
@@ -387,7 +396,10 @@ describe('WidgetRegistryStore', () => {
         store.install({
           publisher: 'publisher',
           widgetId: 'foo\\bar',
-          manifestJson: validManifest({ id: 'foo\\bar', publisher: { id: 'publisher', name: 'Test' } }),
+          manifestJson: validManifest({
+            id: 'foo\\bar',
+            publisher: { id: 'publisher', name: 'Test' },
+          }),
           documentBytes: encode(SELF_CONTAINED_HTML),
         }),
       ).rejects.toBeInstanceOf(WidgetValidationError);

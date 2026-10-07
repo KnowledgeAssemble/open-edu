@@ -83,6 +83,42 @@ describe('openedu-adapter discoverRepository', () => {
     }
   });
 
+  it('detects engine skills catalog when manifest exists', () => {
+    const dir = createTempDir();
+    try {
+      addFile(dir, 'pnpm-workspace.yaml');
+      addFile(dir, 'node_modules/@knowledgeassemble/engine-skills/manifest.json', '{}');
+      const result = discoverRepository(dir);
+      strictEqual(result.capabilities.engineSkillsCatalog, true);
+      ok(result.paths.engineSkillsManifest !== null);
+      ok(result.paths.engineSkillsRoot !== null);
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  it('engine skills catalog false when manifest missing', () => {
+    const dir = createTempDir();
+    try {
+      addFile(dir, 'pnpm-workspace.yaml');
+      const result = discoverRepository(dir);
+      strictEqual(result.capabilities.engineSkillsCatalog, false);
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  it('engineSkillsCatalog appears in unavailable when missing', () => {
+    const dir = createTempDir();
+    try {
+      addFile(dir, 'pnpm-workspace.yaml');
+      const result = discoverRepository(dir);
+      ok(result.unavailable.includes('engineSkillsCatalog'));
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
   it('detects pipeline when packages/pipeline exists', () => {
     const dir = createTempDir();
     try {
@@ -116,6 +152,7 @@ describe('openedu-adapter discoverRepository', () => {
       const result = discoverRepository(dir);
       ok(Array.isArray(result.unavailable));
       ok(result.unavailable.includes('compiler'));
+      ok(result.unavailable.includes('engineSkillsCatalog'));
     } finally {
       rmSync(dir, { recursive: true, force: true });
     }
@@ -131,10 +168,11 @@ describe('openedu-adapter resolveOpenEduCommands', () => {
         compiler: { packagePresent: false, executable: false },
         cli: { packagePresent: false, executable: false },
         widgetCatalog: false,
+        engineSkillsCatalog: false,
         pipeline: { packagePresent: false, executable: false },
         examples: false,
       },
-      paths: { compilerRoot: null, cliRoot: null, widgetsRoot: null, pipelineRoot: null, catalogData: null, examplesDir: null },
+      paths: { compilerRoot: null, cliRoot: null, widgetsRoot: null, pipelineRoot: null, catalogData: null, guidanceData: null, examplesDir: null, engineSkillsManifest: null, engineSkillsRoot: null },
     };
     const commands = resolveOpenEduCommands(discovery);
     deepStrictEqual(commands, {});
@@ -153,10 +191,11 @@ describe('openedu-adapter resolveOpenEduCommands', () => {
           compiler: { packagePresent: true, executable: false },
           cli: { packagePresent: true, executable: true },
           widgetCatalog: false,
+          engineSkillsCatalog: false,
           pipeline: { packagePresent: false, executable: false },
           examples: false,
         },
-        paths: { compilerRoot: join(dir, 'packages/course-compiler'), cliRoot: join(dir, 'packages/cli'), widgetsRoot: null, pipelineRoot: null, catalogData: null, examplesDir: null },
+        paths: { compilerRoot: join(dir, 'packages/course-compiler'), cliRoot: join(dir, 'packages/cli'), widgetsRoot: null, pipelineRoot: null, catalogData: null, guidanceData: null, examplesDir: null, engineSkillsManifest: null, engineSkillsRoot: null },
       };
       const commands = resolveOpenEduCommands(discovery);
       strictEqual(commands.compile.executable, true);
@@ -179,10 +218,11 @@ describe('openedu-adapter resolveOpenEduCommands', () => {
           compiler: { packagePresent: true, executable: false },
           cli: { packagePresent: true, executable: false },
           widgetCatalog: false,
+          engineSkillsCatalog: false,
           pipeline: { packagePresent: false, executable: false },
           examples: false,
         },
-        paths: { compilerRoot: join(dir, 'packages/course-compiler'), cliRoot: join(dir, 'packages/cli'), widgetsRoot: null, pipelineRoot: null, catalogData: null, examplesDir: null },
+        paths: { compilerRoot: join(dir, 'packages/course-compiler'), cliRoot: join(dir, 'packages/cli'), widgetsRoot: null, pipelineRoot: null, catalogData: null, guidanceData: null, examplesDir: null, engineSkillsManifest: null, engineSkillsRoot: null },
       };
       const commands = resolveOpenEduCommands(discovery);
       strictEqual(commands.compile.executable, false);
@@ -206,15 +246,42 @@ describe('openedu-adapter resolveOpenEduCommands', () => {
           compiler: { packagePresent: false, executable: false },
           cli: { packagePresent: true, executable: true },
           widgetCatalog: false,
+          engineSkillsCatalog: false,
           pipeline: { packagePresent: false, executable: false },
           examples: false,
         },
-        paths: { compilerRoot: null, cliRoot: join(repoWithSpaces, 'packages/cli'), widgetsRoot: null, pipelineRoot: null, catalogData: null, examplesDir: null },
+        paths: { compilerRoot: null, cliRoot: join(repoWithSpaces, 'packages/cli'), widgetsRoot: null, pipelineRoot: null, catalogData: null, guidanceData: null, examplesDir: null, engineSkillsManifest: null, engineSkillsRoot: null },
       };
       const commands = resolveOpenEduCommands(discovery);
       const cliEntry = join(repoWithSpaces, 'packages', 'cli', 'dist', 'cli.js');
       strictEqual(commands.compile.argv[1], cliEntry);
       strictEqual(commands.compile.argv[0], 'node');
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  it('includes installEngineSkills command', () => {
+    const dir = createTempDir();
+    try {
+      addFile(dir, 'pnpm-workspace.yaml');
+      const discovery = {
+        mode: 'repository',
+        repoRoot: dir,
+        capabilities: {
+          compiler: { packagePresent: false, executable: false },
+          cli: { packagePresent: false, executable: false },
+          widgetCatalog: false,
+          engineSkillsCatalog: false,
+          pipeline: { packagePresent: false, executable: false },
+          examples: false,
+        },
+        paths: { compilerRoot: null, cliRoot: null, widgetsRoot: null, pipelineRoot: null, catalogData: null, guidanceData: null, examplesDir: null, engineSkillsManifest: null, engineSkillsRoot: null },
+      };
+      const commands = resolveOpenEduCommands(discovery);
+      ok(commands.installEngineSkills, 'installEngineSkills command should exist');
+      strictEqual(commands.installEngineSkills.executable, false);
+      ok(commands.installEngineSkills.prerequisites.length > 0);
     } finally {
       rmSync(dir, { recursive: true, force: true });
     }

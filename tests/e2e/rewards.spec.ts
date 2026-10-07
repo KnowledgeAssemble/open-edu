@@ -1,11 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { resolve } from 'path';
-import {
-  startServer,
-  openStudioPreview,
-  openPreviewDevtools,
-  type TestServer,
-} from './helpers';
+import { startServer, openStudioPreview, openPreviewDevtools, type TestServer } from './helpers';
 
 const LIVING_VS_NONLIVING = resolve('examples/living-vs-nonliving');
 

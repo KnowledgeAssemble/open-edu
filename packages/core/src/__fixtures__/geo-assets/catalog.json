@@ -1,0 +1,23 @@
+{
+  "schemaVersion": "1.0.0",
+  "assets": [
+    {
+      "id": "demo/states",
+      "version": "1.0.0",
+      "type": "boundary",
+      "format": "topojson",
+      "uri": "openedu://geo/demo/states",
+      "manifest": "assets/demo-states/manifest.json",
+      "class": "reference"
+    },
+    {
+      "id": "demo/cities",
+      "version": "1.0.0",
+      "type": "point",
+      "format": "geojson",
+      "uri": "openedu://geo/demo/cities",
+      "manifest": "assets/demo-cities/manifest.json",
+      "class": "reference"
+    }
+  ]
+}

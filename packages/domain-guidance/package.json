@@ -29,6 +29,7 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
+    "@knowledgeassemble/engine-skills": "^0.1.2",
     "@open-edu/course-compiler": "workspace:^",
     "@open-edu/schemas": "workspace:^",
     "zod": "^3.25.76"

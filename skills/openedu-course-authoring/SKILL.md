@@ -72,6 +72,7 @@ Select the matching `profile-<key>.md` in Stage 1 and apply its **Guidance Delta
 7. **Be truthful about capability.** Never claim compilation or validation that wasn't actually run.
 8. **Each lesson must be complete.** Include measurable objectives, core explanation, examples, misconceptions, progressive activities, and aligned assessment.
 9. **Never infer `autism`.** A neurodivergence profile is never deduced from age, level, or behavior — it is only ever explicitly stated by the user or defaulted to `neurotypical`. `school`/`college` may be inferred from age/educational context; `autism` alone is never auto-labeled.
+10. **Interactive lesson nodes must come from the engine skill catalog.** Load `engine-skill-catalog.mjs`, read the engine's `SKILL.md`, follow its authoring rules, round-trip the `spec` against its `schema.json`/validationContract, then emit `{type:"interactive", engine, spec}`. Never invent a spec shape or engine id.
 
 ## References
 
@@ -83,6 +84,7 @@ Select the matching `profile-<key>.md` in Stage 1 and apply its **Guidance Delta
 - **Repository Adapter:** `references/repository-adapter.md` — discovery, commands, catalog loading, pipeline integration
 - **Rewards & Cards Authoring:** `references/rewards-cards-authoring.md` — USE when authoring rewards.json/cards.json: triggers, conditions, scope rules (module vs bundle), global card-ID uniqueness
 - **Source Materials:** `references/source-materials.md` — PDF and curriculum document handling via pipeline
+- **Interactive Authoring:** `references/interactive-authoring.md` — USE when authoring an interactive lesson node: interactive vs widget decision, spec authoring, engine catalog discovery
 
 ## Helper Scripts
 
@@ -93,6 +95,7 @@ Select the matching `profile-<key>.md` in Stage 1 and apply its **Guidance Delta
 - `scripts/validate-package.mjs` — orchestrates compile → validate → lint in sequence for a compiled package
 - `scripts/quality-report.mjs` — central orchestrator and sole writer of `quality-report.json`; merges findings from all phases
 - `scripts/summarize-quality.mjs` — complete quality rubric (catalog-backed, all dimensions) consumed by `quality-report.mjs`
+- `scripts/engine-skill-catalog.mjs` — loads the engine skill catalog from the installed `@knowledgeassemble/engine-skills` package; provides lookup helpers for engine entries, kinds, and doc/schema/example loading
 
 ## Source Material Pipeline
 

@@ -11,6 +11,7 @@ import {
 } from 'node:fs';
 import { readFile, writeFile, unlink, mkdir, rename, rm } from 'node:fs/promises';
 import { join, extname, dirname, relative, sep, resolve } from 'node:path';
+import { createRequire } from 'node:module';
 import type { IncomingMessage, ServerResponse } from 'node:http';
 import { fileURLToPath } from 'node:url';
 import { loadPackage, loadBundle } from '@open-edu/core';
@@ -48,6 +49,22 @@ import {
 const VIRTUAL_MODULE_ID = 'virtual:open-edu-package';
 const RESOLVED_VIRTUAL_ID = `\0${VIRTUAL_MODULE_ID}`;
 const __dirname = dirname(fileURLToPath(import.meta.url));
+const requireFromInteractiveRuntime = createRequire(
+  resolve(__dirname, '../../packages/interactive-runtime/package.json'),
+);
+
+function resolveKnowledgeAssembleInteractiveReact(): string | undefined {
+  try {
+    const resolved = requireFromInteractiveRuntime.resolve('@knowledgeassemble/interactive-react');
+    const parent = dirname(resolved);
+    if (parent.endsWith(`${sep}src`)) {
+      return dirname(parent);
+    }
+    return parent;
+  } catch {
+    return undefined;
+  }
+}
 
 const widgetRegistryStore = new WidgetRegistryStore(process.env.OPEN_EDU_WIDGET_REGISTRY);
 
@@ -1429,6 +1446,11 @@ export default defineConfig(({ mode }) => {
 
   const isBrowserMode = mode === 'browser';
 
+  const interactiveReactRoot = resolveKnowledgeAssembleInteractiveReact();
+  const knowledgeAssembleAliases = interactiveReactRoot
+    ? { '@knowledgeassemble/interactive-react': interactiveReactRoot }
+    : {};
+
   return {
     // In browser mode the Node-only eduPackageLoader is excluded. The virtual
     // package module still needs a resolution so DevApp can always import it;
@@ -1440,9 +1462,16 @@ export default defineConfig(({ mode }) => {
       ? {
           alias: {
             '@open-edu/ai-companion': resolve(__dirname, 'src/stubs/ai-companion.ts'),
+            ...knowledgeAssembleAliases,
           },
         }
-      : undefined,
+      : Object.keys(knowledgeAssembleAliases).length > 0
+        ? { alias: knowledgeAssembleAliases }
+        : undefined,
+    optimizeDeps: {
+      // Linked file: packages must not be served from a stale Vite prebundle.
+      exclude: ['@knowledgeassemble/interactive-react'],
+    },
     define: {
       'import.meta.env.VITE_OPEN_EDU_BROWSER': JSON.stringify(isBrowserMode ? '1' : '0'),
       OPEN_EDU_PACKAGE_DIR: process.env.OPEN_EDU_PACKAGE_DIR

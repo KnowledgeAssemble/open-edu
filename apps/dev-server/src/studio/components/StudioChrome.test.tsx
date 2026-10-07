@@ -165,8 +165,6 @@ describe('StudioChrome', () => {
 
   it('shows the author assistant header button when setPanelOpen is provided', () => {
     renderChrome({ view: 'home', panelOpen: false, setPanelOpen: vi.fn() });
-    expect(
-      screen.getByRole('button', { name: /open author assistant/i }),
-    ).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /open author assistant/i })).toBeInTheDocument();
   });
 });

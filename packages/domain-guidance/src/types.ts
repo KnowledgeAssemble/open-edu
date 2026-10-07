@@ -72,3 +72,30 @@ export const ArtifactContractSchema = z.object({
   authoredPromptRules: z.array(z.string()),
 });
 export type ArtifactContractData = z.infer<typeof ArtifactContractSchema>;
+
+export const ValidationContractSchema = z.object({
+  package: z.string(),
+  symbol: z.string(),
+  method: z.string(),
+});
+export type ValidationContractData = z.infer<typeof ValidationContractSchema>;
+
+export const EngineSkillEntrySchema = z.object({
+  type: z.string(),
+  skill: z.string(),
+  kinds: z.array(z.string()),
+  skillDoc: z.string(),
+  schema: z.string(),
+  example: z.string(),
+  validationContract: ValidationContractSchema,
+  namespacedEvents: z.array(z.string()),
+});
+export type EngineSkillEntryData = z.infer<typeof EngineSkillEntrySchema>;
+
+export const EngineSkillsDataSchema = z.object({
+  package: z.literal('engine-skills'),
+  version: z.string(),
+  schemaVersion: z.literal(1),
+  engines: z.array(EngineSkillEntrySchema),
+});
+export type EngineSkillsData = z.infer<typeof EngineSkillsDataSchema>;

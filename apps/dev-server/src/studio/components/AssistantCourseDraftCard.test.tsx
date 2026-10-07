@@ -4,10 +4,12 @@ import { AssistantCourseDraftCard } from './AssistantCourseDraftCard';
 import type { CourseDraftResult } from '../ai/types';
 
 vi.mock('@open-edu/i18n', () => ({
-  useTranslation: () => ({ t: (key: string, params?: Record<string, string>) => {
-    if (params?.title) return `${key}:${params.title}`;
-    return key;
-  } }),
+  useTranslation: () => ({
+    t: (key: string, params?: Record<string, string>) => {
+      if (params?.title) return `${key}:${params.title}`;
+      return key;
+    },
+  }),
 }));
 
 vi.mock('@open-edu/design-system', () => ({
@@ -42,9 +44,7 @@ const draft: CourseDraftResult = {
 
 describe('AssistantCourseDraftCard', () => {
   it('renders outline and quality checklist', () => {
-    render(
-      <AssistantCourseDraftCard courseDraft={draft} onAccept={vi.fn()} onDiscard={vi.fn()} />,
-    );
+    render(<AssistantCourseDraftCard courseDraft={draft} onAccept={vi.fn()} onDiscard={vi.fn()} />);
     expect(screen.getByText('Intro')).toBeTruthy();
     expect(screen.getByText('Quiz 1')).toBeTruthy();
     expect(screen.getByText('studio.ai.quality.objectives')).toBeTruthy();

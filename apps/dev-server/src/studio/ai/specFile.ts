@@ -11,5 +11,4 @@ export function resolveSpecExtension(filename: string): SpecExtension | null {
   return null;
 }
 
-export const SPEC_FILE_ACCEPT =
-  '.json,.md,application/json,text/markdown,text/x-markdown';
+export const SPEC_FILE_ACCEPT = '.json,.md,application/json,text/markdown,text/x-markdown';

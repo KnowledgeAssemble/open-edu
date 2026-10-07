@@ -1,0 +1,12 @@
+{
+  "id": "demo/states",
+  "version": "1.0.0",
+  "name": "Demo States",
+  "type": "boundary",
+  "format": "topojson",
+  "class": "reference",
+  "source": { "provider": "Fixture", "dataset": "Test only", "license": "Public Domain" },
+  "files": { "data": "1.0.0/states.topojson" },
+  "featureId": { "property": "id" },
+  "stats": { "featureCount": 2, "geometryTypes": { "Polygon": 2 } }
+}

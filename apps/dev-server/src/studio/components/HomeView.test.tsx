@@ -10,9 +10,7 @@ import type { StudioApi } from '../studioApi.js';
 function wrap(ui: React.ReactElement) {
   return (
     <I18nProvider locale="en" dictionaries={{ en: { studio: studioEn as Record<string, string> } }}>
-      <StudioAssistantProvider>
-        {ui}
-      </StudioAssistantProvider>
+      <StudioAssistantProvider>{ui}</StudioAssistantProvider>
     </I18nProvider>
   );
 }
@@ -110,9 +108,7 @@ describe('HomeView', () => {
 
   it('shows the AI panel with a CTA button', async () => {
     renderHome();
-    expect(
-      (await screen.findAllByText('Or start with AI')).length,
-    ).toBeGreaterThanOrEqual(1);
+    expect((await screen.findAllByText('Or start with AI')).length).toBeGreaterThanOrEqual(1);
   });
 
   it('shows recent courses from storage', async () => {

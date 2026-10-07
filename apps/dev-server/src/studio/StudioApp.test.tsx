@@ -167,9 +167,7 @@ describe('StudioApp', () => {
   });
 
   it('fills the viewport height so full-height views like the preview can stretch', async () => {
-    const { container } = render(
-      wrap(<StudioApp loadedPackage={mockPkg} />),
-    );
+    const { container } = render(wrap(<StudioApp loadedPackage={mockPkg} />));
     const main = container.querySelector('main');
     expect(main).not.toBeNull();
     expect(main!.className).toContain('flex');
@@ -246,11 +244,7 @@ describe('StudioApp', () => {
   });
 
   it('shows an unsupported shell for bundles without package mutations', () => {
-    render(
-      wrap(
-        <StudioApp loadedPackage={null} bundleUnsupported />,
-      ),
-    );
+    render(wrap(<StudioApp loadedPackage={null} bundleUnsupported />));
     expect(screen.getByText('Bundles are not supported yet')).toBeInTheDocument();
     expect(screen.queryByText('Reading lesson')).not.toBeInTheDocument();
     expect(screen.queryByRole('button', { name: /outline/i })).not.toBeInTheDocument();

@@ -1,5 +1,6 @@
 import { existsSync, readFileSync, writeFileSync, readdirSync, statSync } from 'node:fs';
 import { join, relative, resolve } from 'node:path';
+import { loadPackage, serializeResolvedNodes, hasUnresolvedGeoSources } from '@open-edu/core';
 import { OepWriter } from '@open-edu/oep-distribution';
 import {
   OEP_FORMAT,
@@ -22,7 +23,13 @@ function collectModuleFiles(moduleDir: string): Map<string, Uint8Array> {
       const fullPath = join(dir, entry);
       const stat = statSync(fullPath);
       if (stat.isDirectory()) {
-        if (entry === 'dist' || entry === 'node_modules' || entry === '.git' || entry === '.edu') {
+        if (
+          entry === 'dist' ||
+          entry === 'node_modules' ||
+          entry === '.git' ||
+          entry === '.edu' ||
+          entry === 'geo-assets'
+        ) {
           continue;
         }
         walk(fullPath);
@@ -51,7 +58,7 @@ function collectBundleRootFiles(bundleDir: string): Map<string, Uint8Array> {
 export async function buildOepBundle(
   bundleDir: string,
   outputDir?: string,
-  options?: { json?: boolean },
+  options?: { json?: boolean; geoAssetsDir?: string },
 ): Promise<CliResult> {
   logger.info('Building .oep bundle archive', { bundleDir, outputDir: outputDir ?? null });
   try {
@@ -96,6 +103,22 @@ export async function buildOepBundle(
         };
       }
       const files = collectModuleFiles(moduleDir);
+
+      // Load and resolve geo URIs for this module, then overlay resolved
+      // node content onto the on-disk files so the bundle carries inlined data.
+      const modPkg = await loadPackage(moduleDir, { geoAssetsDir: options?.geoAssetsDir });
+      for (const [path, bytes] of serializeResolvedNodes(modPkg.nodes)) {
+        files.set(path, bytes);
+      }
+      if (hasUnresolvedGeoSources(modPkg.nodes)) {
+        const msg = `Module "${mod.id}" has unresolved openedu://geo/* URIs. Set OPEN_EDU_GEO_ASSETS_DIR, vendor a geo-assets/ catalog, or pass --geo-assets-dir.`;
+        if (options?.json) {
+          return { success: false, error: msg, code: 1 };
+        }
+        printMessages([{ type: 'error', text: msg }]);
+        return { success: false, error: msg, code: 1 };
+      }
+
       moduleFiles.set(mod.id, files);
     }
 

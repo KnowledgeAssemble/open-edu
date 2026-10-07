@@ -1,0 +1,20 @@
+{
+  "name": "@open-edu/example-interactive-demo",
+  "id": "interactive-demo",
+  "title": "Interactive Engine Demo",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Demonstrates single-engine and composed interactive lesson nodes",
+  "author": "Open-Edu Team",
+  "entry": "nodes/intro.md",
+  "devDependencies": {
+    "@open-edu/core": "workspace:*"
+  },
+  "scripts": {
+    "build": "echo 'example build placeholder'",
+    "test": "vitest run",
+    "lint": "echo 'no lint yet'",
+    "typecheck": "echo 'no typecheck yet'",
+    "clean": "rm -rf dist"
+  }
+}

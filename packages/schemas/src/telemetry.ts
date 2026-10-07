@@ -41,6 +41,22 @@ export const WidgetInteractionEventSchema = BaseTelemetrySchema.extend({
   data: z.record(z.unknown()).optional(),
 });
 
+export const InteractiveInteractionEventSchema = BaseTelemetrySchema.extend({
+  event: z.literal('interactive_interaction'),
+  nodeId: z.string().min(1).max(256),
+  instanceId: z.string().min(1).max(256),
+  engine: z.string().min(1).max(64),
+  action: z.string().min(1).max(128).optional(),
+  seq: z.number().nonnegative().optional(),
+  data: z.record(z.unknown()).optional(),
+});
+
+export const InteractiveCompleteEventSchema = BaseTelemetrySchema.extend({
+  event: z.literal('interactive_complete'),
+  nodeId: z.string().min(1).max(256),
+  interactions: z.number().nonnegative().optional(),
+});
+
 export const RouteTriggeredEventSchema = BaseTelemetrySchema.extend({
   event: z.literal('route_triggered'),
   from: z.string().min(1).max(256),
@@ -68,6 +84,8 @@ export const TelemetryEventSchema = z.discriminatedUnion('event', [
   QuizAnsweredEventSchema,
   HintTriggeredEventSchema,
   WidgetInteractionEventSchema,
+  InteractiveInteractionEventSchema,
+  InteractiveCompleteEventSchema,
   RouteTriggeredEventSchema,
   WorkflowCompleteEventSchema,
   ModuleCompleteEventSchema,
@@ -80,6 +98,8 @@ export type NodeCompleteEvent = z.infer<typeof NodeCompleteEventSchema>;
 export type QuizAnsweredEvent = z.infer<typeof QuizAnsweredEventSchema>;
 export type HintTriggeredEvent = z.infer<typeof HintTriggeredEventSchema>;
 export type WidgetInteractionEvent = z.infer<typeof WidgetInteractionEventSchema>;
+export type InteractiveInteractionEvent = z.infer<typeof InteractiveInteractionEventSchema>;
+export type InteractiveCompleteEvent = z.infer<typeof InteractiveCompleteEventSchema>;
 export type RouteTriggeredEvent = z.infer<typeof RouteTriggeredEventSchema>;
 export type WorkflowCompleteEvent = z.infer<typeof WorkflowCompleteEventSchema>;
 export type ModuleCompleteEvent = z.infer<typeof ModuleCompleteEventSchema>;
@@ -91,6 +111,8 @@ export const TelemetryEventEnum = z.enum([
   'quiz_answered',
   'hint_triggered',
   'widget_interaction',
+  'interactive_interaction',
+  'interactive_complete',
   'route_triggered',
   'workflow_complete',
   'module_complete',

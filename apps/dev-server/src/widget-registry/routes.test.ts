@@ -355,7 +355,10 @@ describe('createWidgetRegistryRouter', () => {
 
     const res = new FakeResponse();
     await router(
-      fakeRequest('GET', '/widget-registry/publisher/community.example.counter/1.0.0/manifest.json'),
+      fakeRequest(
+        'GET',
+        '/widget-registry/publisher/community.example.counter/1.0.0/manifest.json',
+      ),
       res as unknown as ServerResponse,
     );
 

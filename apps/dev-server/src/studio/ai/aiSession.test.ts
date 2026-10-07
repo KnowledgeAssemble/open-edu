@@ -1,10 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import {
-  writeAiReview,
-  readAiReview,
-  clearAiReview,
-  migrateLegacyReview,
-} from './aiSession';
+import { writeAiReview, readAiReview, clearAiReview, migrateLegacyReview } from './aiSession';
 import type { AiGenerateResult } from './types.js';
 
 const SAMPLE_RESULT: AiGenerateResult = {

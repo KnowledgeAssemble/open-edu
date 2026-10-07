@@ -59,7 +59,11 @@ describe('qualityMap', () => {
     const items = mapDiagnosticsToQuality(
       [
         { severity: 'warning', message: 'Lesson has no objectives', code: 'MISSING_OBJECTIVES' },
-        { severity: 'error', message: 'Invalid question options', code: 'INVALID_QUESTION_OPTIONS' },
+        {
+          severity: 'error',
+          message: 'Invalid question options',
+          code: 'INVALID_QUESTION_OPTIONS',
+        },
       ],
       [{ title: 'Intro', kind: 'lesson' }],
     );

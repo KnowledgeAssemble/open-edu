@@ -9,9 +9,7 @@ import { StudioAssistantProvider } from '../ai/StudioAssistantProvider';
 function wrap(ui: React.ReactElement) {
   return (
     <I18nProvider locale="en" dictionaries={{ en: { studio: studioEn as Record<string, string> } }}>
-      <StudioAssistantProvider>
-        {ui}
-      </StudioAssistantProvider>
+      <StudioAssistantProvider>{ui}</StudioAssistantProvider>
     </I18nProvider>
   );
 }

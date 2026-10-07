@@ -50,21 +50,23 @@ describe('generateCourseDraft', () => {
           lessons: [],
         }),
       );
-      const compile = vi.fn().mockImplementation(async (_specPath: string, options: { output: string }) => {
-        await mkdir(join(options.output, 'nodes'), { recursive: true });
-        await writeFile(
-          join(options.output, 'package.json'),
-          JSON.stringify({ id: 'new', title: 'New', version: '1.0.0' }),
-          'utf-8',
-        );
-        await writeFile(join(options.output, 'nodes/a.md'), '# A\n', 'utf-8');
-        await writeFile(
-          join(options.output, 'workflow.json'),
-          JSON.stringify({ routing: { 'nodes/a.md': {} } }),
-          'utf-8',
-        );
-        return { success: true, diagnostics: [] };
-      });
+      const compile = vi
+        .fn()
+        .mockImplementation(async (_specPath: string, options: { output: string }) => {
+          await mkdir(join(options.output, 'nodes'), { recursive: true });
+          await writeFile(
+            join(options.output, 'package.json'),
+            JSON.stringify({ id: 'new', title: 'New', version: '1.0.0' }),
+            'utf-8',
+          );
+          await writeFile(join(options.output, 'nodes/a.md'), '# A\n', 'utf-8');
+          await writeFile(
+            join(options.output, 'workflow.json'),
+            JSON.stringify({ routing: { 'nodes/a.md': {} } }),
+            'utf-8',
+          );
+          return { success: true, diagnostics: [] };
+        });
 
       const result = await generateCourseDraft({
         source: { kind: 'notes', notes: NOTES, completeText },
@@ -76,9 +78,9 @@ describe('generateCourseDraft', () => {
       expect(result.draftId).toBeTruthy();
       expect(compile).toHaveBeenCalled();
       // Existing package content untouched
-      expect((await import('node:fs')).readFileSync(join(packageDir, 'nodes/intro.md'), 'utf-8')).toContain(
-        'Existing content',
-      );
+      expect(
+        (await import('node:fs')).readFileSync(join(packageDir, 'nodes/intro.md'), 'utf-8'),
+      ).toContain('Existing content');
     } finally {
       await rm(packageDir, { recursive: true, force: true });
     }

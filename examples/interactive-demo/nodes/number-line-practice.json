@@ -1,0 +1,40 @@
+{
+  "type": "interactive",
+  "title": "Number line practice",
+  "prompt": "Tap the emphasized number on the line.",
+  "engine": "visual",
+  "spec": {
+    "type": "visual",
+    "version": "1.0.0",
+    "id": "number-line-identify-marked",
+    "purpose": {
+      "learningObjective": "Identify a marked value on a number line",
+      "interactionGoal": "Select the number that is emphasized",
+      "reasoningMode": "identify"
+    },
+    "content": {
+      "kind": "number-line",
+      "components": [
+        {
+          "id": "nl",
+          "type": "number-line",
+          "props": {
+            "min": 0,
+            "max": 10,
+            "step": 1,
+            "interactive": true,
+            "highlight": [7]
+          }
+        }
+      ]
+    },
+    "accessibility": {
+      "label": "Number line from zero to ten",
+      "description": "Select the emphasized number."
+    },
+    "interaction": {
+      "mode": "identify",
+      "actions": ["select", "focus", "deselect", "reset"]
+    }
+  }
+}

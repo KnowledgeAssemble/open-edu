@@ -406,7 +406,14 @@ describe('localStudioApi client', () => {
     fetchMock.mockResolvedValueOnce(
       new Response(
         JSON.stringify({
-          files: [{ path: 'package.json', label: 'package.json', category: 'manifest', extension: '.json' }],
+          files: [
+            {
+              path: 'package.json',
+              label: 'package.json',
+              category: 'manifest',
+              extension: '.json',
+            },
+          ],
         }),
         { status: 200 },
       ),
@@ -447,7 +454,10 @@ describe('localStudioApi client', () => {
     const [url, init] = fetchMock.mock.calls[0]!;
     expect(url).toBe('/api/package/rename');
     expect(init?.method).toBe('POST');
-    expect(JSON.parse(init?.body as string)).toEqual({ oldPath: 'nodes/a.md', newPath: 'nodes/b.md' });
+    expect(JSON.parse(init?.body as string)).toEqual({
+      oldPath: 'nodes/a.md',
+      newPath: 'nodes/b.md',
+    });
     expect(result.newPath).toBe('b.md');
   });
 

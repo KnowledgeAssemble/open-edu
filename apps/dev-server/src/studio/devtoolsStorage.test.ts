@@ -1,9 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import {
-  readDevtoolsState,
-  writeDevtoolsState,
-  type DevtoolsState,
-} from './devtoolsStorage';
+import { readDevtoolsState, writeDevtoolsState, type DevtoolsState } from './devtoolsStorage';
 
 describe('devtoolsStorage', () => {
   beforeEach(() => {

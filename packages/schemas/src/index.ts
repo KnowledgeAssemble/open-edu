@@ -8,6 +8,11 @@ export {
   ReflectionNodeSchema,
   ExerciseNodeSchema,
   WidgetNodeSchema,
+  InteractiveNodeSchema,
+  InteractiveNodeConfigSchema,
+  INTERACTIVE_ENGINE_TYPES,
+  InteractiveEngineTypeSchema,
+  validateInteractiveNode,
   NodeTypeSchema,
 } from './nodes.js';
 export type {
@@ -17,6 +22,10 @@ export type {
   ReflectionNode,
   ExerciseNode,
   WidgetNode,
+  InteractiveNode,
+  InteractiveNodeConfig,
+  InteractiveEngineType,
+  InteractiveActionType,
   NodeType,
 } from './nodes.js';
 
@@ -30,6 +39,7 @@ export {
   QuizAnswerSchema,
   ReflectionAnswerSchema,
   WidgetAnswerSchema,
+  InteractiveAnswerSchema,
   NodeAnswerSchema,
 } from './progress.js';
 export type {
@@ -39,6 +49,7 @@ export type {
   QuizAnswer,
   ReflectionAnswer,
   WidgetAnswer,
+  InteractiveAnswer,
   NodeAnswer,
 } from './progress.js';
 
@@ -153,6 +164,8 @@ export {
   QuizAnsweredEventSchema,
   HintTriggeredEventSchema,
   WidgetInteractionEventSchema,
+  InteractiveInteractionEventSchema,
+  InteractiveCompleteEventSchema,
   RouteTriggeredEventSchema,
   ModuleCompleteEventSchema,
   BundleCompleteEventSchema,
@@ -165,6 +178,8 @@ export type {
   QuizAnsweredEvent,
   HintTriggeredEvent,
   WidgetInteractionEvent,
+  InteractiveInteractionEvent,
+  InteractiveCompleteEvent,
   RouteTriggeredEvent,
   ModuleCompleteEvent,
   BundleCompleteEvent,

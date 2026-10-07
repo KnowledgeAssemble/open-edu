@@ -1,0 +1,33 @@
+{
+  "type": "interactive",
+  "title": "Number line",
+  "engine": "visual",
+  "spec": {
+    "type": "visual",
+    "version": "1.0.0",
+    "id": "number-line-demo",
+    "purpose": {
+      "learningObjective": "Identify the value 7 on a number line from 0 to 10",
+      "interactionGoal": "Select the highlighted marker at position 7",
+      "reasoningMode": "identify"
+    },
+    "content": {
+      "kind": "number-line",
+      "components": [
+        {
+          "id": "nl",
+          "type": "number-line",
+          "props": { "min": 0, "max": 10, "step": 1, "highlight": [7] }
+        }
+      ]
+    },
+    "accessibility": {
+      "label": "Number line from zero to ten",
+      "description": "A number line with 7 highlighted. Select the highlighted value."
+    },
+    "interaction": {
+      "mode": "identify",
+      "actions": ["select", "focus", "reset"]
+    }
+  }
+}

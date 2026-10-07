@@ -31,6 +31,8 @@ export { WidgetRenderer } from './renderers/WidgetRenderer.js';
 export type { WidgetRendererProps } from './renderers/WidgetRenderer.js';
 export { PlaceholderRenderer } from './renderers/PlaceholderRenderer.js';
 export type { PlaceholderRendererProps } from './renderers/PlaceholderRenderer.js';
+export { InteractiveRenderer } from './renderers/InteractiveRenderer.js';
+export type { InteractiveRendererProps } from './renderers/InteractiveRenderer.js';
 export { AITutorPanel } from './layout/AITutorPanel.js';
 export type { AITutorPanelProps } from './layout/AITutorPanel.js';
 export { CourseTree } from './layout/CourseTree.js';

@@ -1,0 +1,102 @@
+{
+  "package": "engine-skills",
+  "version": "0.1.2",
+  "schemaVersion": 1,
+  "engines": [
+    {
+      "type": "visual",
+      "skill": "educational-visual",
+      "kinds": [
+        "number-line",
+        "counting-set",
+        "fraction",
+        "fraction-circle",
+        "fraction-comparison",
+        "clock",
+        "coordinate-grid",
+        "geometry",
+        "comparison",
+        "illustration"
+      ],
+      "skillDoc": "./skills/visual/SKILL.md",
+      "schema": "./skills/visual/schema.json",
+      "example": "./skills/visual/skill-example.json",
+      "validationContract": {
+        "package": "@knowledgeassemble/visual-engine",
+        "symbol": "VisualEngine",
+        "method": "validate"
+      },
+      "namespacedEvents": ["visual.*-selected", "visual.*-focused"]
+    },
+    {
+      "type": "chart",
+      "skill": "quantitative-chart",
+      "kinds": ["bar", "line"],
+      "skillDoc": "./skills/chart/SKILL.md",
+      "schema": "./skills/chart/schema.json",
+      "example": "./skills/chart/skill-example.json",
+      "validationContract": {
+        "package": "@knowledgeassemble/chart-engine",
+        "symbol": "ChartEngine",
+        "method": "validate"
+      },
+      "namespacedEvents": ["chart.*-selected", "chart.*-focused"]
+    },
+    {
+      "type": "geomap",
+      "skill": "geographic-map",
+      "kinds": [],
+      "skillDoc": "./skills/geomap/SKILL.md",
+      "schema": "./skills/geomap/schema.json",
+      "example": "./skills/geomap/skill-example.json",
+      "validationContract": {
+        "package": "@knowledgeassemble/geomap-engine",
+        "symbol": "GeoMapEngine",
+        "method": "validate"
+      },
+      "namespacedEvents": ["geomap.*-selected", "geomap.*-focused"]
+    },
+    {
+      "type": "timeline",
+      "skill": "temporal-timeline",
+      "kinds": ["events"],
+      "skillDoc": "./skills/timeline/SKILL.md",
+      "schema": "./skills/timeline/schema.json",
+      "example": "./skills/timeline/skill-example.json",
+      "validationContract": {
+        "package": "@knowledgeassemble/timeline-engine",
+        "symbol": "TimelineEngine",
+        "method": "validate"
+      },
+      "namespacedEvents": ["timeline.*-selected", "timeline.*-focused"]
+    },
+    {
+      "type": "diagram",
+      "skill": "structural-diagram",
+      "kinds": ["concept-map", "cycle", "flow", "hierarchy"],
+      "skillDoc": "./skills/diagram/SKILL.md",
+      "schema": "./skills/diagram/schema.json",
+      "example": "./skills/diagram/skill-example.json",
+      "validationContract": {
+        "package": "@knowledgeassemble/diagram-engine",
+        "symbol": "DiagramEngine",
+        "method": "validate"
+      },
+      "namespacedEvents": ["diagram.*-selected", "diagram.*-focused"]
+    },
+    {
+      "type": "composition",
+      "skill": "composition",
+      "kinds": [],
+      "skillDoc": "./skills/composition/SKILL.md",
+      "schema": "./skills/composition/schema.json",
+      "example": "./skills/composition/skill-example.json",
+      "validationContract": {
+        "package": "@knowledgeassemble/engine-skills",
+        "symbol": "validateSpec",
+        "method": "composition"
+      },
+      "namespacedEvents": []
+    }
+  ]
+}

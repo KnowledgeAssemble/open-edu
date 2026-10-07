@@ -1,0 +1,26 @@
+{
+  "type": "Topology",
+  "objects": {
+    "states": {
+      "type": "GeometryCollection",
+      "geometries": [
+        {
+          "type": "Polygon",
+          "arcs": [[0]],
+          "id": "IN-OD",
+          "properties": { "name": "Odisha", "shapeISO": "IN-OR" }
+        },
+        {
+          "type": "Polygon",
+          "arcs": [[1]],
+          "id": "IN-WB",
+          "properties": { "name": "West Bengal", "shapeISO": "IN-WB" }
+        }
+      ]
+    }
+  },
+  "arcs": [
+    [[0, 0], [1, 0], [1, 1], [0, 0]],
+    [[5, 5], [6, 5], [6, 6], [5, 5]]
+  ]
+}

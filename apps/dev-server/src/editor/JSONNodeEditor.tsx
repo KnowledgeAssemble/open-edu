@@ -154,15 +154,15 @@ export function JSONNodeEditor({
   return (
     <div className="space-y-4">
       <div className="border-tertiary-container bg-tertiary-container text-tertiary rounded-lg border px-3 py-2 text-xs">
-        <span className="font-medium">
-          {typeDescriptions[data.type]}
-        </span>
+        <span className="font-medium">{typeDescriptions[data.type]}</span>
         {' — '}
         {typeDescriptions[data.type] ?? t('studio.editor.node.editFallback')}
       </div>
 
       <div className="flex items-center gap-2">
-        <label className="text-on-surface-variant text-xs font-medium">{t('studio.editor.node.typeLabel')}</label>
+        <label className="text-on-surface-variant text-xs font-medium">
+          {t('studio.editor.node.typeLabel')}
+        </label>
         <Select
           value={data.type}
           onValueChange={(value) => onChange({ ...data, type: value as NodeType })}
@@ -202,12 +202,16 @@ export function JSONNodeEditor({
 
       {data.type === 'quiz' && (
         <div className="space-y-2">
-          <label className="text-on-surface-variant text-xs font-medium">{t('studio.editor.node.answerOptions')}</label>
+          <label className="text-on-surface-variant text-xs font-medium">
+            {t('studio.editor.node.answerOptions')}
+          </label>
           {(data.options ?? []).map((opt, idx) => (
             <div key={idx} className="flex items-center gap-2">
               <Input
                 className="border-outline-variant focus:border-primary focus:ring-primary w-full rounded border px-2.5 py-1.5 text-sm focus:outline-none focus:ring-1"
-                placeholder={t('studio.editor.node.optionPlaceholder', { letter: String.fromCharCode(97 + idx) })}
+                placeholder={t('studio.editor.node.optionPlaceholder', {
+                  letter: String.fromCharCode(97 + idx),
+                })}
                 value={opt.text}
                 onChange={(e) => {
                   const opts = [...(data.options ?? [])];
@@ -261,7 +265,9 @@ export function JSONNodeEditor({
 
       {data.type === 'reflection' && (
         <div>
-          <label className="text-on-surface-variant mb-0.5 block text-xs font-medium">{t('studio.editor.reflection.promptLabel')}</label>
+          <label className="text-on-surface-variant mb-0.5 block text-xs font-medium">
+            {t('studio.editor.reflection.promptLabel')}
+          </label>
           <Textarea
             className="border-outline-variant focus:border-primary focus:ring-primary w-full rounded border px-2.5 py-1.5 text-sm focus:outline-none focus:ring-1"
             rows={4}

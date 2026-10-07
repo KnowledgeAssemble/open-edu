@@ -1,0 +1,160 @@
+{
+  "type": "interactive",
+  "title": "Identify Odisha (guided)",
+  "prompt": "Select Odisha on the map.",
+  "engine": "geomap",
+  "spec": {
+    "type": "geomap",
+    "version": "1.0.0",
+    "id": "geomap-identify-odisha-guided",
+    "metadata": {
+      "title": "Identify Odisha (guided select)",
+      "description": "State boundaries built from openedu-geo-assets: geoBoundaries India ADM1 (CC BY 2.5 IN, DataMeet / Election Commission of India)."
+    },
+    "purpose": {
+      "learningObjective": "Identify the region of Odisha on a map of eastern India.",
+      "reasoningMode": "identify"
+    },
+    "content": {
+      "viewport": {
+        "fit": "content",
+        "padding": 0.08
+      },
+      "projection": {
+        "type": "equirectangular"
+      },
+      "geography": {
+        "sources": [
+          {
+            "id": "india-states",
+            "type": "geojson",
+            "class": "authoritative",
+            "uri": "openedu://geo/india/states"
+          }
+        ]
+      },
+      "entities": [
+        {
+          "id": "odisha",
+          "type": "state",
+          "name": "Odisha",
+          "location": {
+            "source": "india-states",
+            "featureId": "IN-OD"
+          }
+        },
+        {
+          "id": "west-bengal",
+          "type": "state",
+          "name": "West Bengal",
+          "location": {
+            "source": "india-states",
+            "featureId": "IN-WB"
+          }
+        },
+        {
+          "id": "jharkhand",
+          "type": "state",
+          "name": "Jharkhand",
+          "location": {
+            "source": "india-states",
+            "featureId": "IN-JH"
+          }
+        },
+        {
+          "id": "chhattisgarh",
+          "type": "state",
+          "name": "Chhattisgarh",
+          "location": {
+            "source": "india-states",
+            "featureId": "IN-CG"
+          }
+        },
+        {
+          "id": "telangana",
+          "type": "state",
+          "name": "Telangana",
+          "location": {
+            "source": "india-states",
+            "featureId": "IN-TS"
+          }
+        },
+        {
+          "id": "andhra-pradesh",
+          "type": "state",
+          "name": "Andhra Pradesh",
+          "location": {
+            "source": "india-states",
+            "featureId": "IN-AP"
+          }
+        }
+      ],
+      "layers": [
+        {
+          "id": "states",
+          "type": "region",
+          "title": "States",
+          "items": [
+            {
+              "entity": "odisha",
+              "interactive": true,
+              "label": true
+            },
+            {
+              "entity": "west-bengal",
+              "interactive": false,
+              "label": true
+            },
+            {
+              "entity": "jharkhand",
+              "interactive": false,
+              "label": true
+            },
+            {
+              "entity": "chhattisgarh",
+              "interactive": false,
+              "label": true
+            },
+            {
+              "entity": "telangana",
+              "interactive": false,
+              "label": true
+            },
+            {
+              "entity": "andhra-pradesh",
+              "interactive": false,
+              "label": true
+            }
+          ]
+        }
+      ],
+      "legend": {
+        "visible": true,
+        "items": [
+          {
+            "role": "primary-region",
+            "label": "Selectable state"
+          },
+          {
+            "role": "secondary-region",
+            "label": "Context state"
+          }
+        ]
+      }
+    },
+    "interaction": {
+      "mode": "identify",
+      "actions": ["select", "focus", "deselect", "reset"]
+    },
+    "questions": [],
+    "sources": [
+      {
+        "class": "authoritative"
+      }
+    ],
+    "accessibility": {
+      "label": "Map of Odisha and its neighbouring states.",
+      "description": "Select Odisha on the map; the other states are shown for context."
+    }
+  }
+}

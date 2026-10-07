@@ -1,0 +1,40 @@
+{
+  "type": "interactive",
+  "title": "Geo URI fixture",
+  "engine": "geomap",
+  "spec": {
+    "type": "geomap",
+    "version": "1.0.0",
+    "id": "geo-uri-fixture",
+    "content": {
+      "geography": {
+        "sources": [
+          {
+            "id": "india-states",
+            "type": "geojson",
+            "class": "authoritative",
+            "uri": "openedu://geo/demo/states"
+          },
+          {
+            "id": "india-cities",
+            "type": "geojson",
+            "class": "reference",
+            "asset": { "uri": "openedu://geo/demo/cities", "version": "1.0.0" }
+          },
+          {
+            "id": "runtime-resolved",
+            "type": "geojson",
+            "class": "reference",
+            "uri": "openedu://custom/local"
+          },
+          {
+            "id": "already-inline",
+            "type": "geojson",
+            "class": "reference",
+            "data": { "type": "FeatureCollection", "features": [] }
+          }
+        ]
+      }
+    }
+  }
+}

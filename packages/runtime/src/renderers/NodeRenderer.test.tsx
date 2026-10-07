@@ -154,6 +154,50 @@ describe('NodeRenderer', () => {
     expect(getByTestId('widget-renderer-placeholder')).toBeInTheDocument();
   });
 
+  it('renders InteractiveRenderer for interactive nodes', async () => {
+    const interactiveNode = {
+      id: 'nl-node',
+      title: 'Number line',
+      type: 'interactive' as const,
+      engine: 'visual' as const,
+      spec: {
+        type: 'visual',
+        version: '1.0.0',
+        id: 'number-line-test',
+        purpose: {
+          learningObjective: 'Identify the value 7 on a number line from 0 to 10',
+          interactionGoal: 'Select the highlighted marker at position 7',
+          reasoningMode: 'identify',
+        },
+        content: {
+          kind: 'number-line',
+          components: [
+            {
+              id: 'nl',
+              type: 'number-line',
+              props: { min: 0, max: 10, step: 1, highlight: [7] },
+            },
+          ],
+        },
+        accessibility: {
+          label: 'Number line from zero to ten',
+          description: 'A number line with 7 highlighted. Select the highlighted value.',
+        },
+        interaction: {
+          mode: 'identify',
+          actions: ['select', 'focus', 'reset'],
+        },
+      },
+    };
+    const pkg = makePackage([{ relativePath: 'nodes/nl-01.md', node: interactiveNode }]);
+    const { getByTestId } = renderWithProvider(
+      pkg,
+      'nodes/nl-01.md',
+      makeLoadedNode('nodes/nl-01.md', interactiveNode),
+    );
+    expect(getByTestId('interactive-renderer')).toBeInTheDocument();
+  });
+
   it('renders an empty loading state for null nodes', () => {
     const pkg = makePackage([{ relativePath: 'nodes/lesson-01.md', node: { type: 'lesson' } }]);
     const { getByTestId } = renderWithProvider(pkg, 'nodes/lesson-01.md', null);

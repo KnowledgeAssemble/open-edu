@@ -72,12 +72,7 @@ export function AssistantContextStrip({ onSend }: { onSend: (msg: string) => voi
       </div>
 
       <div className="text-on-surface-variant text-[10px] font-medium uppercase tracking-wider">
-        {contextLabel(
-          context.view,
-          t,
-          context.activity?.title,
-          context.course?.activityCount,
-        )}
+        {contextLabel(context.view, t, context.activity?.title, context.course?.activityCount)}
       </div>
     </div>
   );

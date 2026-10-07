@@ -17,9 +17,18 @@ const baseCtx: StudioContextSnapshot = {
 };
 
 describe('InMemorySkillRegistry', () => {
-  it('ships learner-adaptation by default and lists registered skills', () => {
+  it('ships learner-adaptation + 6 engine skills by default and lists registered skills', () => {
     const registry = new InMemorySkillRegistry();
-    expect(registry.list().map((skill) => skill.id)).toEqual(['learner-adaptation']);
+    const ids = registry.list().map((skill) => skill.id);
+    expect(ids).toContain('learner-adaptation');
+    expect(ids).toContain('interactive-visual');
+    expect(ids).toContain('interactive-chart');
+    expect(ids).toContain('interactive-geomap');
+    expect(ids).toContain('interactive-timeline');
+    expect(ids).toContain('interactive-diagram');
+    expect(ids).toContain('interactive-composition');
+    expect(ids).toContain('interactive-authoring');
+    expect(ids).toHaveLength(8);
     expect(learnerAdaptationSkill.tools).toContain('edit_item');
   });
 

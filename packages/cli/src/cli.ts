@@ -90,11 +90,20 @@ program
   .argument('<package-dir>', 'Path to the course package directory')
   .option('-o, --output <dir>', 'Output directory (default: cwd)')
   .option('--json', 'Emit JSON output')
-  .action(async (packageDir: string, options: { output?: string; json?: boolean }) => {
-    const json = program.optsWithGlobals().json ?? options.json;
-    const result = await buildOep(packageDir, options.output, { json });
-    if (!result.success) process.exitCode = 1;
-  });
+  .option('--geo-assets-dir <path>', 'Geo-assets dist directory containing catalog.json')
+  .action(
+    async (
+      packageDir: string,
+      options: { output?: string; json?: boolean; geoAssetsDir?: string },
+    ) => {
+      const json = program.optsWithGlobals().json ?? options.json;
+      const result = await buildOep(packageDir, options.output, {
+        json,
+        geoAssetsDir: options.geoAssetsDir,
+      });
+      if (!result.success) process.exitCode = 1;
+    },
+  );
 
 program
   .command('oep:build-bundle')
@@ -102,11 +111,20 @@ program
   .argument('<bundle-dir>', 'Path to the bundle directory (containing bundle.json)')
   .option('-o, --output <dir>', 'Output directory (default: cwd)')
   .option('--json', 'Emit JSON output')
-  .action(async (bundleDir: string, options: { output?: string; json?: boolean }) => {
-    const json = program.optsWithGlobals().json ?? options.json;
-    const result = await buildOepBundle(bundleDir, options.output, { json });
-    if (!result.success) process.exitCode = 1;
-  });
+  .option('--geo-assets-dir <path>', 'Geo-assets dist directory containing catalog.json')
+  .action(
+    async (
+      bundleDir: string,
+      options: { output?: string; json?: boolean; geoAssetsDir?: string },
+    ) => {
+      const json = program.optsWithGlobals().json ?? options.json;
+      const result = await buildOepBundle(bundleDir, options.output, {
+        json,
+        geoAssetsDir: options.geoAssetsDir,
+      });
+      if (!result.success) process.exitCode = 1;
+    },
+  );
 
 program.addCommand(createCompileCommand());
 

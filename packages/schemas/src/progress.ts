@@ -27,15 +27,24 @@ export const WidgetAnswerSchema = z.object({
   renderedViaFallback: z.boolean().optional(),
 });
 
+export const InteractiveAnswerSchema = z.object({
+  type: z.literal('interactive'),
+  engaged: z.boolean().default(true),
+  interactions: z.number().nonnegative().default(0),
+  score: z.number().min(0).max(100).optional(),
+});
+
 export const NodeAnswerSchema = z.discriminatedUnion('type', [
   QuizAnswerSchema,
   ReflectionAnswerSchema,
   WidgetAnswerSchema,
+  InteractiveAnswerSchema,
 ]);
 
 export type QuizAnswer = z.infer<typeof QuizAnswerSchema>;
 export type ReflectionAnswer = z.infer<typeof ReflectionAnswerSchema>;
 export type WidgetAnswer = z.infer<typeof WidgetAnswerSchema>;
+export type InteractiveAnswer = z.infer<typeof InteractiveAnswerSchema>;
 export type NodeAnswer = z.infer<typeof NodeAnswerSchema>;
 
 export const ProgressSnapshotSchema = z.object({

@@ -1,0 +1,10 @@
+{
+  "assets": [
+    {
+      "id": "india/states",
+      "version": "1.0.0",
+      "format": "geojson",
+      "manifest": "assets/india/states/manifest.json"
+    }
+  ]
+}

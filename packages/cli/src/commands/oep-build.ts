@@ -1,6 +1,6 @@
 import { existsSync, readFileSync, writeFileSync, readdirSync, statSync } from 'node:fs';
 import { join, resolve, relative } from 'node:path';
-import { loadPackage } from '@open-edu/core';
+import { loadPackage, serializeResolvedNodes, hasUnresolvedGeoSources } from '@open-edu/core';
 import { OepWriter } from '@open-edu/oep-distribution';
 import { OEP_FORMAT, OEP_FORMAT_VERSION, type DistributionManifest } from '@open-edu/schemas';
 import type { CliResult } from '../utils/json-output.js';
@@ -18,7 +18,13 @@ function collectCourseFiles(packageDir: string): Map<string, Uint8Array> {
       const fullPath = join(dir, entry);
       const stat = statSync(fullPath);
       if (stat.isDirectory()) {
-        if (entry === 'dist' || entry === 'node_modules' || entry === '.git' || entry === '.edu') {
+        if (
+          entry === 'dist' ||
+          entry === 'node_modules' ||
+          entry === '.git' ||
+          entry === '.edu' ||
+          entry === 'geo-assets'
+        ) {
           continue;
         }
         walk(fullPath);
@@ -36,11 +42,11 @@ function collectCourseFiles(packageDir: string): Map<string, Uint8Array> {
 export async function buildOep(
   packageDir: string,
   outputDir?: string,
-  options?: { json?: boolean },
+  options?: { json?: boolean; geoAssetsDir?: string },
 ): Promise<CliResult> {
   logger.info('Building .oep archive', { packageDir, outputDir: outputDir ?? null });
   try {
-    const pkg = await loadPackage(packageDir);
+    const pkg = await loadPackage(packageDir, { geoAssetsDir: options?.geoAssetsDir });
     const outDir = outputDir ?? process.cwd();
 
     if (!existsSync(outDir)) {
@@ -49,6 +55,25 @@ export async function buildOep(
     }
 
     const courseFiles = collectCourseFiles(packageDir);
+
+    // Overlay resolved geo data from in-memory loaded nodes onto the on-disk
+    // file content so the archive carries inlined FeatureCollections.
+    for (const [path, bytes] of serializeResolvedNodes(pkg.nodes)) {
+      courseFiles.set(path, bytes);
+    }
+
+    // Fail-closed: if any node still has unresolved `openedu://geo/*` refs the
+    // catalog was not found and the archive would ship a blank map.
+    if (hasUnresolvedGeoSources(pkg.nodes)) {
+      const msg =
+        'Course contains unresolved openedu://geo/* URIs. ' +
+        'Set OPEN_EDU_GEO_ASSETS_DIR, vendor a geo-assets/ catalog in the package, or pass --geo-assets-dir.';
+      if (options?.json) {
+        return { success: false, error: msg, code: 1 };
+      }
+      printMessages([{ type: 'error', text: msg }]);
+      return { success: false, error: msg, code: 1 };
+    }
 
     const distManifest = {
       format: OEP_FORMAT,

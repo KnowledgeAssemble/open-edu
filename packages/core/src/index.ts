@@ -30,7 +30,21 @@ export { loadManifest, parseManifest } from './manifest.js';
 export { loadWorkflow, parseWorkflow } from './workflow.js';
 export { loadRewards, parseRewards } from './rewards.js';
 export { loadCards, parseCards } from './cards.js';
-export { loadNodes, loadNodesFromSource, parseNodeContent } from './nodes.js';
+export { loadNodes } from './nodes-fs.js';
+export { loadNodesFromSource, parseNodeContent } from './nodes.js';
+export {
+  forEachInteractiveSpec,
+  parseGeoUri,
+  collectGeoSourceRefs,
+  inlineGeoSources,
+  findGeoAssetsDir,
+  loadGeoAssetFeatures,
+  resolveGeoUrisInSpec,
+  resolveGeoUrisInNode,
+  resolveGeoUrisInNodes,
+  GEO_URI_PREFIX,
+} from './geo-assets.js';
+export type { GeoSourceRef, GeoSourceDataLoader } from './geo-assets.js';
 export {
   resolveAssets,
   resolveAssetPath,
@@ -65,3 +79,4 @@ export {
 } from './errors.js';
 export { importLearnEasy } from './learn-easy-importer.js';
 export type { ImportOptions, ImportResult } from './learn-easy-importer.js';
+export { serializeResolvedNodes, hasUnresolvedGeoSources } from './node-serialize.js';

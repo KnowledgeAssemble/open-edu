@@ -1,6 +1,11 @@
 import { WidgetManifestSchema, type WidgetManifest, type WidgetPolicy } from '@open-edu/schemas';
 import { canonicalIntegrity } from '../integrity.js';
-import { extractCspMeta, hasCspDirective, isSelfContainedHtml, verifyDocumentCsp } from './verify-suite.js';
+import {
+  extractCspMeta,
+  hasCspDirective,
+  isSelfContainedHtml,
+  verifyDocumentCsp,
+} from './verify-suite.js';
 
 export interface WidgetPackageInput {
   manifestJson: unknown;

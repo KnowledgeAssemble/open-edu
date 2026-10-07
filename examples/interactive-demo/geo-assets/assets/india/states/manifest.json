@@ -1,0 +1,7 @@
+{
+  "version": "1.0.0",
+  "format": "geojson",
+  "files": {
+    "data": "1.0.0/states.geojson"
+  }
+}

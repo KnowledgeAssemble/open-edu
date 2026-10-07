@@ -7,16 +7,10 @@ interface StudioLayoutProps {
   className?: string;
 }
 
-export function StudioLayout({ 
-  children, 
-  sidebar, 
-  className 
-}: StudioLayoutProps) {
+export function StudioLayout({ children, sidebar, className }: StudioLayoutProps) {
   return (
-    <div className={cn('flex flex-1 min-h-0 overflow-hidden', className)}>
-      <main className="flex flex-1 flex-col min-w-0 overflow-auto">
-        {children}
-      </main>
+    <div className={cn('flex min-h-0 flex-1 overflow-hidden', className)}>
+      <main className="flex min-w-0 flex-1 flex-col overflow-auto">{children}</main>
       {sidebar}
     </div>
   );

@@ -33,7 +33,7 @@ export function parseNodeContent(relativePath: string, content: string): Content
         file: relativePath,
         path: 'type',
         suggestion:
-          'Add "type": "lesson" | "quiz" | "reflection" | "exercise" | "custom" to the node file',
+          'Add "type": "lesson" | "quiz" | "reflection" | "exercise" | "custom" | "interactive" to the node file',
       });
     }
 
@@ -93,55 +93,6 @@ export function loadNodesFromSource(source: PackageFileSource): LoadedNode[] {
 
     nodes.push({
       path: relativePath,
-      relativePath,
-      content,
-      node,
-    });
-  }
-
-  return nodes;
-}
-
-export async function loadNodes(packageDir: string): Promise<LoadedNode[]> {
-  const { readdir, readFile } = await import('node:fs/promises');
-  const { join } = await import('node:path');
-  const nodesDir = join(packageDir, 'nodes');
-
-  interface DirentLike {
-    name: string;
-    isDirectory(): boolean;
-    isFile(): boolean;
-  }
-
-  let entries: DirentLike[];
-  try {
-    entries = (await readdir(nodesDir, { withFileTypes: true })) as unknown as DirentLike[];
-  } catch {
-    return [];
-  }
-
-  const nodes: LoadedNode[] = [];
-
-  for (const entry of entries) {
-    const absolutePath = join(nodesDir, entry.name);
-
-    if (entry.isDirectory()) {
-      throw new NodeLoadError(
-        `Subdirectories inside nodes/ are not supported. Move "${entry.name}" to a flat file or use the widgets package: ${absolutePath}`,
-      );
-    }
-    if (!entry.isFile()) {
-      continue;
-    }
-
-    const content = await readFile(absolutePath, 'utf-8').catch((err: NodeJS.ErrnoException) => {
-      throw new NodeLoadError(`Failed to read node "${entry.name}": ${err.message}`);
-    });
-    const relativePath = `nodes/${entry.name}`;
-    const node = parseNodeContent(relativePath, content);
-
-    nodes.push({
-      path: absolutePath,
       relativePath,
       content,
       node,

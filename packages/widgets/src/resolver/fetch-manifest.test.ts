@@ -6,7 +6,9 @@ function okResponse(body: ArrayBuffer | ArrayBufferView = new ArrayBuffer(0)): R
     ok: true,
     status: 200,
     arrayBuffer: async () =>
-      body instanceof ArrayBuffer ? body : body.buffer.slice(body.byteOffset, body.byteOffset + body.byteLength),
+      body instanceof ArrayBuffer
+        ? body
+        : body.buffer.slice(body.byteOffset, body.byteOffset + body.byteLength),
   } as unknown as Response;
 }
 
@@ -20,7 +22,8 @@ function jsonResponse(data: unknown): Response {
   return {
     ok: true,
     status: 200,
-    arrayBuffer: async () => bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength),
+    arrayBuffer: async () =>
+      bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength),
   } as unknown as Response;
 }
 
@@ -35,7 +38,11 @@ describe('fetchBytes', () => {
     const expected = new ArrayBuffer(8);
     mockFetch.mockResolvedValue(okResponse(expected));
 
-    const result = await fetchBytes('https://example.com/file', {}, mockFetch as unknown as typeof fetch);
+    const result = await fetchBytes(
+      'https://example.com/file',
+      {},
+      mockFetch as unknown as typeof fetch,
+    );
     expect(result).toBe(expected);
     expect(mockFetch).toHaveBeenCalledTimes(1);
     expect(mockFetch).toHaveBeenCalledWith('https://example.com/file', {});
@@ -64,7 +71,11 @@ describe('fetchBytes', () => {
       .mockRejectedValueOnce(new TypeError('fetch failed'))
       .mockResolvedValueOnce(okResponse(new ArrayBuffer(4)));
 
-    const result = await fetchBytes('https://example.com/file', {}, mockFetch as unknown as typeof fetch);
+    const result = await fetchBytes(
+      'https://example.com/file',
+      {},
+      mockFetch as unknown as typeof fetch,
+    );
     expect(result).toBeInstanceOf(ArrayBuffer);
     expect(mockFetch).toHaveBeenCalledTimes(2);
   });
@@ -72,9 +83,7 @@ describe('fetchBytes', () => {
   it('throws the second TypeError when both calls fail', async () => {
     const err1 = new TypeError('fetch failed');
     const err2 = new TypeError('fetch failed again');
-    mockFetch
-      .mockRejectedValueOnce(err1)
-      .mockRejectedValueOnce(err2);
+    mockFetch.mockRejectedValueOnce(err1).mockRejectedValueOnce(err2);
 
     await expect(
       fetchBytes('https://example.com/file', {}, mockFetch as unknown as typeof fetch),
@@ -93,7 +102,11 @@ describe('fetchJson', () => {
     const data = { hello: 'world', count: 42 };
     mockFetch.mockResolvedValue(jsonResponse(data));
 
-    const result = await fetchJson('https://example.com/data.json', {}, mockFetch as unknown as typeof fetch);
+    const result = await fetchJson(
+      'https://example.com/data.json',
+      {},
+      mockFetch as unknown as typeof fetch,
+    );
     expect(result).toEqual(data);
   });
 
@@ -125,7 +138,11 @@ describe('fetchJson', () => {
     const data = { ok: true };
     mockFetch.mockResolvedValue(jsonResponse(data));
 
-    await fetchJson('https://example.com/data.json', { signal: controller.signal }, mockFetch as unknown as typeof fetch);
+    await fetchJson(
+      'https://example.com/data.json',
+      { signal: controller.signal },
+      mockFetch as unknown as typeof fetch,
+    );
 
     const init = mockFetch.mock.calls[0]![1] as RequestInit;
     expect(init.signal).toBe(controller.signal);

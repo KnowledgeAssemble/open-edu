@@ -1,9 +1,6 @@
 import { forwardRef, useImperativeHandle, useMemo, useRef } from 'react';
 import type { StudioApi } from '../studioApi';
-import {
-  EditorShell,
-  type EditorShellHandle,
-} from '../../editor/EditorShell';
+import { EditorShell, type EditorShellHandle } from '../../editor/EditorShell';
 import type { PackageFileApi } from '../../editor/types';
 
 export interface PackageSourcePaneHandle {

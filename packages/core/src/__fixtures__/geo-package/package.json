@@ -1,0 +1,7 @@
+{
+  "id": "geo-package",
+  "title": "Geo URI Package",
+  "version": "1.0.0",
+  "author": "Open-Edu",
+  "entry": "nodes/geomap.json"
+}

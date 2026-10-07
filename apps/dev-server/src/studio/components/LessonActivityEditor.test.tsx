@@ -10,9 +10,7 @@ import type { StudioApi } from '../studioApi.js';
 function wrap(ui: React.ReactElement) {
   return (
     <I18nProvider locale="en" dictionaries={{ en: { studio: studioEn as Record<string, string> } }}>
-      <EditorBridgeProvider>
-        {ui}
-      </EditorBridgeProvider>
+      <EditorBridgeProvider>{ui}</EditorBridgeProvider>
     </I18nProvider>
   );
 }

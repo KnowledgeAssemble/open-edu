@@ -7,9 +7,9 @@ describe('studioChatMessage', () => {
   });
 
   it('interpolates params', () => {
-    expect(
-      studioChatMessage('assistant.chat.draftReady', 'en', { kind: 'lesson' }),
-    ).toContain('lesson');
+    expect(studioChatMessage('assistant.chat.draftReady', 'en', { kind: 'lesson' })).toContain(
+      'lesson',
+    );
   });
 
   it('falls back to the key when missing', () => {

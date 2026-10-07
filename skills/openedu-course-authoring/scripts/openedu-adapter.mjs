@@ -21,6 +21,8 @@ export function discoverRepository(startDir = process.cwd()) {
       compiler: { packagePresent: false, executable: false },
       cli: { packagePresent: false, executable: false },
       widgetCatalog: false,
+      engineSkillsCatalog: false,
+      domainGuidance: false,
       pipeline: { packagePresent: false, executable: false },
       examples: false,
     },
@@ -31,13 +33,23 @@ export function discoverRepository(startDir = process.cwd()) {
       widgetsRoot: null,
       pipelineRoot: null,
       catalogData: null,
+      guidanceData: null,
       examplesDir: null,
+      engineSkillsManifest: null,
+      engineSkillsRoot: null,
     },
     unavailable: [],
   };
 
   if (!repoRoot) {
-    result.unavailable = ['compiler', 'cli', 'widgetCatalog', 'pipeline', 'examples'];
+    result.unavailable = [
+      'compiler',
+      'cli',
+      'widgetCatalog',
+      'engineSkillsCatalog',
+      'pipeline',
+      'examples',
+    ];
     return result;
   }
 
@@ -75,6 +87,24 @@ export function discoverRepository(startDir = process.cwd()) {
     result.paths.guidanceData = domainGuidanceDataPath;
   }
 
+  const engineSkillsManifestPath = join(
+    repoRoot,
+    'node_modules',
+    '@knowledgeassemble',
+    'engine-skills',
+    'manifest.json',
+  );
+  if (existsSync(engineSkillsManifestPath)) {
+    result.capabilities.engineSkillsCatalog = true;
+    result.paths.engineSkillsManifest = engineSkillsManifestPath;
+    result.paths.engineSkillsRoot = join(
+      repoRoot,
+      'node_modules',
+      '@knowledgeassemble',
+      'engine-skills',
+    );
+  }
+
   const pipelinePath = join(repoRoot, 'packages', 'pipeline');
   if (existsSync(join(pipelinePath, 'package.json'))) {
     result.capabilities.pipeline.packagePresent = true;
@@ -93,6 +123,7 @@ export function discoverRepository(startDir = process.cwd()) {
     compiler: result.capabilities.compiler.executable,
     cli: result.capabilities.cli.executable,
     widgetCatalog: result.capabilities.widgetCatalog,
+    engineSkillsCatalog: result.capabilities.engineSkillsCatalog,
     pipeline: result.capabilities.pipeline.packagePresent,
     examples: result.capabilities.examples,
   };
@@ -198,6 +229,15 @@ export function resolveOpenEduCommands(discovery) {
     };
   }
 
+  commands.installEngineSkills = {
+    executable: false,
+    argv: null,
+    prerequisites: [
+      { type: 'install', command: ['pnpm', 'add', '@knowledgeassemble/engine-skills'] },
+    ],
+    hint: 'Install @knowledgeassemble/engine-skills to enable interactive lesson node authoring.',
+  };
+
   commands.buildAll = {
     executable: true,
     argv: ['pnpm', 'build'],
@@ -282,9 +322,9 @@ if (import.meta.url === `file://${process.argv[1]}`) {
  * @typedef {object} DiscoveryResult
  * @property {'portable'|'repository'} mode
  * @property {string|null} repoRoot
- * @property {{ compiler: CompilerCapability, cli: CliCapability, widgetCatalog: boolean, pipeline: PipelineCapability, examples: boolean }} capabilities
+ * @property {{ compiler: CompilerCapability, cli: CliCapability, widgetCatalog: boolean, engineSkillsCatalog: boolean, domainGuidance: boolean, pipeline: PipelineCapability, examples: boolean }} capabilities
  * @property {Record<string, CommandResolution>} commands
- * @property {{ compilerRoot: string|null, cliRoot: string|null, widgetsRoot: string|null, pipelineRoot: string|null, catalogData: string|null, examplesDir: string|null }} paths
+ * @property {{ compilerRoot: string|null, cliRoot: string|null, widgetsRoot: string|null, pipelineRoot: string|null, catalogData: string|null, guidanceData: string|null, examplesDir: string|null, engineSkillsManifest: string|null, engineSkillsRoot: string|null }} paths
  * @property {string[]} unavailable
  */
 

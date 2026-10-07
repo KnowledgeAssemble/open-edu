@@ -571,10 +571,11 @@ export function createBrowserStudioApi(options: BrowserStudioApiOptions = {}): S
     return { success: true, oldPath: from, newPath: to };
   }
 
-  async function uploadAsset(file: File, path?: string): Promise<{ success: boolean; path: string }> {
-    const data = file.arrayBuffer
-      ? await file.arrayBuffer()
-      : await new Blob([file]).arrayBuffer();
+  async function uploadAsset(
+    file: File,
+    path?: string,
+  ): Promise<{ success: boolean; path: string }> {
+    const data = file.arrayBuffer ? await file.arrayBuffer() : await new Blob([file]).arrayBuffer();
     const buf = new Uint8Array(data);
     const dest = path ?? `assets/${file.name}`;
     const safeDest = assertSafeCoursePath(dest);

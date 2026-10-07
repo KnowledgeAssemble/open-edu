@@ -111,8 +111,7 @@ export function createLocalStudioApi(): StudioApi {
       apiRequest<{ success: boolean; path: string }>(`/file?path=${encodeURIComponent(path)}`, {
         method: 'DELETE',
       }),
-    listFiles: () =>
-      apiRequest<{ files: PackageFileEntry[] }>('/tree').then((d) => d.files),
+    listFiles: () => apiRequest<{ files: PackageFileEntry[] }>('/tree').then((d) => d.files),
     createFile: (path: string, content?: string) =>
       apiRequest<{ success: boolean; path: string }>('/file', {
         method: 'POST',

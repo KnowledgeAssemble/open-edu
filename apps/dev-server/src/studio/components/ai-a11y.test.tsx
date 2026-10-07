@@ -23,9 +23,7 @@ vi.mock('../../editor/WidgetValidator.js', () => ({
 function wrapper({ children }: { children: ReactNode }) {
   return (
     <I18nProvider locale="en" dictionaries={{ en: { studio: studioEn as Record<string, string> } }}>
-      <StudioAssistantProvider>
-        {children}
-      </StudioAssistantProvider>
+      <StudioAssistantProvider>{children}</StudioAssistantProvider>
     </I18nProvider>
   );
 }
@@ -41,10 +39,7 @@ async function runAxe(container: HTMLElement) {
 
 describe('AI Studio components — axe-core accessibility audits', () => {
   it('AiStartPanel is accessible', async () => {
-    const { container } = render(
-      <AiStartPanel />,
-      { wrapper },
-    );
+    const { container } = render(<AiStartPanel />, { wrapper });
     const violations = await runAxe(container);
     expect(violations).toHaveLength(0);
   });

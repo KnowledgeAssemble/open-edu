@@ -40,7 +40,10 @@ export function parseIntentFromMessage(content: string): ParsedIntent | null {
   // or long messages that look like notes.
   const hasSubstantialNotes = content.length > 100;
 
-  if (isCourseRequest && (hasSubstantialNotes || low.length >= MIN_EXPLICIT_COURSE_REQUEST_LENGTH)) {
+  if (
+    isCourseRequest &&
+    (hasSubstantialNotes || low.length >= MIN_EXPLICIT_COURSE_REQUEST_LENGTH)
+  ) {
     return { type: 'generate_course', description: content };
   }
 

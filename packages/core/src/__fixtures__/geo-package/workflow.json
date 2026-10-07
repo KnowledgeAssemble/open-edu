@@ -1,0 +1,5 @@
+{
+  "routing": {
+    "nodes/geomap.json": { "onComplete": "COMPLETED" }
+  }
+}

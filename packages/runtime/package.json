@@ -38,6 +38,7 @@
     "@open-edu/core": "workspace:*",
     "@open-edu/design-system": "workspace:*",
     "@open-edu/i18n": "workspace:*",
+    "@open-edu/interactive-runtime": "workspace:^",
     "@open-edu/rewards": "workspace:^",
     "@open-edu/schemas": "workspace:*",
     "@open-edu/widget-sdk": "workspace:*",
