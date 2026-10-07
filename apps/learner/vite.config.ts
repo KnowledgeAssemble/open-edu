@@ -447,6 +447,10 @@ export default defineConfig(({ mode }) => {
     },
     server: {
       port: 4001,
+      // Railway (and other reverse proxies) forward the deploy host in the
+      // Host header; allow any host so requests aren't blocked by Vite's
+      // DNS-rebinding protection.
+      allowedHosts: true,
       headers: {
         'Strict-Transport-Security': 'max-age=63072000; includeSubDomains; preload',
         'X-Content-Type-Options': 'nosniff',
@@ -454,6 +458,7 @@ export default defineConfig(({ mode }) => {
       },
     },
     preview: {
+      allowedHosts: true,
       headers: {
         'Strict-Transport-Security': 'max-age=63072000; includeSubDomains; preload',
         'X-Content-Type-Options': 'nosniff',
