@@ -4,6 +4,7 @@
   "private": true,
   "type": "module",
   "description": "edu CLI for Open-Edu",
+  "license": "MIT",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {

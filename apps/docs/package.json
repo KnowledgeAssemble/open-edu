@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "description": "Docusaurus documentation site for Open-Edu",
+  "license": "MIT",
   "scripts": {
     "dev": "docusaurus start",
     "build": "docusaurus build",
