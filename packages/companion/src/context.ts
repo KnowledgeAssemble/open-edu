@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { AuthoringContextSchema } from '@open-edu/packs';
 
 export const StudioViewSchema = z.enum([
   'home',
@@ -24,53 +25,55 @@ export const learnerProfileSchema = z.object({
 
 export type LearnerProfile = z.infer<typeof learnerProfileSchema>;
 
-export const studioContextSnapshotSchema = z.object({
-  view: StudioViewSchema,
-  locale: z.string(),
-  aiAvailable: z.boolean(),
-  learner: learnerProfileSchema.optional(),
-  course: z
-    .object({
-      id: z.string(),
-      title: z.string(),
-      activityCount: z.number(),
-      outline: z.array(
-        z.object({
-          title: z.string(),
-          kind: ActivityKindSchema,
-          path: z.string(),
-        }),
-      ),
-    })
-    .optional(),
-  activity: z
-    .object({
-      path: z.string(),
-      kind: ActivityKindSchema,
-      title: z.string().optional(),
-      contentExcerpt: z.string().optional(),
-      selection: z
-        .object({
-          start: z.number(),
-          end: z.number(),
-          text: z.string(),
-        })
-        .optional(),
-      isDirty: z.boolean().optional(),
-      validationIssues: z.array(z.string()).optional(),
-    })
-    .optional(),
-  lastCourseDraftQuality: z
-    .array(
-      z.object({
+export const studioContextSnapshotSchema = z
+  .object({
+    view: StudioViewSchema,
+    locale: z.string(),
+    aiAvailable: z.boolean(),
+    learner: learnerProfileSchema.optional(),
+    course: z
+      .object({
         id: z.string(),
-        labelKey: z.string(),
-        passed: z.boolean(),
-        detail: z.string().optional(),
-      }),
-    )
-    .optional(),
-});
+        title: z.string(),
+        activityCount: z.number(),
+        outline: z.array(
+          z.object({
+            title: z.string(),
+            kind: ActivityKindSchema,
+            path: z.string(),
+          }),
+        ),
+      })
+      .optional(),
+    activity: z
+      .object({
+        path: z.string(),
+        kind: ActivityKindSchema,
+        title: z.string().optional(),
+        contentExcerpt: z.string().optional(),
+        selection: z
+          .object({
+            start: z.number(),
+            end: z.number(),
+            text: z.string(),
+          })
+          .optional(),
+        isDirty: z.boolean().optional(),
+        validationIssues: z.array(z.string()).optional(),
+      })
+      .optional(),
+    lastCourseDraftQuality: z
+      .array(
+        z.object({
+          id: z.string(),
+          labelKey: z.string(),
+          passed: z.boolean(),
+          detail: z.string().optional(),
+        }),
+      )
+      .optional(),
+  })
+  .extend({ authoring: AuthoringContextSchema.optional() });
 
 export type StudioContextSnapshot = z.infer<typeof studioContextSnapshotSchema>;
 
