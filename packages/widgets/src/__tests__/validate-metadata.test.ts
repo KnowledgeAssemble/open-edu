@@ -128,6 +128,21 @@ describe('validateWidgetMetadata', () => {
     expect(result.warnings).not.toContainEqual(expect.stringContaining('supportsObserveMode'));
   });
 
+  it('warns when a stable widget declares empty capabilities', () => {
+    const result = validateWidgetMetadata(v2({ status: 'stable', capabilities: {} }));
+    expect(result.warnings).toContainEqual(expect.stringContaining('capabilities'));
+  });
+
+  it('warns when a stable widget declares no capabilities', () => {
+    const result = validateWidgetMetadata(v2({ status: 'stable', capabilities: undefined }));
+    expect(result.warnings).toContainEqual(expect.stringContaining('capabilities'));
+  });
+
+  it('does not warn about capabilities on experimental widgets', () => {
+    const result = validateWidgetMetadata(v2({ status: 'experimental', capabilities: undefined }));
+    expect(result.warnings).not.toContainEqual(expect.stringContaining('capabilities'));
+  });
+
   it('warns when supportsHints is true but trackHints is false', () => {
     const result = validateWidgetMetadata(
       v2({
