@@ -25,3 +25,8 @@ apps/learner/public/dictionary
 # Pipeline generated output
 output/
 .openedu-widget-registry/
+
+# Knowledge/curriculum packs are content, not code (spec §7) — production packs live
+# outside the repo via OPEN_EDU_PACKS_DIR. Root-anchored so the committed Phase 1
+# fixture at examples/packs/ stays tracked.
+/packs/
