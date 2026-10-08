@@ -64,7 +64,12 @@ export interface RemoteWidgetRegistration {
 export interface WidgetSearchFilters {
   query?: string;
   domain?: string;
+  /** @deprecated use `intents` (all-of). Treated as `intents: [intent]`. */
   intent?: LearningIntent;
+  /** All-of: a widget must declare every listed intent. */
+  intents?: LearningIntent[];
+  /** Any-of: a widget must declare at least one of the listed subjectTags. */
+  subjectTags?: string[];
   difficulty?: DifficultyLevel;
   status?: WidgetDefinitionV2['status'];
   capability?: keyof WidgetCapabilities;

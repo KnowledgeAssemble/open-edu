@@ -105,7 +105,16 @@ export function createWidgetRegistry(): WidgetRegistry {
 
         if (filters.domain && v2.domain !== filters.domain) return false;
 
-        if (filters.intent && !v2.learningIntents?.includes(filters.intent)) return false;
+        const intents = filters.intents ?? (filters.intent ? [filters.intent] : undefined);
+        if (intents && intents.length > 0) {
+          const declared = v2.learningIntents ?? [];
+          if (!intents.every((i) => declared.includes(i))) return false;
+        }
+
+        if (filters.subjectTags && filters.subjectTags.length > 0) {
+          const declared = v2.ai?.subjectTags ?? [];
+          if (!filters.subjectTags.some((t) => declared.includes(t))) return false;
+        }
 
         if (filters.difficulty && v2.ai?.difficulty !== filters.difficulty) return false;
 
