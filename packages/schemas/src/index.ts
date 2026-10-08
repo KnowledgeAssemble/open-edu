@@ -80,6 +80,12 @@ export type { WidgetReference } from './widget-reference.js';
 
 export { WIDGET_ALIAS_MAP } from './widget-alias.js';
 
+export type {
+  WidgetCatalogEntry,
+  WidgetGuideData,
+  WidgetGuideConfigField,
+} from './widget-catalog.js';
+
 export {
   WidgetManifestSchema,
   WidgetCapabilitySchema,
