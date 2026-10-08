@@ -11,6 +11,12 @@ import type {
 import type { LibraryEntry } from './library/types.js';
 import type { ActivitySummary } from './types.js';
 import type { LoadedPackage } from '@open-edu/core';
+import type {
+  PackSummary,
+  PackDetail,
+  AuthoringContext,
+  PackDiagnostic,
+} from '@open-edu/packs';
 
 export interface StudioApiError extends Error {
   code?: AiEndpointErrorCode | string;
@@ -115,6 +121,14 @@ export interface StudioApi {
     courseRelativePaths: string[],
   ): Promise<{ success: boolean; entry: LibraryEntry }>;
   exportUnitOep(relativePath: string): Promise<ExportResult>;
+  listPacks(): Promise<PackSummary[]>;
+  getPackDetail(id: string, version: string): Promise<PackDetail | null>;
+  setAuthoringSelection(selection: {
+    curriculum: string;
+    unit?: string;
+    learner?: string;
+    locale?: string;
+  }): Promise<{ context: AuthoringContext; warnings: PackDiagnostic[] }>;
 }
 
 export type { AiStatus, LibraryEntry, ActivitySummary };

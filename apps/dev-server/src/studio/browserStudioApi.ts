@@ -35,6 +35,8 @@ import { getTemplateById } from './templates/catalog.js';
 import { activitiesFromEntryOrder, buildLinearWorkflow } from './outlineModel.js';
 import type { LibraryEntry } from './library/types.js';
 import { createBrowserAiGateway, type BrowserAiGateway } from './browserAiGateway.js';
+import { getBundledPacks } from './packs/packSource.js';
+import { detailPack, resolveSelection, summarizePacks } from './packs/packApi.js';
 import { applyChangeSet } from './ai/applyChangeSet.js';
 import { createChangeSet, type WorkspaceChange } from '@open-edu/storage';
 import type {
@@ -766,5 +768,8 @@ export function createBrowserStudioApi(options: BrowserStudioApiOptions = {}): S
     importCourseFolder: async () => makeUnsupported('importCourseFolder'),
     createUnit: async () => makeUnsupported('createUnit'),
     exportUnitOep: async () => makeUnsupported('exportUnitOep'),
+    listPacks: async () => summarizePacks(getBundledPacks()),
+    getPackDetail: async (id, version) => detailPack(getBundledPacks(), id, version) ?? null,
+    setAuthoringSelection: async (selection) => resolveSelection(getBundledPacks(), selection),
   };
 }

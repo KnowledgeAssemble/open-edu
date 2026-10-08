@@ -549,4 +549,16 @@ describe('BrowserStudioApi', () => {
     expect(uploaded.success).toBe(true);
     expect(uploaded.path).toBe('assets/pic.png');
   });
+
+  it('exposes pack methods backed by the virtual pack module stub', async () => {
+    const { api } = createBrowserApi();
+    expect(typeof api.listPacks).toBe('function');
+    expect(typeof api.getPackDetail).toBe('function');
+    expect(typeof api.setAuthoringSelection).toBe('function');
+    expect(await api.listPacks()).toEqual([]);
+    expect(await api.getPackDetail('nope', '0.0.0')).toBeNull();
+    await expect(
+      api.setAuthoringSelection({ curriculum: 'nope' }),
+    ).rejects.toMatchObject({ code: 'PACK_REFERENCE_MISSING' });
+  });
 });

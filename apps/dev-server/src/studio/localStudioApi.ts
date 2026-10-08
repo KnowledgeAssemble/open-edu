@@ -20,6 +20,8 @@ import type {
   ValidationResult,
 } from './studioApi.js';
 import { createStudioApiWorkspace } from './studioApiWorkspace.js';
+import { getBundledPacks } from './packs/packSource.js';
+import { detailPack, resolveSelection, summarizePacks } from './packs/packApi.js';
 
 const API_BASE = '/api/package';
 const AI_BASE = '/api/studio/ai';
@@ -208,6 +210,9 @@ export function createLocalStudioApi(): StudioApi {
       }),
     exportUnitOep: (relativePath: string) =>
       downloadBlob(`${LIBRARY_BASE}/export-unit-oep`, 'unit.oep', { relativePath }),
+    listPacks: async () => summarizePacks(getBundledPacks()),
+    getPackDetail: async (id, version) => detailPack(getBundledPacks(), id, version) ?? null,
+    setAuthoringSelection: async (selection) => resolveSelection(getBundledPacks(), selection),
   };
   return api;
 }

@@ -16,6 +16,8 @@ import type { IncomingMessage, ServerResponse } from 'node:http';
 import { fileURLToPath } from 'node:url';
 import { loadPackage, loadBundle } from '@open-edu/core';
 import type { LoadedPackage, LoadedBundle } from '@open-edu/core';
+import { loadPacksDir } from '@open-edu/packs/loader';
+import type { LoadedPack } from '@open-edu/packs';
 import {
   PackageManifestSchema,
   WorkflowSchema,
@@ -1412,6 +1414,54 @@ function virtualPackagePlugin(): Plugin {
   };
 }
 
+const PACKS_VIRTUAL_MODULE_ID = 'virtual:open-edu-packs';
+const RESOLVED_PACKS_VIRTUAL_ID = `\0${PACKS_VIRTUAL_MODULE_ID}`;
+
+function findWorkspaceRoot(startDir: string): string {
+  let dir = startDir;
+  for (;;) {
+    if (existsSync(join(dir, 'pnpm-workspace.yaml'))) return dir;
+    const parent = dirname(dir);
+    if (parent === dir) return startDir;
+    dir = parent;
+  }
+}
+
+function eduPacksLoader(): Plugin {
+  let packData: LoadedPack[] | null = null;
+  let packsDir = '';
+  let logger: { error: (msg: string) => void } | null = null;
+
+  return {
+    name: 'edu-packs-loader',
+    enforce: 'pre',
+    configResolved(config) {
+      logger = config.logger;
+      const configured = process.env.OPEN_EDU_PACKS_DIR ?? 'packs';
+      packsDir = resolve(findWorkspaceRoot(__dirname), configured);
+    },
+    buildStart() {
+      try {
+        const { packs, diagnostics } = loadPacksDir(packsDir);
+        packData = Array.from(packs.values());
+        for (const diagnostic of diagnostics) {
+          logger?.error(`[edu-packs] ${diagnostic.code}: ${diagnostic.message}`);
+        }
+      } catch (err) {
+        logger?.error(`[edu-packs] Failed to load packs from ${packsDir}: ${String(err)}`);
+      }
+    },
+    resolveId(id) {
+      if (id === PACKS_VIRTUAL_MODULE_ID) return RESOLVED_PACKS_VIRTUAL_ID;
+    },
+    load(id) {
+      if (id === RESOLVED_PACKS_VIRTUAL_ID) {
+        return `export const packData = ${JSON.stringify(packData ?? null)};`;
+      }
+    },
+  };
+}
+
 function localStudioAiPlugin(): Plugin {
   return {
     name: 'open-edu-local-studio-ai',
@@ -1456,8 +1506,8 @@ export default defineConfig(({ mode }) => {
     // package module still needs a resolution so DevApp can always import it;
     // browser mode always uses the local BrowserStudioProvider instead.
     plugins: isBrowserMode
-      ? [react(), widgetRegistryPlugin(), virtualPackagePlugin(), localStudioAiPlugin()]
-      : [react(), widgetRegistryPlugin(), eduPackageLoader()],
+      ? [react(), widgetRegistryPlugin(), virtualPackagePlugin(), eduPacksLoader(), localStudioAiPlugin()]
+      : [react(), widgetRegistryPlugin(), eduPackageLoader(), eduPacksLoader()],
     resolve: isBrowserMode
       ? {
           alias: {
