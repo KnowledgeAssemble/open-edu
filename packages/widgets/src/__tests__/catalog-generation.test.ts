@@ -6,6 +6,7 @@ import type { WidgetCatalogEntry } from '@open-edu/schemas';
 import type { WidgetDefinitionV2 } from '../types';
 import { toCatalogEntry, toWidgetCatalogEntries } from '../catalog-gen';
 import { BUILTIN_WIDGETS, WIDGET_LEARNING_INTENTS } from '../builtin-roster';
+import { LearningIntent } from '../metadata/learning-intents';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const CATALOG_JSON_PATH = resolve(__dirname, '../../../core/src/widget-catalog-data.json');
@@ -78,6 +79,30 @@ describe('catalog-gen', () => {
           'whenToUse',
         ].sort(),
       );
+    }
+  });
+});
+
+describe('catalog learning intents', () => {
+  const validIntents = new Set<string>(Object.values(LearningIntent));
+
+  it('only emits known LearningIntent values and never the reserved `create`', () => {
+    for (const entry of toWidgetCatalogEntries(BUILTIN_WIDGETS)) {
+      for (const intent of entry.learningIntents ?? []) {
+        expect(validIntents.has(intent)).toBe(true);
+        expect(intent).not.toBe(LearningIntent.Create);
+      }
+    }
+  });
+
+  it('keeps the union of catalog intents a strict subset of the enum, excluding `create`', () => {
+    const union = new Set(
+      toWidgetCatalogEntries(BUILTIN_WIDGETS).flatMap((e) => e.learningIntents ?? []),
+    );
+    expect(union.size).toBeLessThan(Object.values(LearningIntent).length);
+    expect(union.has(LearningIntent.Create)).toBe(false);
+    for (const intent of union) {
+      expect(validIntents.has(intent)).toBe(true);
     }
   });
 });
