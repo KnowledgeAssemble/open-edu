@@ -1,135 +1,138 @@
 [
   {
-    "id": "core.matching",
-    "name": "Matching",
-    "description": "Match pairs of items by dragging or selecting",
+    "id": "core.visual-counting",
+    "name": "Visual Counting",
+    "description": "Count visual objects and identify quantities",
     "domain": "core",
     "status": "stable",
-    "keywords": ["match", "pairs", "connect", "drag"],
-    "learningIntents": ["Practice", "Compare"],
+    "keywords": ["count", "visual", "number", "quantity"],
+    "learningIntents": ["observe", "practice"],
     "capabilities": [
-      "Keyboard",
-      "ScreenReader",
-      "Hints",
-      "Retry",
-      "Scoring",
-      "Touch",
-      "Mouse",
-      "Analytics",
-      "Rewards",
-      "Accessibility",
-      "Offline",
-      "ObserveMode"
+      "supportsKeyboard",
+      "supportsScreenReader",
+      "supportsHints",
+      "supportsRetry",
+      "supportsScoring",
+      "supportsTouch",
+      "supportsMouse",
+      "supportsAnalytics",
+      "supportsRewards",
+      "supportsAccessibility",
+      "supportsOffline",
+      "supportsObserveMode"
     ],
     "accessibility": [
-      "HighContrast",
-      "KeyboardOnly",
-      "ScreenReader",
-      "FocusManagement",
-      "AriaSupport"
+      "highContrast",
+      "keyboardOnly",
+      "screenReader",
+      "tts",
+      "focusManagement",
+      "ariaSupport"
     ],
-    "analytics": ["Attempts", "CompletionTime", "SuccessRate", "Mistakes", "Hints", "Retries"],
+    "analytics": [
+      "trackAttempts",
+      "trackCompletionTime",
+      "trackSuccessRate",
+      "trackHints",
+      "trackRetries"
+    ],
     "reward": {
       "completionXP": 10,
-      "positiveMessage": "All pairs matched!",
-      "achievement": "first-match"
+      "positiveMessage": "Counting correct!",
+      "achievement": "first-count"
     },
     "ai": {
       "difficulty": "easy",
-      "estimatedMinutes": 3,
+      "estimatedMinutes": 2,
       "bloomsLevel": "remember",
       "cognitiveLoad": "low",
-      "recommendedAge": [5, 12],
+      "recommendedAge": [3, 7],
       "readingLevel": "pre-reader",
+      "subjectTags": ["math", "counting"],
       "learningObjectives": [
-        "Identify correct pairs of related items",
-        "Match items based on shared attributes",
-        "Compare and contrast items to find relationships"
+        "Count objects accurately up to 12",
+        "Recognize quantities visually without counting",
+        "Add two groups of objects together"
       ],
       "commonMisconceptions": [
-        "Selecting both items from the same column",
-        "Assuming alphabetical order determines matches"
+        "Double-counting an object at the boundary of groups",
+        "Confusing 6 and 9 when items are rotated",
+        "Losing track when items are scattered irregularly"
       ],
       "generationHints": [
-        "Use items with clear, unambiguous associations",
-        "Mix obvious and challenging pairs",
-        "Keep text labels short (2-4 words)"
+        "Use visually distinct emoji items",
+        "Limit count to 1-12 for clarity",
+        "Space items clearly in the grid layout"
       ]
     },
     "guide": {
-      "oneLiner": "Match pairs of items by dragging or selecting.",
-      "whatItDoes": "The Matching widget shows two columns of items. Students connect each item from the left column to its corresponding match in the right column. It supports keyboard navigation, touch, and screen readers.",
+      "oneLiner": "Display visual objects for students to count and identify quantities.",
+      "whatItDoes": "The Visual Counting widget shows a grid of visual objects (like emoji) and asks students to count them. Students type or select the correct number. It helps early learners build number sense through visual grouping.",
       "whenToUse": [
-        "Teaching vocabulary and definitions",
-        "Matching causes to effects",
-        "Pairing items with their categories",
-        "Connecting concepts to examples"
+        "Teaching counting and quantities to early learners",
+        "Building number recognition skills",
+        "Visual math practice for pre-readers",
+        "Reinforcing one-to-one correspondence"
       ],
       "setupSteps": [
         "Add an Exercise node to your lesson",
-        "Set the widget to \"core.matching\"",
-        "Define your pairs in the config — each pair has an itemA and itemB",
-        "Add an optional description to guide students",
-        "Optionally add hints to help students who get stuck"
+        "Set the widget to \"core.visual-counting\"",
+        "Choose an emoji or character for the items",
+        "Set the count — how many items to show",
+        "Add a description like \"Count the stars!\""
       ],
       "configFields": [
         {
-          "name": "pairs",
-          "type": "array of objects",
+          "name": "items",
+          "type": "array of strings",
           "required": true,
-          "description": "The matching pairs. Each object has an itemA (string) and itemB (string)."
+          "description": "Emoji or characters to display as countable items. Usually a single item repeated."
         },
         {
-          "name": "pairs[].itemA",
-          "type": "string",
+          "name": "count",
+          "type": "number",
           "required": true,
-          "description": "The left-side item text."
+          "description": "How many items to show (1-12 recommended)."
         },
         {
-          "name": "pairs[].itemB",
+          "name": "text",
           "type": "string",
-          "required": true,
-          "description": "The right-side item text."
+          "required": false,
+          "description": "Text shown after the count, e.g. \"stars\" displays as \"5 stars\"."
         },
         {
           "name": "description",
           "type": "string",
           "required": false,
-          "description": "Instructions shown above the matching activity."
-        },
-        {
-          "name": "hints",
-          "type": "array of strings",
-          "required": false,
-          "description": "Progressive hints shown when students need help."
+          "description": "Instructions shown above the counting grid."
         },
         {
           "name": "interactive",
           "type": "boolean",
           "required": false,
-          "description": "When false, shows the activity in observe mode with correct matches pre-connected. Defaults to false."
+          "description": "When false, shows the correct count. Defaults to false."
         }
       ],
-      "exampleJson": "{\n  \"type\": \"exercise\",\n  \"title\": \"Fruit Color Matching\",\n  \"widget\": \"core.matching\",\n  \"config\": {\n    \"description\": \"Match each fruit to its color.\",\n    \"pairs\": [\n      { \"itemA\": \"Apple\", \"itemB\": \"Red\" },\n      { \"itemA\": \"Banana\", \"itemB\": \"Yellow\" },\n      { \"itemA\": \"Orange\", \"itemB\": \"Orange\" },\n      { \"itemA\": \"Grape\", \"itemB\": \"Purple\" }\n    ],\n    \"interactive\": true\n  }\n}",
+      "exampleJson": "{\n  \"type\": \"exercise\",\n  \"title\": \"Count the Stars\",\n  \"widget\": \"core.visual-counting\",\n  \"config\": {\n    \"description\": \"How many stars do you see?\",\n    \"items\": [\"⭐\"],\n    \"count\": 5,\n    \"text\": \"stars\",\n    \"interactive\": true\n  }\n}",
       "tips": [
-        "Keep itemA and itemB labels short (2-4 words)",
-        "Use 3-6 pairs for younger students, up to 10 for older ones",
-        "Make sure each pair has a clear, unambiguous connection",
-        "Add emoji to item labels for visual reinforcement"
+        "Use visually distinct emoji that are easy to count",
+        "Limit counts to 1-12 for young learners",
+        "Space items clearly in the grid — avoid crowding",
+        "Start with small counts and gradually increase"
       ],
-      "sidebarPosition": 2,
+      "sidebarPosition": 3,
       "relatedWidgets": [
         {
-          "id": "core.drag-drop",
-          "name": "Drag & Drop",
-          "domain": "core",
-          "slug": "drag-drop"
+          "id": "math.number-line",
+          "name": "Number Line",
+          "domain": "math",
+          "slug": "number-line"
         },
         {
-          "id": "language.flashcard",
-          "name": "Flashcard",
-          "domain": "language",
-          "slug": "flashcard"
+          "id": "math.grid-area",
+          "name": "Grid Area",
+          "domain": "math",
+          "slug": "grid-area"
         }
       ]
     }
@@ -141,30 +144,37 @@
     "domain": "core",
     "status": "stable",
     "keywords": ["quiz", "test", "select", "options", "choice"],
-    "learningIntents": ["Assess"],
+    "learningIntents": ["assess"],
     "capabilities": [
-      "Keyboard",
-      "ScreenReader",
-      "Hints",
-      "Retry",
-      "Scoring",
-      "Touch",
-      "Mouse",
-      "Analytics",
-      "Rewards",
-      "Accessibility",
-      "Offline",
-      "ObserveMode"
+      "supportsKeyboard",
+      "supportsScreenReader",
+      "supportsHints",
+      "supportsRetry",
+      "supportsScoring",
+      "supportsTouch",
+      "supportsMouse",
+      "supportsAnalytics",
+      "supportsRewards",
+      "supportsAccessibility",
+      "supportsOffline",
+      "supportsObserveMode"
     ],
     "accessibility": [
-      "HighContrast",
-      "KeyboardOnly",
-      "ScreenReader",
-      "TTS",
-      "FocusManagement",
-      "AriaSupport"
+      "highContrast",
+      "keyboardOnly",
+      "screenReader",
+      "tts",
+      "focusManagement",
+      "ariaSupport"
     ],
-    "analytics": ["Attempts", "CompletionTime", "SuccessRate", "Mistakes", "Hints", "Retries"],
+    "analytics": [
+      "trackAttempts",
+      "trackCompletionTime",
+      "trackSuccessRate",
+      "trackMistakes",
+      "trackHints",
+      "trackRetries"
+    ],
     "reward": {
       "completionXP": 10,
       "positiveMessage": "Correct!",
@@ -177,6 +187,7 @@
       "cognitiveLoad": "low",
       "recommendedAge": [6, 18],
       "readingLevel": "grade-3",
+      "subjectTags": ["general"],
       "learningObjectives": [
         "Select the correct answer from multiple alternatives",
         "Apply knowledge to eliminate incorrect options",
@@ -271,193 +282,144 @@
     }
   },
   {
-    "id": "open-edu.multiple-choice-practice",
-    "name": "Multiple Choice Practice",
-    "description": "Select the correct answer from a list of options",
-    "domain": "core",
-    "status": "deprecated",
-    "deprecated": true,
-    "replacement": "core.multiple-choice",
-    "keywords": ["quiz", "test", "select", "options", "choice"],
-    "learningIntents": ["Practice"],
-    "capabilities": [
-      "Keyboard",
-      "ScreenReader",
-      "Hints",
-      "Retry",
-      "Scoring",
-      "Touch",
-      "Mouse",
-      "Analytics",
-      "Rewards",
-      "Accessibility",
-      "Offline",
-      "ObserveMode"
-    ],
-    "accessibility": [
-      "HighContrast",
-      "KeyboardOnly",
-      "ScreenReader",
-      "TTS",
-      "FocusManagement",
-      "AriaSupport"
-    ],
-    "analytics": ["Attempts", "CompletionTime", "SuccessRate", "Mistakes", "Hints", "Retries"],
-    "reward": {
-      "completionXP": 10,
-      "positiveMessage": "Correct!",
-      "achievement": "first-answer"
-    },
-    "ai": {
-      "difficulty": "medium",
-      "estimatedMinutes": 3,
-      "bloomsLevel": "remember",
-      "cognitiveLoad": "low",
-      "recommendedAge": [6, 18],
-      "readingLevel": "grade-3",
-      "learningObjectives": [
-        "Select the correct answer from multiple alternatives",
-        "Apply knowledge to eliminate incorrect options",
-        "Distinguish between similar answer choices"
-      ],
-      "commonMisconceptions": [
-        "Choosing the most familiar-sounding option without reading all choices",
-        "Selecting options that are true but do not answer the question"
-      ],
-      "generationHints": [
-        "Include one clearly correct answer",
-        "Write plausible distractors that reflect common errors",
-        "Keep the question stem concise and unambiguous"
-      ]
-    }
-  },
-  {
-    "id": "core.visual-counting",
-    "name": "Visual Counting",
-    "description": "Count visual objects and identify quantities",
+    "id": "core.matching",
+    "name": "Matching",
+    "description": "Match pairs of items by dragging or selecting",
     "domain": "core",
     "status": "stable",
-    "keywords": ["count", "visual", "number", "quantity"],
-    "learningIntents": ["Observe", "Practice"],
+    "keywords": ["match", "pairs", "connect", "drag"],
+    "learningIntents": ["practice", "compare"],
     "capabilities": [
-      "Keyboard",
-      "ScreenReader",
-      "Hints",
-      "Retry",
-      "Scoring",
-      "Touch",
-      "Mouse",
-      "Analytics",
-      "Rewards",
-      "Accessibility",
-      "Offline",
-      "ObserveMode"
+      "supportsKeyboard",
+      "supportsScreenReader",
+      "supportsHints",
+      "supportsRetry",
+      "supportsScoring",
+      "supportsTouch",
+      "supportsMouse",
+      "supportsAnalytics",
+      "supportsRewards",
+      "supportsAccessibility",
+      "supportsOffline",
+      "supportsObserveMode"
     ],
     "accessibility": [
-      "HighContrast",
-      "KeyboardOnly",
-      "ScreenReader",
-      "TTS",
-      "FocusManagement",
-      "AriaSupport"
+      "highContrast",
+      "keyboardOnly",
+      "screenReader",
+      "focusManagement",
+      "ariaSupport"
     ],
-    "analytics": ["Attempts", "CompletionTime", "SuccessRate", "Hints", "Retries"],
+    "analytics": [
+      "trackAttempts",
+      "trackCompletionTime",
+      "trackSuccessRate",
+      "trackMistakes",
+      "trackHints",
+      "trackRetries"
+    ],
     "reward": {
       "completionXP": 10,
-      "positiveMessage": "Counting correct!",
-      "achievement": "first-count"
+      "positiveMessage": "All pairs matched!",
+      "achievement": "first-match"
     },
     "ai": {
       "difficulty": "easy",
-      "estimatedMinutes": 2,
+      "estimatedMinutes": 3,
       "bloomsLevel": "remember",
       "cognitiveLoad": "low",
-      "recommendedAge": [3, 7],
+      "recommendedAge": [5, 12],
       "readingLevel": "pre-reader",
+      "subjectTags": ["general"],
       "learningObjectives": [
-        "Count objects accurately up to 12",
-        "Recognize quantities visually without counting",
-        "Add two groups of objects together"
+        "Identify correct pairs of related items",
+        "Match items based on shared attributes",
+        "Compare and contrast items to find relationships"
       ],
       "commonMisconceptions": [
-        "Double-counting an object at the boundary of groups",
-        "Confusing 6 and 9 when items are rotated",
-        "Losing track when items are scattered irregularly"
+        "Selecting both items from the same column",
+        "Assuming alphabetical order determines matches"
       ],
       "generationHints": [
-        "Use visually distinct emoji items",
-        "Limit count to 1-12 for clarity",
-        "Space items clearly in the grid layout"
+        "Use items with clear, unambiguous associations",
+        "Mix obvious and challenging pairs",
+        "Keep text labels short (2-4 words)"
       ]
     },
     "guide": {
-      "oneLiner": "Display visual objects for students to count and identify quantities.",
-      "whatItDoes": "The Visual Counting widget shows a grid of visual objects (like emoji) and asks students to count them. Students type or select the correct number. It helps early learners build number sense through visual grouping.",
+      "oneLiner": "Match pairs of items by dragging or selecting.",
+      "whatItDoes": "The Matching widget shows two columns of items. Students connect each item from the left column to its corresponding match in the right column. It supports keyboard navigation, touch, and screen readers.",
       "whenToUse": [
-        "Teaching counting and quantities to early learners",
-        "Building number recognition skills",
-        "Visual math practice for pre-readers",
-        "Reinforcing one-to-one correspondence"
+        "Teaching vocabulary and definitions",
+        "Matching causes to effects",
+        "Pairing items with their categories",
+        "Connecting concepts to examples"
       ],
       "setupSteps": [
         "Add an Exercise node to your lesson",
-        "Set the widget to \"core.visual-counting\"",
-        "Choose an emoji or character for the items",
-        "Set the count — how many items to show",
-        "Add a description like \"Count the stars!\""
+        "Set the widget to \"core.matching\"",
+        "Define your pairs in the config — each pair has an itemA and itemB",
+        "Add an optional description to guide students",
+        "Optionally add hints to help students who get stuck"
       ],
       "configFields": [
         {
-          "name": "items",
-          "type": "array of strings",
+          "name": "pairs",
+          "type": "array of objects",
           "required": true,
-          "description": "Emoji or characters to display as countable items. Usually a single item repeated."
+          "description": "The matching pairs. Each object has an itemA (string) and itemB (string)."
         },
         {
-          "name": "count",
-          "type": "number",
-          "required": true,
-          "description": "How many items to show (1-12 recommended)."
-        },
-        {
-          "name": "text",
+          "name": "pairs[].itemA",
           "type": "string",
-          "required": false,
-          "description": "Text shown after the count, e.g. \"stars\" displays as \"5 stars\"."
+          "required": true,
+          "description": "The left-side item text."
+        },
+        {
+          "name": "pairs[].itemB",
+          "type": "string",
+          "required": true,
+          "description": "The right-side item text."
         },
         {
           "name": "description",
           "type": "string",
           "required": false,
-          "description": "Instructions shown above the counting grid."
+          "description": "Instructions shown above the matching activity."
+        },
+        {
+          "name": "hints",
+          "type": "array of strings",
+          "required": false,
+          "description": "Progressive hints shown when students need help."
         },
         {
           "name": "interactive",
           "type": "boolean",
           "required": false,
-          "description": "When false, shows the correct count. Defaults to false."
+          "description": "When false, shows the activity in observe mode with correct matches pre-connected. Defaults to false."
         }
       ],
-      "exampleJson": "{\n  \"type\": \"exercise\",\n  \"title\": \"Count the Stars\",\n  \"widget\": \"core.visual-counting\",\n  \"config\": {\n    \"description\": \"How many stars do you see?\",\n    \"items\": [\"⭐\"],\n    \"count\": 5,\n    \"text\": \"stars\",\n    \"interactive\": true\n  }\n}",
+      "exampleJson": "{\n  \"type\": \"exercise\",\n  \"title\": \"Fruit Color Matching\",\n  \"widget\": \"core.matching\",\n  \"config\": {\n    \"description\": \"Match each fruit to its color.\",\n    \"pairs\": [\n      { \"itemA\": \"Apple\", \"itemB\": \"Red\" },\n      { \"itemA\": \"Banana\", \"itemB\": \"Yellow\" },\n      { \"itemA\": \"Orange\", \"itemB\": \"Orange\" },\n      { \"itemA\": \"Grape\", \"itemB\": \"Purple\" }\n    ],\n    \"interactive\": true\n  }\n}",
       "tips": [
-        "Use visually distinct emoji that are easy to count",
-        "Limit counts to 1-12 for young learners",
-        "Space items clearly in the grid — avoid crowding",
-        "Start with small counts and gradually increase"
+        "Keep itemA and itemB labels short (2-4 words)",
+        "Use 3-6 pairs for younger students, up to 10 for older ones",
+        "Make sure each pair has a clear, unambiguous connection",
+        "Add emoji to item labels for visual reinforcement"
       ],
-      "sidebarPosition": 3,
+      "sidebarPosition": 2,
       "relatedWidgets": [
         {
-          "id": "math.number-line",
-          "name": "Number Line",
-          "domain": "math",
-          "slug": "number-line"
+          "id": "core.drag-drop",
+          "name": "Drag & Drop",
+          "domain": "core",
+          "slug": "drag-drop"
         },
         {
-          "id": "math.grid-area",
-          "name": "Grid Area",
-          "domain": "math",
-          "slug": "grid-area"
+          "id": "language.flashcard",
+          "name": "Flashcard",
+          "domain": "language",
+          "slug": "flashcard"
         }
       ]
     }
@@ -469,29 +431,35 @@
     "domain": "core",
     "status": "stable",
     "keywords": ["drag", "drop", "sort", "categorize"],
-    "learningIntents": ["Practice", "Compare"],
+    "learningIntents": ["practice", "compare"],
     "capabilities": [
-      "Keyboard",
-      "ScreenReader",
-      "Hints",
-      "Retry",
-      "Scoring",
-      "Touch",
-      "Mouse",
-      "Analytics",
-      "Rewards",
-      "Accessibility",
-      "Offline",
-      "ObserveMode"
+      "supportsKeyboard",
+      "supportsScreenReader",
+      "supportsHints",
+      "supportsRetry",
+      "supportsScoring",
+      "supportsTouch",
+      "supportsMouse",
+      "supportsAnalytics",
+      "supportsRewards",
+      "supportsAccessibility",
+      "supportsOffline",
+      "supportsObserveMode"
     ],
     "accessibility": [
-      "HighContrast",
-      "KeyboardOnly",
-      "ScreenReader",
-      "FocusManagement",
-      "AriaSupport"
+      "highContrast",
+      "keyboardOnly",
+      "screenReader",
+      "focusManagement",
+      "ariaSupport"
     ],
-    "analytics": ["Attempts", "CompletionTime", "SuccessRate", "Hints", "Retries"],
+    "analytics": [
+      "trackAttempts",
+      "trackCompletionTime",
+      "trackSuccessRate",
+      "trackHints",
+      "trackRetries"
+    ],
     "reward": {
       "completionXP": 10,
       "positiveMessage": "Items sorted correctly!",
@@ -504,6 +472,7 @@
       "cognitiveLoad": "moderate",
       "recommendedAge": [5, 14],
       "readingLevel": "grade-2",
+      "subjectTags": ["general"],
       "learningObjectives": [
         "Classify items into the correct categories",
         "Categorize items based on shared attributes",
@@ -604,29 +573,35 @@
     "domain": "core",
     "status": "stable",
     "keywords": ["sequence", "order", "steps", "sort"],
-    "learningIntents": ["Practice", "Apply"],
+    "learningIntents": ["practice", "apply"],
     "capabilities": [
-      "Keyboard",
-      "ScreenReader",
-      "Hints",
-      "Retry",
-      "Scoring",
-      "Touch",
-      "Mouse",
-      "Analytics",
-      "Rewards",
-      "Accessibility",
-      "Offline",
-      "ObserveMode"
+      "supportsKeyboard",
+      "supportsScreenReader",
+      "supportsHints",
+      "supportsRetry",
+      "supportsScoring",
+      "supportsTouch",
+      "supportsMouse",
+      "supportsAnalytics",
+      "supportsRewards",
+      "supportsAccessibility",
+      "supportsOffline",
+      "supportsObserveMode"
     ],
     "accessibility": [
-      "HighContrast",
-      "KeyboardOnly",
-      "ScreenReader",
-      "FocusManagement",
-      "AriaSupport"
+      "highContrast",
+      "keyboardOnly",
+      "screenReader",
+      "focusManagement",
+      "ariaSupport"
     ],
-    "analytics": ["Attempts", "CompletionTime", "SuccessRate", "Hints", "Retries"],
+    "analytics": [
+      "trackAttempts",
+      "trackCompletionTime",
+      "trackSuccessRate",
+      "trackHints",
+      "trackRetries"
+    ],
     "reward": {
       "completionXP": 10,
       "positiveMessage": "Sequence is correct!",
@@ -639,6 +614,7 @@
       "cognitiveLoad": "moderate",
       "recommendedAge": [6, 14],
       "readingLevel": "grade-2",
+      "subjectTags": ["general"],
       "learningObjectives": [
         "Arrange events in chronological or logical order",
         "Understand dependencies between steps",
@@ -734,30 +710,37 @@
     "domain": "core",
     "status": "stable",
     "keywords": ["fill", "blank", "complete", "gap"],
-    "learningIntents": ["Assess", "Practice"],
+    "learningIntents": ["assess", "practice"],
     "capabilities": [
-      "Keyboard",
-      "ScreenReader",
-      "Hints",
-      "Retry",
-      "Scoring",
-      "Touch",
-      "Mouse",
-      "Analytics",
-      "Rewards",
-      "Accessibility",
-      "Offline",
-      "ObserveMode"
+      "supportsKeyboard",
+      "supportsScreenReader",
+      "supportsHints",
+      "supportsRetry",
+      "supportsScoring",
+      "supportsTouch",
+      "supportsMouse",
+      "supportsAnalytics",
+      "supportsRewards",
+      "supportsAccessibility",
+      "supportsOffline",
+      "supportsObserveMode"
     ],
     "accessibility": [
-      "HighContrast",
-      "KeyboardOnly",
-      "ScreenReader",
-      "TTS",
-      "FocusManagement",
-      "AriaSupport"
+      "highContrast",
+      "keyboardOnly",
+      "screenReader",
+      "tts",
+      "focusManagement",
+      "ariaSupport"
     ],
-    "analytics": ["Attempts", "CompletionTime", "SuccessRate", "Mistakes", "Hints", "Retries"],
+    "analytics": [
+      "trackAttempts",
+      "trackCompletionTime",
+      "trackSuccessRate",
+      "trackMistakes",
+      "trackHints",
+      "trackRetries"
+    ],
     "reward": {
       "completionXP": 10,
       "positiveMessage": "All blanks filled correctly!",
@@ -770,6 +753,7 @@
       "cognitiveLoad": "low",
       "recommendedAge": [5, 16],
       "readingLevel": "grade-3",
+      "subjectTags": ["general", "language", "math"],
       "learningObjectives": [
         "Complete sentences with the correct word or phrase",
         "Apply knowledge of vocabulary or mathematical terms",
@@ -871,32 +855,38 @@
     "domain": "core",
     "status": "stable",
     "keywords": ["story", "reading", "comprehension", "question"],
-    "learningIntents": ["Assess", "Reflect"],
+    "learningIntents": ["assess", "reflect"],
     "capabilities": [
-      "Keyboard",
-      "ScreenReader",
-      "Hints",
-      "Retry",
-      "Scoring",
-      "Touch",
-      "Mouse",
-      "Analytics",
-      "Rewards",
-      "Accessibility",
-      "Offline",
-      "ObserveMode"
+      "supportsKeyboard",
+      "supportsScreenReader",
+      "supportsHints",
+      "supportsRetry",
+      "supportsScoring",
+      "supportsTouch",
+      "supportsMouse",
+      "supportsAnalytics",
+      "supportsRewards",
+      "supportsAccessibility",
+      "supportsOffline",
+      "supportsObserveMode"
     ],
     "accessibility": [
-      "HighContrast",
-      "KeyboardOnly",
-      "ScreenReader",
-      "TTS",
-      "Captions",
-      "EasyLanguage",
-      "FocusManagement",
-      "AriaSupport"
+      "highContrast",
+      "keyboardOnly",
+      "screenReader",
+      "tts",
+      "captions",
+      "easyLanguage",
+      "focusManagement",
+      "ariaSupport"
     ],
-    "analytics": ["Attempts", "CompletionTime", "SuccessRate", "Hints", "Retries"],
+    "analytics": [
+      "trackAttempts",
+      "trackCompletionTime",
+      "trackSuccessRate",
+      "trackHints",
+      "trackRetries"
+    ],
     "reward": {
       "completionXP": 10,
       "positiveMessage": "Story comprehension correct!",
@@ -909,6 +899,7 @@
       "cognitiveLoad": "moderate",
       "recommendedAge": [6, 14],
       "readingLevel": "grade-2",
+      "subjectTags": ["language", "reading"],
       "learningObjectives": [
         "Comprehend a short story and identify key details",
         "Distinguish between facts stated in the text and opinions",
@@ -916,7 +907,7 @@
       ],
       "commonMisconceptions": [
         "Selecting an answer without reading the full story",
-        "Confusing the narrator perspective with objective facts",
+        "Confusing the narrator's perspective with objective facts",
         "Choosing answers that are generally true but not supported by the text"
       ],
       "generationHints": [
@@ -1010,30 +1001,36 @@
     "domain": "core",
     "status": "stable",
     "keywords": ["real", "world", "application", "scenario"],
-    "learningIntents": ["Apply", "Explore"],
+    "learningIntents": ["apply", "explore"],
     "capabilities": [
-      "Keyboard",
-      "ScreenReader",
-      "Hints",
-      "Retry",
-      "Scoring",
-      "Touch",
-      "Mouse",
-      "Analytics",
-      "Rewards",
-      "Accessibility",
-      "Offline",
-      "ObserveMode"
+      "supportsKeyboard",
+      "supportsScreenReader",
+      "supportsHints",
+      "supportsRetry",
+      "supportsScoring",
+      "supportsTouch",
+      "supportsMouse",
+      "supportsAnalytics",
+      "supportsRewards",
+      "supportsAccessibility",
+      "supportsOffline",
+      "supportsObserveMode"
     ],
     "accessibility": [
-      "HighContrast",
-      "KeyboardOnly",
-      "ScreenReader",
-      "TTS",
-      "FocusManagement",
-      "AriaSupport"
+      "highContrast",
+      "keyboardOnly",
+      "screenReader",
+      "tts",
+      "focusManagement",
+      "ariaSupport"
     ],
-    "analytics": ["Attempts", "CompletionTime", "SuccessRate", "Hints", "Retries"],
+    "analytics": [
+      "trackAttempts",
+      "trackCompletionTime",
+      "trackSuccessRate",
+      "trackHints",
+      "trackRetries"
+    ],
     "reward": {
       "completionXP": 10,
       "positiveMessage": "Scenario completed!",
@@ -1046,6 +1043,7 @@
       "cognitiveLoad": "moderate",
       "recommendedAge": [8, 18],
       "readingLevel": "grade-4",
+      "subjectTags": ["general"],
       "learningObjectives": [
         "Apply learned concepts to a real-world scenario",
         "Explain reasoning using everyday context",
@@ -1122,174 +1120,43 @@
     }
   },
   {
-    "id": "core.chart-reader",
-    "name": "Chart Reader",
-    "description": "Read and interpret charts, graphs, and data visualizations",
-    "domain": "core",
-    "status": "stable",
-    "keywords": ["chart", "graph", "data", "read"],
-    "learningIntents": ["Observe", "Apply"],
-    "capabilities": [
-      "Keyboard",
-      "ScreenReader",
-      "Hints",
-      "Retry",
-      "Scoring",
-      "Touch",
-      "Mouse",
-      "Analytics",
-      "Rewards",
-      "Accessibility",
-      "Offline",
-      "ObserveMode"
-    ],
-    "accessibility": [
-      "HighContrast",
-      "KeyboardOnly",
-      "ScreenReader",
-      "TTS",
-      "FocusManagement",
-      "AriaSupport"
-    ],
-    "analytics": ["Attempts", "CompletionTime", "SuccessRate", "Hints", "Retries"],
-    "reward": {
-      "completionXP": 10,
-      "positiveMessage": "Chart read correctly!",
-      "achievement": "first-chart"
-    },
-    "ai": {
-      "difficulty": "medium",
-      "estimatedMinutes": 4,
-      "bloomsLevel": "understand",
-      "cognitiveLoad": "moderate",
-      "recommendedAge": [6, 14],
-      "readingLevel": "grade-2",
-      "learningObjectives": [
-        "Read values accurately from a bar or pictograph chart",
-        "Compare data across categories to identify trends",
-        "Interpret visual representations of quantitative data"
-      ],
-      "commonMisconceptions": [
-        "Confusing bar height with bar width when reading values",
-        "Miscounting emoji rows in pictograph charts",
-        "Comparing absolute values instead of relative proportions"
-      ],
-      "generationHints": [
-        "Use small, clear datasets with 3-6 items",
-        "Ensure bar values are visually distinguishable",
-        "Use relevant emoji for pictograph mode"
-      ]
-    },
-    "guide": {
-      "oneLiner": "Display bar charts and graphs for students to read and interpret.",
-      "whatItDoes": "The Chart Reader widget shows a bar chart or pictograph that students read to answer questions. It displays clear, color-coded data visualizations with labels and values. Students interpret the chart and answer what they see.",
-      "whenToUse": [
-        "Teaching data interpretation and graph reading",
-        "Comparing quantities visually",
-        "Introducing bar charts and pictographs",
-        "Math lessons on data handling"
-      ],
-      "setupSteps": [
-        "Add an Exercise node to your lesson",
-        "Set the widget to \"core.chart-reader\"",
-        "Provide your data as label-value pairs",
-        "Choose a chart type: bar or pictograph",
-        "Add a description or question about the chart"
-      ],
-      "configFields": [
-        {
-          "name": "data",
-          "type": "array of objects",
-          "required": true,
-          "description": "Chart data. Each entry has label (string) and value (number)."
-        },
-        {
-          "name": "type",
-          "type": "string",
-          "required": false,
-          "description": "Chart type: \"bar\" (default) or a pictograph variant."
-        },
-        {
-          "name": "title",
-          "type": "string",
-          "required": false,
-          "description": "A title displayed above the chart."
-        },
-        {
-          "name": "description",
-          "type": "string",
-          "required": false,
-          "description": "Question or instructions about the chart."
-        },
-        {
-          "name": "showValues",
-          "type": "boolean",
-          "required": false,
-          "description": "Show numeric values on the chart bars. Defaults to true."
-        },
-        {
-          "name": "correctLabel",
-          "type": "string",
-          "required": false,
-          "description": "The label of the correct answer for quiz mode."
-        },
-        {
-          "name": "interactive",
-          "type": "boolean",
-          "required": false,
-          "description": "When false, shows the chart for observation only. Defaults to false."
-        }
-      ],
-      "exampleJson": "{\n  \"type\": \"exercise\",\n  \"title\": \"Favorite Sports\",\n  \"widget\": \"core.chart-reader\",\n  \"config\": {\n    \"description\": \"Which sport is the most popular based on the chart?\",\n    \"type\": \"bar\",\n    \"data\": [\n      { \"label\": \"Cricket\", \"value\": 12 },\n      { \"label\": \"Football\", \"value\": 8 },\n      { \"label\": \"Hockey\", \"value\": 5 }\n    ],\n    \"title\": \"Favorite Sports\",\n    \"showValues\": true,\n    \"correctLabel\": \"Cricket\",\n    \"interactive\": true\n  }\n}",
-      "tips": [
-        "Use 3-6 data items with clearly distinguishable values",
-        "Keep labels short and readable",
-        "Use values that are easy to compare visually",
-        "Add a title to give context to the chart"
-      ],
-      "sidebarPosition": 9,
-      "relatedWidgets": [
-        {
-          "id": "math.grid-area",
-          "name": "Grid Area",
-          "domain": "math",
-          "slug": "grid-area"
-        }
-      ]
-    }
-  },
-  {
     "id": "math.fraction-visual",
     "name": "Fraction Visual",
     "description": "Visualize and manipulate fractions with interactive models",
     "domain": "math",
     "status": "stable",
-    "keywords": ["fraction", "visual", "math"],
-    "learningIntents": ["Observe", "Explore"],
+    "keywords": ["fraction", "visual", "math", "分数"],
+    "learningIntents": ["observe", "explore"],
     "capabilities": [
-      "Keyboard",
-      "ScreenReader",
-      "Hints",
-      "Retry",
-      "Scoring",
-      "Touch",
-      "Mouse",
-      "Analytics",
-      "Rewards",
-      "Accessibility",
-      "Animation",
-      "Offline",
-      "ObserveMode"
+      "supportsKeyboard",
+      "supportsScreenReader",
+      "supportsHints",
+      "supportsRetry",
+      "supportsScoring",
+      "supportsTouch",
+      "supportsMouse",
+      "supportsAnalytics",
+      "supportsRewards",
+      "supportsAccessibility",
+      "supportsAnimation",
+      "supportsOffline",
+      "supportsObserveMode"
     ],
     "accessibility": [
-      "HighContrast",
-      "KeyboardOnly",
-      "ScreenReader",
-      "TTS",
-      "FocusManagement",
-      "AriaSupport"
+      "highContrast",
+      "keyboardOnly",
+      "screenReader",
+      "tts",
+      "focusManagement",
+      "ariaSupport"
     ],
-    "analytics": ["Attempts", "CompletionTime", "SuccessRate", "Hints", "Retries"],
+    "analytics": [
+      "trackAttempts",
+      "trackCompletionTime",
+      "trackSuccessRate",
+      "trackHints",
+      "trackRetries"
+    ],
     "reward": {
       "completionXP": 10,
       "positiveMessage": "Fraction understood!",
@@ -1302,6 +1169,7 @@
       "cognitiveLoad": "low",
       "recommendedAge": [5, 10],
       "readingLevel": "pre-reader",
+      "subjectTags": ["math", "fractions"],
       "learningObjectives": [
         "Understand that a fraction represents parts of a whole",
         "Visualize the relationship between numerator and denominator",
@@ -1402,57 +1270,64 @@
     "description": "Understand place value with interactive chart manipulation",
     "domain": "math",
     "status": "stable",
-    "keywords": ["place", "value", "chart", "math", "number"],
-    "learningIntents": ["Observe", "Practice"],
+    "keywords": ["place", "value", "chart", "math", "位值"],
+    "learningIntents": ["observe", "practice"],
     "capabilities": [
-      "Keyboard",
-      "ScreenReader",
-      "Hints",
-      "Retry",
-      "Scoring",
-      "Touch",
-      "Mouse",
-      "Analytics",
-      "Rewards",
-      "Accessibility",
-      "Offline",
-      "ObserveMode"
+      "supportsKeyboard",
+      "supportsScreenReader",
+      "supportsHints",
+      "supportsRetry",
+      "supportsScoring",
+      "supportsTouch",
+      "supportsMouse",
+      "supportsAnalytics",
+      "supportsRewards",
+      "supportsAccessibility",
+      "supportsOffline",
+      "supportsObserveMode"
     ],
     "accessibility": [
-      "HighContrast",
-      "KeyboardOnly",
-      "ScreenReader",
-      "TTS",
-      "FocusManagement",
-      "AriaSupport"
+      "highContrast",
+      "keyboardOnly",
+      "screenReader",
+      "tts",
+      "focusManagement",
+      "ariaSupport"
     ],
-    "analytics": ["Attempts", "CompletionTime", "SuccessRate", "Hints", "Retries"],
+    "analytics": [
+      "trackAttempts",
+      "trackCompletionTime",
+      "trackSuccessRate",
+      "trackHints",
+      "trackRetries"
+    ],
     "reward": {
       "completionXP": 10,
-      "positiveMessage": "Place value correct!",
+      "positiveMessage": "Place value identified!",
       "achievement": "first-place-value"
     },
     "ai": {
       "difficulty": "easy",
       "estimatedMinutes": 3,
-      "bloomsLevel": "remember",
+      "bloomsLevel": "understand",
       "cognitiveLoad": "low",
-      "recommendedAge": [5, 9],
-      "readingLevel": "pre-reader",
+      "recommendedAge": [6, 10],
+      "readingLevel": "grade-2",
+      "subjectTags": ["math", "place-value"],
       "learningObjectives": [
-        "Identify the value of each digit in a multi-digit number",
-        "Compose and decompose numbers by place value",
-        "Compare numbers using place value understanding"
+        "Identify the position and value of each digit in a multi-digit number",
+        "Understand how digit position determines its value",
+        "Compose and decompose numbers using place value columns"
       ],
       "commonMisconceptions": [
-        "Confusing the value of digits across columns",
-        "Treating place value columns as independent numbers",
-        "Struggling with zero as a placeholder"
+        "Treating each column as having equal value regardless of position",
+        "Confusing the Indian lakh/crore system with Western million/billion notation",
+        "Placing digits without considering their positional value"
       ],
       "generationHints": [
-        "Use numbers up to 999 for early learners",
-        "Include visual separators between columns",
-        "Show both expanded and standard forms"
+        "Use targetNumber to auto-generate draggable digit bank",
+        "Start with lakh mode before introducing crore",
+        "Display column labels (Ones, Tens, Hundreds, ...) clearly above each slot"
       ]
     },
     "guide": {
@@ -1533,31 +1408,37 @@
     "description": "Calculate and visualize area using grid models",
     "domain": "math",
     "status": "stable",
-    "keywords": ["grid", "area", "math", "geometry"],
-    "learningIntents": ["Practice", "Apply"],
+    "keywords": ["grid", "area", "math", "geometry", "面积"],
+    "learningIntents": ["practice", "apply"],
     "capabilities": [
-      "Keyboard",
-      "ScreenReader",
-      "Hints",
-      "Retry",
-      "Scoring",
-      "Touch",
-      "Mouse",
-      "Analytics",
-      "Rewards",
-      "Accessibility",
-      "Offline",
-      "ObserveMode"
+      "supportsKeyboard",
+      "supportsScreenReader",
+      "supportsHints",
+      "supportsRetry",
+      "supportsScoring",
+      "supportsTouch",
+      "supportsMouse",
+      "supportsAnalytics",
+      "supportsRewards",
+      "supportsAccessibility",
+      "supportsOffline",
+      "supportsObserveMode"
     ],
     "accessibility": [
-      "HighContrast",
-      "KeyboardOnly",
-      "ScreenReader",
-      "TTS",
-      "FocusManagement",
-      "AriaSupport"
+      "highContrast",
+      "keyboardOnly",
+      "screenReader",
+      "tts",
+      "focusManagement",
+      "ariaSupport"
     ],
-    "analytics": ["Attempts", "CompletionTime", "SuccessRate", "Hints", "Retries"],
+    "analytics": [
+      "trackAttempts",
+      "trackCompletionTime",
+      "trackSuccessRate",
+      "trackHints",
+      "trackRetries"
+    ],
     "reward": {
       "completionXP": 10,
       "positiveMessage": "Area calculated correctly!",
@@ -1570,6 +1451,7 @@
       "cognitiveLoad": "moderate",
       "recommendedAge": [7, 12],
       "readingLevel": "grade-3",
+      "subjectTags": ["math", "geometry", "area"],
       "learningObjectives": [
         "Calculate the area of a shape by counting grid squares",
         "Understand area as the number of covered unit squares",
@@ -1582,9 +1464,8 @@
       ],
       "generationHints": [
         "Keep grids under 10x10 for visual clarity",
-        "Use targetHighlights or targetCount to define the answer in interactive mode",
-        "Use maxHighlights to limit selections when targeting a specific area",
-        "Provide pre-highlighted shapes for observe/learn mode via highlighted"
+        "Use maxHighlights to limit interactive cell selections",
+        "Provide pre-highlighted shapes for observe/learn mode"
       ]
     },
     "guide": {
@@ -1690,62 +1571,214 @@
     }
   },
   {
-    "id": "math.clock-time",
-    "name": "Clock Time",
-    "description": "Read and tell time on analog and digital clocks",
-    "domain": "math",
+    "id": "core.chart-reader",
+    "name": "Chart Reader",
+    "description": "Read and interpret charts, graphs, and data visualizations",
+    "domain": "core",
     "status": "stable",
-    "keywords": ["clock", "time", "math", "hours", "minutes"],
-    "learningIntents": ["Practice", "Apply"],
+    "keywords": ["chart", "graph", "data", "read"],
+    "learningIntents": ["observe", "apply"],
     "capabilities": [
-      "Keyboard",
-      "ScreenReader",
-      "Hints",
-      "Retry",
-      "Scoring",
-      "Touch",
-      "Mouse",
-      "Analytics",
-      "Rewards",
-      "Accessibility",
-      "Offline",
-      "ObserveMode"
+      "supportsKeyboard",
+      "supportsScreenReader",
+      "supportsHints",
+      "supportsRetry",
+      "supportsScoring",
+      "supportsTouch",
+      "supportsMouse",
+      "supportsAnalytics",
+      "supportsRewards",
+      "supportsAccessibility",
+      "supportsOffline",
+      "supportsObserveMode"
     ],
     "accessibility": [
-      "HighContrast",
-      "KeyboardOnly",
-      "ScreenReader",
-      "TTS",
-      "FocusManagement",
-      "AriaSupport"
+      "highContrast",
+      "keyboardOnly",
+      "screenReader",
+      "tts",
+      "focusManagement",
+      "ariaSupport"
     ],
-    "analytics": ["Attempts", "CompletionTime", "SuccessRate", "Hints", "Retries"],
+    "analytics": [
+      "trackAttempts",
+      "trackCompletionTime",
+      "trackSuccessRate",
+      "trackHints",
+      "trackRetries"
+    ],
     "reward": {
       "completionXP": 10,
-      "positiveMessage": "Time correct!",
+      "positiveMessage": "Chart read correctly!",
+      "achievement": "first-chart"
+    },
+    "ai": {
+      "difficulty": "medium",
+      "estimatedMinutes": 4,
+      "bloomsLevel": "understand",
+      "cognitiveLoad": "moderate",
+      "recommendedAge": [6, 14],
+      "readingLevel": "grade-2",
+      "subjectTags": ["math", "data"],
+      "learningObjectives": [
+        "Read values accurately from a bar or pictograph chart",
+        "Compare data across categories to identify trends",
+        "Interpret visual representations of quantitative data"
+      ],
+      "commonMisconceptions": [
+        "Confusing bar height with bar width when reading values",
+        "Miscounting emoji rows in pictograph charts",
+        "Comparing absolute values instead of relative proportions"
+      ],
+      "generationHints": [
+        "Use small, clear datasets with 3-6 items",
+        "Ensure bar values are visually distinguishable",
+        "Use relevant emoji for pictograph mode"
+      ]
+    },
+    "guide": {
+      "oneLiner": "Display bar charts and graphs for students to read and interpret.",
+      "whatItDoes": "The Chart Reader widget shows a bar chart or pictograph that students read to answer questions. It displays clear, color-coded data visualizations with labels and values. Students interpret the chart and answer what they see.",
+      "whenToUse": [
+        "Teaching data interpretation and graph reading",
+        "Comparing quantities visually",
+        "Introducing bar charts and pictographs",
+        "Math lessons on data handling"
+      ],
+      "setupSteps": [
+        "Add an Exercise node to your lesson",
+        "Set the widget to \"core.chart-reader\"",
+        "Provide your data as label-value pairs",
+        "Choose a chart type: bar or pictograph",
+        "Add a description or question about the chart"
+      ],
+      "configFields": [
+        {
+          "name": "data",
+          "type": "array of objects",
+          "required": true,
+          "description": "Chart data. Each entry has label (string) and value (number)."
+        },
+        {
+          "name": "type",
+          "type": "string",
+          "required": false,
+          "description": "Chart type: \"bar\" (default) or a pictograph variant."
+        },
+        {
+          "name": "title",
+          "type": "string",
+          "required": false,
+          "description": "A title displayed above the chart."
+        },
+        {
+          "name": "description",
+          "type": "string",
+          "required": false,
+          "description": "Question or instructions about the chart."
+        },
+        {
+          "name": "showValues",
+          "type": "boolean",
+          "required": false,
+          "description": "Show numeric values on the chart bars. Defaults to true."
+        },
+        {
+          "name": "correctLabel",
+          "type": "string",
+          "required": false,
+          "description": "The label of the correct answer for quiz mode."
+        },
+        {
+          "name": "interactive",
+          "type": "boolean",
+          "required": false,
+          "description": "When false, shows the chart for observation only. Defaults to false."
+        }
+      ],
+      "exampleJson": "{\n  \"type\": \"exercise\",\n  \"title\": \"Favorite Sports\",\n  \"widget\": \"core.chart-reader\",\n  \"config\": {\n    \"description\": \"Which sport is the most popular based on the chart?\",\n    \"type\": \"bar\",\n    \"data\": [\n      { \"label\": \"Cricket\", \"value\": 12 },\n      { \"label\": \"Football\", \"value\": 8 },\n      { \"label\": \"Hockey\", \"value\": 5 }\n    ],\n    \"title\": \"Favorite Sports\",\n    \"showValues\": true,\n    \"correctLabel\": \"Cricket\",\n    \"interactive\": true\n  }\n}",
+      "tips": [
+        "Use 3-6 data items with clearly distinguishable values",
+        "Keep labels short and readable",
+        "Use values that are easy to compare visually",
+        "Add a title to give context to the chart"
+      ],
+      "sidebarPosition": 9,
+      "relatedWidgets": [
+        {
+          "id": "math.grid-area",
+          "name": "Grid Area",
+          "domain": "math",
+          "slug": "grid-area"
+        }
+      ]
+    }
+  },
+  {
+    "id": "math.clock-time",
+    "name": "Clock Time",
+    "description": "Read and set time on analog and digital clocks",
+    "domain": "math",
+    "status": "stable",
+    "keywords": ["clock", "time", "math", "时钟", "时间"],
+    "learningIntents": ["practice", "apply"],
+    "capabilities": [
+      "supportsKeyboard",
+      "supportsScreenReader",
+      "supportsHints",
+      "supportsRetry",
+      "supportsScoring",
+      "supportsTouch",
+      "supportsMouse",
+      "supportsAnalytics",
+      "supportsRewards",
+      "supportsAccessibility",
+      "supportsAnimation",
+      "supportsOffline",
+      "supportsObserveMode"
+    ],
+    "accessibility": [
+      "highContrast",
+      "keyboardOnly",
+      "screenReader",
+      "tts",
+      "focusManagement",
+      "ariaSupport"
+    ],
+    "analytics": [
+      "trackAttempts",
+      "trackCompletionTime",
+      "trackSuccessRate",
+      "trackHints",
+      "trackRetries"
+    ],
+    "reward": {
+      "completionXP": 10,
+      "positiveMessage": "Time telling correct!",
       "achievement": "first-clock"
     },
     "ai": {
       "difficulty": "easy",
       "estimatedMinutes": 3,
-      "bloomsLevel": "remember",
+      "bloomsLevel": "understand",
       "cognitiveLoad": "low",
-      "recommendedAge": [5, 9],
+      "recommendedAge": [4, 10],
       "readingLevel": "pre-reader",
+      "subjectTags": ["math", "time"],
       "learningObjectives": [
-        "Read time to the nearest hour and half-hour",
-        "Understand the relationship between hour and minute hands",
-        "Convert between analog and digital time representations"
+        "Read the hour from an analog clock face",
+        "Set clock hands to match a given digital time",
+        "Understand the relationship between hour and minute hands"
       ],
       "commonMisconceptions": [
-        "Reading the hour hand position based on the minute hand",
-        "Confusing AM and PM",
-        "Reading the minute hand as the hour"
+        "Reading the minute hand position as the hour",
+        "Not accounting for the minute hand affecting the hour hand position",
+        "Confusing o'clock times with half-past times"
       ],
       "generationHints": [
-        "Start with hour-only times, then add half-hours",
-        "Use clear, large clock faces",
-        "Include both analog and digital representations"
+        "Use round times (o'clock, half past) for easy mode",
+        "Use targetTime for precise grading in set mode",
+        "Prefer 12-hour display for young learners"
       ]
     },
     "guide": {
@@ -1829,60 +1862,67 @@
   {
     "id": "math.measurement-scale",
     "name": "Measurement Scale",
-    "description": "Measure and compare lengths using standard units",
+    "description": "Measure lengths, weights, and volumes using interactive scales",
     "domain": "math",
     "status": "stable",
-    "keywords": ["measurement", "scale", "math", "length", "ruler"],
-    "learningIntents": ["Practice", "Apply"],
+    "keywords": ["measurement", "scale", "math", "ruler", "测量"],
+    "learningIntents": ["practice", "apply"],
     "capabilities": [
-      "Keyboard",
-      "ScreenReader",
-      "Hints",
-      "Retry",
-      "Scoring",
-      "Touch",
-      "Mouse",
-      "Analytics",
-      "Rewards",
-      "Accessibility",
-      "Offline",
-      "ObserveMode"
+      "supportsKeyboard",
+      "supportsScreenReader",
+      "supportsHints",
+      "supportsRetry",
+      "supportsScoring",
+      "supportsTouch",
+      "supportsMouse",
+      "supportsAnalytics",
+      "supportsRewards",
+      "supportsAccessibility",
+      "supportsOffline",
+      "supportsObserveMode"
     ],
     "accessibility": [
-      "HighContrast",
-      "KeyboardOnly",
-      "ScreenReader",
-      "TTS",
-      "FocusManagement",
-      "AriaSupport"
+      "highContrast",
+      "keyboardOnly",
+      "screenReader",
+      "tts",
+      "focusManagement",
+      "ariaSupport"
     ],
-    "analytics": ["Attempts", "CompletionTime", "SuccessRate", "Hints", "Retries"],
+    "analytics": [
+      "trackAttempts",
+      "trackCompletionTime",
+      "trackSuccessRate",
+      "trackHints",
+      "trackRetries"
+    ],
     "reward": {
       "completionXP": 10,
-      "positiveMessage": "Measurement correct!",
+      "positiveMessage": "Measurement accurate!",
       "achievement": "first-measure"
     },
     "ai": {
-      "difficulty": "easy",
-      "estimatedMinutes": 3,
+      "difficulty": "medium",
+      "estimatedMinutes": 4,
       "bloomsLevel": "apply",
-      "cognitiveLoad": "low",
-      "recommendedAge": [5, 9],
-      "readingLevel": "pre-reader",
+      "cognitiveLoad": "moderate",
+      "recommendedAge": [6, 12],
+      "readingLevel": "grade-2",
+      "subjectTags": ["math", "measurement"],
       "learningObjectives": [
-        "Measure object lengths using a ruler or scale",
-        "Compare lengths using standard units",
-        "Estimate measurements before precise measurement"
+        "Read measurements accurately on a ruler or scale",
+        "Understand the relationship between tick marks and values",
+        "Estimate a measurement and verify against a target"
       ],
       "commonMisconceptions": [
-        "Starting measurement from 1 instead of 0",
-        "Confusing centimeters and inches",
-        "Misreading scale markings between labeled units"
+        "Starting measurement count at 1 instead of 0",
+        "Ignoring unit labels when reading values",
+        "Misreading thermometer as showing area instead of temperature"
       ],
       "generationHints": [
-        "Use whole-number measurements for early learners",
-        "Include objects of clearly different lengths",
-        "Show both metric and imperial options"
+        "Use simple step values (1, 2, 5, or 10)",
+        "Keep the measurement range under 100 for young learners",
+        "Always include the unit label in all markings"
       ]
     },
     "guide": {
@@ -1982,62 +2022,1423 @@
     }
   },
   {
-    "id": "math.number-line",
-    "name": "Number Line",
-    "description": "Explore numbers, operations, and fractions on a number line",
-    "domain": "math",
+    "id": "core.callout",
+    "name": "Callout",
+    "description": "Highlight important information with styled callout boxes",
+    "domain": "core",
     "status": "stable",
-    "keywords": ["number", "line", "math", "count", "fraction"],
-    "learningIntents": ["Observe", "Practice", "Compare"],
+    "keywords": ["callout", "highlight", "note", "info", "tip", "warning"],
+    "learningIntents": ["observe"],
     "capabilities": [
-      "Keyboard",
-      "ScreenReader",
-      "Hints",
-      "Retry",
-      "Scoring",
-      "Touch",
-      "Mouse",
-      "Analytics",
-      "Rewards",
-      "Accessibility",
-      "Offline",
-      "ObserveMode"
+      "supportsObserveMode",
+      "supportsKeyboard",
+      "supportsScreenReader",
+      "supportsOffline",
+      "supportsTouch",
+      "supportsMouse",
+      "supportsAnalytics",
+      "supportsRewards",
+      "supportsAccessibility"
     ],
     "accessibility": [
-      "HighContrast",
-      "KeyboardOnly",
-      "ScreenReader",
-      "TTS",
-      "FocusManagement",
-      "AriaSupport"
+      "highContrast",
+      "keyboardOnly",
+      "screenReader",
+      "focusManagement",
+      "ariaSupport"
     ],
-    "analytics": ["Attempts", "CompletionTime", "SuccessRate", "Hints", "Retries"],
+    "analytics": ["trackAttempts", "trackCompletionTime", "trackSuccessRate"],
     "reward": {
       "completionXP": 10,
-      "positiveMessage": "Number line correct!",
-      "achievement": "first-number-line"
+      "positiveMessage": "Content reviewed!",
+      "achievement": "first-callout"
     },
     "ai": {
       "difficulty": "easy",
-      "estimatedMinutes": 3,
-      "bloomsLevel": "understand",
+      "estimatedMinutes": 1,
+      "bloomsLevel": "remember",
       "cognitiveLoad": "low",
-      "recommendedAge": [5, 10],
-      "readingLevel": "pre-reader",
+      "recommendedAge": [5, 18],
+      "readingLevel": "grade-2",
+      "subjectTags": ["general"],
       "learningObjectives": [
-        "Locate numbers on a number line",
-        "Understand the relative position and magnitude of numbers",
-        "Compare distances between numbers"
+        "Identify and understand highlighted key information",
+        "Recognize different types of informational callouts"
+      ],
+      "commonMisconceptions": ["Confusing callout types (e.g., thinking a warning is a tip)"],
+      "generationHints": [
+        "Keep callout content concise and focused on one key point",
+        "Use type that matches the intent (warning for cautions, tip for advice)",
+        "Include a descriptive title when the content needs context"
+      ]
+    },
+    "guide": {
+      "oneLiner": "Highlight key information with a styled callout card.",
+      "whatItDoes": "The Callout widget displays important information in a visually distinct card. You can choose from different styles — tip, info, warning, or success — and add an optional icon. It is a passive display widget, not interactive.",
+      "whenToUse": [
+        "Highlighting key takeaways or important notes",
+        "Displaying fun facts or \"Did you know?\" boxes",
+        "Showing safety warnings or reminders",
+        "Adding emphasis to critical information"
+      ],
+      "setupSteps": [
+        "Add an Exercise node to your lesson",
+        "Set the widget to \"core.callout\"",
+        "Choose a type: tip, info, warning, or success",
+        "Write a title and the content text",
+        "Optionally add an emoji icon"
+      ],
+      "configFields": [
+        {
+          "name": "type",
+          "type": "string",
+          "required": true,
+          "description": "The callout style: \"tip\", \"info\", \"warning\", or \"success\"."
+        },
+        {
+          "name": "title",
+          "type": "string",
+          "required": false,
+          "description": "A heading for the callout card."
+        },
+        {
+          "name": "content",
+          "type": "string",
+          "required": true,
+          "description": "The main text content of the callout."
+        },
+        {
+          "name": "icon",
+          "type": "string",
+          "required": false,
+          "description": "An emoji icon to display with the callout, e.g. \"💡\" for tips."
+        }
+      ],
+      "exampleJson": "{\n  \"type\": \"exercise\",\n  \"title\": \"Did you know?\",\n  \"widget\": \"core.callout\",\n  \"config\": {\n    \"type\": \"tip\",\n    \"title\": \"Did you know?\",\n    \"content\": \"Plants make their own food using sunlight, water, and carbon dioxide through a process called photosynthesis.\",\n    \"icon\": \"🌿\"\n  }\n}",
+      "tips": [
+        "Keep content concise — 1-3 sentences is ideal",
+        "Use the right type for your message: tip for helpful hints, warning for important cautions",
+        "Emoji icons add visual appeal but are optional",
+        "Callouts work well between other activities to break up the lesson flow"
+      ],
+      "sidebarPosition": 10,
+      "relatedWidgets": []
+    }
+  },
+  {
+    "id": "core.image-compare",
+    "name": "Image Compare",
+    "description": "Compare two images side by side to identify differences or similarities",
+    "domain": "core",
+    "status": "stable",
+    "keywords": ["image", "compare", "difference", "side-by-side", "slider", "overlay"],
+    "learningIntents": ["compare", "observe"],
+    "capabilities": [
+      "supportsObserveMode",
+      "supportsKeyboard",
+      "supportsScreenReader",
+      "supportsOffline",
+      "supportsTouch",
+      "supportsMouse",
+      "supportsAnalytics",
+      "supportsRewards",
+      "supportsAccessibility"
+    ],
+    "accessibility": [
+      "highContrast",
+      "keyboardOnly",
+      "screenReader",
+      "focusManagement",
+      "ariaSupport"
+    ],
+    "analytics": ["trackAttempts", "trackCompletionTime", "trackSuccessRate"],
+    "reward": {
+      "completionXP": 10,
+      "positiveMessage": "Images compared!",
+      "achievement": "first-image-compare"
+    },
+    "ai": {
+      "difficulty": "easy",
+      "estimatedMinutes": 2,
+      "bloomsLevel": "analyze",
+      "cognitiveLoad": "low",
+      "recommendedAge": [5, 18],
+      "readingLevel": "grade-2",
+      "subjectTags": ["general", "visual"],
+      "learningObjectives": [
+        "Identify differences between two similar images",
+        "Observe and compare visual details systematically"
+      ],
+      "commonMisconceptions": ["Focusing only on obvious differences while missing subtle ones"],
+      "generationHints": [
+        "Provide images with clear, meaningful differences for comparison",
+        "Use alt text that describes the key differences between images",
+        "Keep images in the same orientation and scale for fair comparison"
+      ]
+    },
+    "guide": {
+      "oneLiner": "Compare two images side by side with an interactive slider.",
+      "whatItDoes": "The Image Compare widget places two images side by side (or overlapped with a draggable slider) so students can compare differences and similarities. It supports a slider mode for before/after comparisons and a side-by-side mode.",
+      "whenToUse": [
+        "Comparing healthy vs diseased plants or organisms",
+        "Before and after science experiments",
+        "Visual differences and similarities activities",
+        "Art comparison and analysis"
+      ],
+      "setupSteps": [
+        "Add an Exercise node to your lesson",
+        "Set the widget to \"core.image-compare\"",
+        "Provide paths to your left and right images",
+        "Add labels and alt text for each image",
+        "Choose slider or side-by-side mode"
+      ],
+      "configFields": [
+        {
+          "name": "leftImage",
+          "type": "string",
+          "required": true,
+          "description": "Path to the left (or top) image file."
+        },
+        {
+          "name": "rightImage",
+          "type": "string",
+          "required": true,
+          "description": "Path to the right (or bottom) image file."
+        },
+        {
+          "name": "leftLabel",
+          "type": "string",
+          "required": false,
+          "description": "Label shown under the left image."
+        },
+        {
+          "name": "rightLabel",
+          "type": "string",
+          "required": false,
+          "description": "Label shown under the right image."
+        },
+        {
+          "name": "mode",
+          "type": "string",
+          "required": false,
+          "description": "\"slider\" for draggable overlay or \"side-by-side\". Defaults to \"slider\"."
+        },
+        {
+          "name": "altText",
+          "type": "object",
+          "required": false,
+          "description": "Accessibility descriptions: `{ left: string, right: string }`."
+        },
+        {
+          "name": "caption",
+          "type": "string",
+          "required": false,
+          "description": "Caption text shown below both images."
+        }
+      ],
+      "exampleJson": "{\n  \"type\": \"exercise\",\n  \"title\": \"Leaf Comparison\",\n  \"widget\": \"core.image-compare\",\n  \"config\": {\n    \"leftImage\": \"assets/images/healthy-leaf.png\",\n    \"rightImage\": \"assets/images/diseased-leaf.png\",\n    \"leftLabel\": \"Healthy Leaf\",\n    \"rightLabel\": \"Diseased Leaf\",\n    \"mode\": \"slider\",\n    \"altText\": {\n      \"left\": \"A healthy green leaf\",\n      \"right\": \"A diseased leaf with brown spots\"\n    },\n    \"caption\": \"Compare a healthy leaf with a diseased one\"\n  }\n}",
+      "tips": [
+        "Use clear, high-contrast images for best comparison results",
+        "Always provide alt text for accessibility",
+        "The slider mode works best for before/after comparisons",
+        "Image files should be placed in your lesson package directory"
+      ],
+      "sidebarPosition": 11,
+      "relatedWidgets": [
+        {
+          "id": "core.hotspot",
+          "name": "Hotspot",
+          "domain": "core",
+          "slug": "hotspot"
+        }
+      ]
+    }
+  },
+  {
+    "id": "core.hotspot",
+    "name": "Hotspot",
+    "description": "Click or tap on specific areas of an image to answer questions",
+    "domain": "core",
+    "status": "stable",
+    "keywords": ["hotspot", "click", "tap", "image", "interactive"],
+    "learningIntents": ["explore", "assess"],
+    "capabilities": [
+      "supportsKeyboard",
+      "supportsScreenReader",
+      "supportsHints",
+      "supportsRetry",
+      "supportsScoring",
+      "supportsTouch",
+      "supportsMouse",
+      "supportsAnalytics",
+      "supportsRewards",
+      "supportsAccessibility",
+      "supportsOffline",
+      "supportsObserveMode"
+    ],
+    "accessibility": [
+      "highContrast",
+      "keyboardOnly",
+      "screenReader",
+      "focusManagement",
+      "ariaSupport"
+    ],
+    "analytics": [
+      "trackAttempts",
+      "trackCompletionTime",
+      "trackSuccessRate",
+      "trackHints",
+      "trackRetries"
+    ],
+    "reward": {
+      "completionXP": 10,
+      "positiveMessage": "Hotspot activity complete!",
+      "achievement": "hotspot-explorer"
+    },
+    "ai": {
+      "difficulty": "medium",
+      "estimatedMinutes": 3,
+      "bloomsLevel": "apply",
+      "cognitiveLoad": "moderate",
+      "recommendedAge": [6, 16],
+      "readingLevel": "grade-2",
+      "subjectTags": ["general", "geography"],
+      "learningObjectives": [
+        "Identify specific regions or elements in an image",
+        "Recognize spatial relationships between objects",
+        "Apply knowledge to select correct areas on a visual reference"
       ],
       "commonMisconceptions": [
-        "Assuming evenly spaced numbers are always equally distant",
-        "Confusing negative and positive directions",
-        "Miscounting tick marks between labeled numbers"
+        "Clicking on the wrong region that looks visually similar",
+        "Confusing adjacent regions with similar labels"
       ],
       "generationHints": [
-        "Use clear tick marks with labels",
-        "Start with positive integers only",
-        "Include both whole numbers and simple fractions"
+        "Use clear images with distinct regions",
+        "Make hotspot targets large enough for touch interaction",
+        "Limit hotspots to 3-8 for optimal engagement",
+        "Provide descriptive alt text for accessibility"
+      ]
+    },
+    "guide": {
+      "oneLiner": "Tap or click specific regions of an image to answer questions.",
+      "whatItDoes": "The Hotspot widget overlays clickable regions on an image. Students tap the correct area to answer a question — like \"Find Maharashtra on this map.\" It supports single-select and multi-select modes with visual feedback for correct and incorrect taps.",
+      "whenToUse": [
+        "Identifying locations on maps",
+        "Pointing out parts of a diagram or image",
+        "Geography and anatomy exercises",
+        "Interactive image exploration"
+      ],
+      "setupSteps": [
+        "Add an Exercise node to your lesson",
+        "Set the widget to \"core.hotspot\"",
+        "Provide an image path and alt text",
+        "Define hotspot regions — each needs id, x/y position (0-100), radius, and label",
+        "Mark the correct hotspot with correct: true"
+      ],
+      "configFields": [
+        {
+          "name": "image",
+          "type": "string",
+          "required": true,
+          "description": "Path to the image file."
+        },
+        {
+          "name": "altText",
+          "type": "string",
+          "required": true,
+          "description": "Description of the image for screen readers."
+        },
+        {
+          "name": "hotspots",
+          "type": "array of objects",
+          "required": true,
+          "description": "Clickable regions. Each has id (string), x (number 0-100), y (number 0-100), radius (number, default 5), label (string), correct (boolean), and optional description (string)."
+        },
+        {
+          "name": "mode",
+          "type": "string",
+          "required": false,
+          "description": "\"single\" for one correct hotspot (default) or \"multiple\" for selecting several."
+        },
+        {
+          "name": "hints",
+          "type": "array of strings",
+          "required": false,
+          "description": "Progressive hints to help students find the right region."
+        },
+        {
+          "name": "interactive",
+          "type": "boolean",
+          "required": false,
+          "description": "When false, highlights hotspots for observation. Defaults to false."
+        }
+      ],
+      "exampleJson": "{\n  \"type\": \"exercise\",\n  \"title\": \"Identify Maharashtra\",\n  \"widget\": \"core.hotspot\",\n  \"config\": {\n    \"image\": \"assets/images/india-map.png\",\n    \"altText\": \"Map of India with states highlighted\",\n    \"hotspots\": [\n      { \"id\": \"mh\", \"x\": 45, \"y\": 55, \"radius\": 8, \"label\": \"Maharashtra\", \"correct\": true, \"description\": \"Capital: Mumbai\" },\n      { \"id\": \"ka\", \"x\": 42, \"y\": 65, \"radius\": 8, \"label\": \"Karnataka\", \"correct\": false },\n      { \"id\": \"dl\", \"x\": 48, \"y\": 30, \"radius\": 8, \"label\": \"Delhi\", \"correct\": false }\n    ],\n    \"mode\": \"single\",\n    \"interactive\": true,\n    \"hints\": [\"Look for the western coastal state\"]\n  }\n}",
+      "tips": [
+        "Define clear, non-overlapping hotspot regions",
+        "Use x/y values between 0-100 for responsive positioning",
+        "Provide descriptive labels and alt text for each region",
+        "Add hints for students who struggle to find the right area"
+      ],
+      "sidebarPosition": 12,
+      "relatedWidgets": [
+        {
+          "id": "science.image-label",
+          "name": "Image Label",
+          "domain": "science",
+          "slug": "image-label"
+        },
+        {
+          "id": "science.label-diagram",
+          "name": "Label Diagram",
+          "domain": "science",
+          "slug": "label-diagram"
+        }
+      ]
+    }
+  },
+  {
+    "id": "core.timeline",
+    "name": "Timeline",
+    "description": "Explore events in chronological order with interactive timeline",
+    "domain": "core",
+    "status": "stable",
+    "keywords": ["timeline", "events", "chronological", "history", "时间线"],
+    "learningIntents": ["apply", "observe"],
+    "capabilities": [
+      "supportsKeyboard",
+      "supportsScreenReader",
+      "supportsHints",
+      "supportsRetry",
+      "supportsScoring",
+      "supportsTouch",
+      "supportsMouse",
+      "supportsAnalytics",
+      "supportsRewards",
+      "supportsAccessibility",
+      "supportsOffline",
+      "supportsObserveMode"
+    ],
+    "accessibility": [
+      "highContrast",
+      "keyboardOnly",
+      "screenReader",
+      "focusManagement",
+      "ariaSupport"
+    ],
+    "analytics": [
+      "trackAttempts",
+      "trackCompletionTime",
+      "trackSuccessRate",
+      "trackHints",
+      "trackRetries"
+    ],
+    "reward": {
+      "completionXP": 10,
+      "positiveMessage": "Timeline completed!",
+      "achievement": "timeline-master"
+    },
+    "ai": {
+      "difficulty": "medium",
+      "estimatedMinutes": 5,
+      "bloomsLevel": "apply",
+      "cognitiveLoad": "moderate",
+      "recommendedAge": [8, 16],
+      "readingLevel": "grade-3",
+      "subjectTags": ["general", "history"],
+      "learningObjectives": [
+        "Arrange events in chronological order",
+        "Understand temporal relationships between events",
+        "Identify causes and effects through sequencing"
+      ],
+      "commonMisconceptions": [
+        "Confusing earlier events with later events when dates are similar",
+        "Assuming order based on event importance rather than chronology"
+      ],
+      "generationHints": [
+        "Ensure each event has a unique and identifiable title",
+        "Include dates to make chronological order unambiguous",
+        "Use 4-8 events for manageable complexity"
+      ]
+    },
+    "guide": {
+      "oneLiner": "Display events in chronological order on an interactive timeline.",
+      "whatItDoes": "The Timeline widget arranges events along a visual timeline. Students can observe events in order or interactively arrange them. It supports horizontal, vertical, and compact layouts with optional dates, images, and descriptions.",
+      "whenToUse": [
+        "Teaching historical sequences and chronology",
+        "Showing life cycles and growth stages",
+        "Displaying project milestones or steps",
+        "Visualizing process timelines in science"
+      ],
+      "setupSteps": [
+        "Add an Exercise node to your lesson",
+        "Set the widget to \"core.timeline\"",
+        "Define your events — each needs an id and title",
+        "Optionally add dates, descriptions, icons, and images",
+        "Choose a layout: horizontal, vertical, or compact"
+      ],
+      "configFields": [
+        {
+          "name": "events",
+          "type": "array of objects",
+          "required": true,
+          "description": "Timeline events. Each has id (string), title (string), and optional date (string), icon (string), description (string), image (string)."
+        },
+        {
+          "name": "title",
+          "type": "string",
+          "required": false,
+          "description": "An overall title for the timeline."
+        },
+        {
+          "name": "layout",
+          "type": "string",
+          "required": false,
+          "description": "\"horizontal\", \"vertical\" (default), or \"compact\"."
+        },
+        {
+          "name": "showDates",
+          "type": "boolean",
+          "required": false,
+          "description": "Show dates on the timeline. Defaults to true."
+        },
+        {
+          "name": "showImages",
+          "type": "boolean",
+          "required": false,
+          "description": "Show images on the timeline. Defaults to false."
+        },
+        {
+          "name": "interactive",
+          "type": "boolean",
+          "required": false,
+          "description": "When false, shows events for observation only. Defaults to false."
+        }
+      ],
+      "exampleJson": "{\n  \"type\": \"exercise\",\n  \"title\": \"The Water Cycle\",\n  \"widget\": \"core.timeline\",\n  \"config\": {\n    \"title\": \"The Water Cycle\",\n    \"events\": [\n      { \"id\": \"evap\", \"title\": \"Evaporation\", \"icon\": \"☀️\", \"description\": \"Water heats up and rises as vapor\" },\n      { \"id\": \"cond\", \"title\": \"Condensation\", \"icon\": \"☁️\", \"description\": \"Water vapor cools and forms clouds\" },\n      { \"id\": \"rain\", \"title\": \"Rain\", \"icon\": \"🌧️\", \"description\": \"Water falls as precipitation\" },\n      { \"id\": \"collect\", \"title\": \"Collection\", \"icon\": \"🌊\", \"description\": \"Water collects in oceans and lakes\" }\n    ],\n    \"layout\": \"vertical\",\n    \"showDates\": false,\n    \"showImages\": false,\n    \"interactive\": false\n  }\n}",
+      "tips": [
+        "Use clear, descriptive event titles",
+        "Add emoji icons to make events visually distinct",
+        "Keep descriptions short — 1 sentence or less",
+        "For interactive mode, make sure the correct order is unambiguous"
+      ],
+      "sidebarPosition": 13,
+      "relatedWidgets": [
+        {
+          "id": "core.sequencing",
+          "name": "Sequencing",
+          "domain": "core",
+          "slug": "sequencing"
+        },
+        {
+          "id": "science.process-diagram",
+          "name": "Process Diagram",
+          "domain": "science",
+          "slug": "process-diagram"
+        }
+      ]
+    }
+  },
+  {
+    "id": "science.label-diagram",
+    "name": "Label Diagram",
+    "description": "Label parts of a scientific diagram or illustration",
+    "domain": "science",
+    "status": "stable",
+    "keywords": ["label", "diagram", "science", "parts", "drag", "drop"],
+    "learningIntents": ["apply", "assess"],
+    "capabilities": [
+      "supportsObserveMode",
+      "supportsKeyboard",
+      "supportsScreenReader",
+      "supportsHints",
+      "supportsRetry",
+      "supportsScoring",
+      "supportsTouch",
+      "supportsMouse",
+      "supportsAnalytics",
+      "supportsRewards",
+      "supportsAccessibility",
+      "supportsOffline"
+    ],
+    "accessibility": [
+      "highContrast",
+      "keyboardOnly",
+      "screenReader",
+      "focusManagement",
+      "ariaSupport"
+    ],
+    "analytics": [
+      "trackAttempts",
+      "trackCompletionTime",
+      "trackSuccessRate",
+      "trackHints",
+      "trackRetries"
+    ],
+    "reward": {
+      "completionXP": 10,
+      "positiveMessage": "Diagram labeled correctly!",
+      "achievement": "label-diagram-master"
+    },
+    "ai": {
+      "difficulty": "medium",
+      "estimatedMinutes": 4,
+      "bloomsLevel": "apply",
+      "cognitiveLoad": "moderate",
+      "recommendedAge": [7, 16],
+      "readingLevel": "grade-2",
+      "subjectTags": ["science", "biology", "anatomy"],
+      "learningObjectives": [
+        "Identify and label parts of a scientific diagram",
+        "Match terms to their correct positions on an illustration",
+        "Demonstrate understanding of spatial relationships in diagrams"
+      ],
+      "commonMisconceptions": [
+        "Placing labels in the nearest empty target without reading the description",
+        "Confusing similar-looking parts that are adjacent on the diagram"
+      ],
+      "generationHints": [
+        "Use clear diagrams with distinct labeled parts",
+        "Make target positions precise to avoid ambiguity",
+        "Limit labels to 4-8 for optimal engagement",
+        "Provide hints for each label to scaffold learning"
+      ]
+    },
+    "guide": {
+      "oneLiner": "Label parts of a scientific diagram by dragging labels to the correct spots.",
+      "whatItDoes": "The Label Diagram widget shows a scientific diagram with draggable labels. Students drag each label from a word bank to the correct position on the diagram. Common uses include labeling plant parts, human anatomy, or machine components.",
+      "whenToUse": [
+        "Teaching anatomy and biology diagrams",
+        "Labeling parts of a machine or system",
+        "Science vocabulary reinforcement",
+        "Geography and map labeling"
+      ],
+      "setupSteps": [
+        "Add an Exercise node to your lesson",
+        "Set the widget to \"science.label-diagram\"",
+        "Provide a clear diagram image with alt text",
+        "Define each label with id, text, x/y target position, and optional hint",
+        "Set interactive to true for drag-and-label mode"
+      ],
+      "configFields": [
+        {
+          "name": "image",
+          "type": "string",
+          "required": true,
+          "description": "Path to the diagram image file."
+        },
+        {
+          "name": "altText",
+          "type": "string",
+          "required": true,
+          "description": "Description of the diagram for screen readers."
+        },
+        {
+          "name": "labels",
+          "type": "array of objects",
+          "required": true,
+          "description": "Labels to drag. Each has id (string), text (string), target with x/y (percent), and optional hint (string)."
+        },
+        {
+          "name": "hints",
+          "type": "array of strings",
+          "required": false,
+          "description": "Progressive hints for students who need help."
+        },
+        {
+          "name": "interactive",
+          "type": "boolean",
+          "required": false,
+          "description": "When false, shows labels in position. Defaults to false."
+        }
+      ],
+      "exampleJson": "{\n  \"type\": \"exercise\",\n  \"title\": \"Plant Anatomy Labeling\",\n  \"widget\": \"science.label-diagram\",\n  \"config\": {\n    \"image\": \"assets/images/plant-anatomy.png\",\n    \"altText\": \"Diagram of a plant with parts to label\",\n    \"labels\": [\n      { \"id\": \"roots\", \"text\": \"Roots\", \"target\": { \"x\": 50, \"y\": 90 }, \"hint\": \"Below the soil\" },\n      { \"id\": \"stem\", \"text\": \"Stem\", \"target\": { \"x\": 50, \"y\": 60 }, \"hint\": \"Supports the plant\" },\n      { \"id\": \"leaves\", \"text\": \"Leaves\", \"target\": { \"x\": 30, \"y\": 40 }, \"hint\": \"Green and flat\" },\n      { \"id\": \"flower\", \"text\": \"Flower\", \"target\": { \"x\": 50, \"y\": 20 }, \"hint\": \"Colorful top\" }\n    ],\n    \"interactive\": true,\n    \"hints\": [\"Roots are found underground\", \"The stem connects roots to leaves\"]\n  }\n}",
+      "tips": [
+        "Use clear, high-contrast diagrams with obvious label areas",
+        "Provide 4-8 labels for manageable complexity",
+        "Add hints to each label for students who get stuck",
+        "Target x/y positions should use percentage values (0-100)"
+      ],
+      "sidebarPosition": 1,
+      "relatedWidgets": [
+        {
+          "id": "science.image-label",
+          "name": "Image Label",
+          "domain": "science",
+          "slug": "image-label"
+        },
+        {
+          "id": "core.hotspot",
+          "name": "Hotspot",
+          "domain": "core",
+          "slug": "hotspot"
+        }
+      ]
+    }
+  },
+  {
+    "id": "science.image-label",
+    "name": "Image Label",
+    "description": "Identify and label parts of an image or photograph",
+    "domain": "science",
+    "status": "stable",
+    "keywords": ["image", "label", "identify", "photo", "region", "explore"],
+    "learningIntents": ["observe", "apply"],
+    "capabilities": [
+      "supportsObserveMode",
+      "supportsKeyboard",
+      "supportsScreenReader",
+      "supportsHints",
+      "supportsRetry",
+      "supportsScoring",
+      "supportsTouch",
+      "supportsMouse",
+      "supportsAnalytics",
+      "supportsRewards",
+      "supportsAccessibility",
+      "supportsOffline"
+    ],
+    "accessibility": [
+      "highContrast",
+      "keyboardOnly",
+      "screenReader",
+      "focusManagement",
+      "ariaSupport"
+    ],
+    "analytics": [
+      "trackAttempts",
+      "trackCompletionTime",
+      "trackSuccessRate",
+      "trackHints",
+      "trackRetries"
+    ],
+    "reward": {
+      "completionXP": 10,
+      "positiveMessage": "Image regions explored!",
+      "achievement": "image-label-explorer"
+    },
+    "ai": {
+      "difficulty": "medium",
+      "estimatedMinutes": 3,
+      "bloomsLevel": "apply",
+      "cognitiveLoad": "moderate",
+      "recommendedAge": [6, 16],
+      "readingLevel": "grade-2",
+      "subjectTags": ["science", "geography", "biology"],
+      "learningObjectives": [
+        "Identify specific regions or elements in an image",
+        "Recognize spatial relationships between objects",
+        "Apply knowledge to locate areas on a visual reference"
+      ],
+      "commonMisconceptions": [
+        "Clicking on regions with visually similar appearance",
+        "Confusing adjacent regions with similar labels"
+      ],
+      "generationHints": [
+        "Use clear images with distinct regions",
+        "Make region targets large enough for touch interaction",
+        "Limit regions to 3-8 for optimal engagement",
+        "Provide descriptive alt text for accessibility"
+      ]
+    },
+    "guide": {
+      "oneLiner": "Tap regions of an image to identify and learn about them.",
+      "whatItDoes": "The Image Label widget shows an image with tappable regions. When students tap a region, they see its name and description. It works like an interactive exploration tool — great for planetariums, maps, and detailed diagrams.",
+      "whenToUse": [
+        "Interactive exploration of labeled images",
+        "Solar system and astronomy activities",
+        "Museum-style exhibit exploration",
+        "Teaching visual identification skills"
+      ],
+      "setupSteps": [
+        "Add an Exercise node to your lesson",
+        "Set the widget to \"science.image-label\"",
+        "Provide an image with alt text",
+        "Define clickable regions with x/y positions, titles, and descriptions",
+        "Optionally add hints for guided exploration"
+      ],
+      "configFields": [
+        {
+          "name": "image",
+          "type": "string",
+          "required": true,
+          "description": "Path to the image file."
+        },
+        {
+          "name": "altText",
+          "type": "string",
+          "required": true,
+          "description": "Description of the image for screen readers."
+        },
+        {
+          "name": "regions",
+          "type": "array of objects",
+          "required": true,
+          "description": "Clickable regions. Each has id (string), title (string), description (string), x (number), y (number), and optional tooltip (string)."
+        },
+        {
+          "name": "hints",
+          "type": "array of strings",
+          "required": false,
+          "description": "Hints to guide exploration."
+        },
+        {
+          "name": "interactive",
+          "type": "boolean",
+          "required": false,
+          "description": "When false, regions can still be tapped for information. Defaults to false."
+        }
+      ],
+      "exampleJson": "{\n  \"type\": \"exercise\",\n  \"title\": \"Solar System Explorer\",\n  \"widget\": \"science.image-label\",\n  \"config\": {\n    \"image\": \"assets/images/solar-system.png\",\n    \"altText\": \"Solar system with clickable planets\",\n    \"regions\": [\n      { \"id\": \"mars\", \"title\": \"Mars\", \"description\": \"The Red Planet, 4th from the Sun\", \"x\": 45, \"y\": 30, \"tooltip\": \"Click to learn about Mars\" },\n      { \"id\": \"jupiter\", \"title\": \"Jupiter\", \"description\": \"Largest planet in our solar system\", \"x\": 60, \"y\": 50, \"tooltip\": \"Click to learn about Jupiter\" },\n      { \"id\": \"earth\", \"title\": \"Earth\", \"description\": \"Our home planet, 3rd from the Sun\", \"x\": 35, \"y\": 40, \"tooltip\": \"Click to learn about Earth\" }\n    ],\n    \"interactive\": false,\n    \"hints\": [\"Mars is known as the Red Planet\", \"Jupiter is the largest planet\"]\n  }\n}",
+      "tips": [
+        "Use images with clearly defined, non-overlapping regions",
+        "Keep region descriptions concise — 1-2 sentences",
+        "Position regions carefully to cover the right part of the image",
+        "Add tooltips to hint at what students will discover"
+      ],
+      "sidebarPosition": 2,
+      "relatedWidgets": [
+        {
+          "id": "science.label-diagram",
+          "name": "Label Diagram",
+          "domain": "science",
+          "slug": "label-diagram"
+        },
+        {
+          "id": "core.hotspot",
+          "name": "Hotspot",
+          "domain": "core",
+          "slug": "hotspot"
+        }
+      ]
+    }
+  },
+  {
+    "id": "core.audio-player",
+    "name": "Audio Player",
+    "description": "Play educational audio with transcript, captions, and bookmarks",
+    "domain": "core",
+    "status": "stable",
+    "keywords": ["audio", "listen", "sound", "music", "podcast", "transcript"],
+    "learningIntents": ["observe", "listen"],
+    "capabilities": [
+      "supportsObserveMode",
+      "supportsKeyboard",
+      "supportsScreenReader",
+      "supportsHints",
+      "supportsTouch",
+      "supportsMouse",
+      "supportsAnalytics",
+      "supportsRewards",
+      "supportsAccessibility",
+      "supportsOffline",
+      "supportsLocalization"
+    ],
+    "accessibility": [
+      "highContrast",
+      "keyboardOnly",
+      "screenReader",
+      "tts",
+      "captions",
+      "audioDescription",
+      "ariaSupport"
+    ],
+    "analytics": ["trackAttempts", "trackCompletionTime", "trackHints", "trackInteractions"],
+    "reward": {
+      "completionXP": 10,
+      "positiveMessage": "Great listening!",
+      "achievement": "first-listen"
+    },
+    "ai": {
+      "difficulty": "easy",
+      "estimatedMinutes": 5,
+      "bloomsLevel": "remember",
+      "cognitiveLoad": "low",
+      "recommendedAge": [5, 18],
+      "readingLevel": "grade-2",
+      "subjectTags": ["language", "music", "general"],
+      "learningObjectives": [
+        "Listen to educational audio content",
+        "Follow along with transcript or captions",
+        "Identify key information from audio"
+      ],
+      "commonMisconceptions": [
+        "Assuming audio content is complete after one listen",
+        "Skipping captions when available"
+      ],
+      "generationHints": [
+        "Provide a clear transcript for accessibility",
+        "Use captions for key moments rather than full text",
+        "Keep audio segments under 5 minutes for engagement"
+      ]
+    },
+    "guide": {
+      "oneLiner": "Play audio clips with transcripts, captions, and comprehension support.",
+      "whatItDoes": "The Audio Player widget plays an audio file with playback controls. Students can listen to spoken content, read along with a transcript, and view timed captions. It supports bookmarks, waveform visualization, and keyboard controls.",
+      "whenToUse": [
+        "Language learning with pronunciation examples",
+        "Listening comprehension exercises",
+        "Audio-based instructions for young learners",
+        "Storytelling and read-aloud activities"
+      ],
+      "setupSteps": [
+        "Add an Exercise node to your lesson",
+        "Set the widget to \"core.audio-player\"",
+        "Provide the path to your audio file",
+        "Add a title and optional description",
+        "Optionally provide a transcript and timed captions"
+      ],
+      "configFields": [
+        {
+          "name": "audio",
+          "type": "string",
+          "required": true,
+          "description": "Path to the audio file (MP3, WAV, etc.)."
+        },
+        {
+          "name": "title",
+          "type": "string",
+          "required": false,
+          "description": "Title shown above the audio player."
+        },
+        {
+          "name": "description",
+          "type": "string",
+          "required": false,
+          "description": "Additional context about the audio."
+        },
+        {
+          "name": "transcript",
+          "type": "string",
+          "required": false,
+          "description": "Full text transcript of the audio content."
+        },
+        {
+          "name": "captions",
+          "type": "array of objects",
+          "required": false,
+          "description": "Timed captions. Each has start (number, seconds), end (number, seconds), and text (string)."
+        },
+        {
+          "name": "showTranscript",
+          "type": "boolean",
+          "required": false,
+          "description": "Show the transcript panel. Defaults to true."
+        },
+        {
+          "name": "waveform",
+          "type": "boolean",
+          "required": false,
+          "description": "Show audio waveform visualization. Defaults to false."
+        },
+        {
+          "name": "bookmarks",
+          "type": "boolean",
+          "required": false,
+          "description": "Allow students to bookmark positions. Defaults to true."
+        },
+        {
+          "name": "interactive",
+          "type": "boolean",
+          "required": false,
+          "description": "When false, plays in observe mode. Defaults to false."
+        }
+      ],
+      "exampleJson": "{\n  \"type\": \"exercise\",\n  \"title\": \"Listen to Bird Sounds\",\n  \"widget\": \"core.audio-player\",\n  \"config\": {\n    \"audio\": \"assets/audio/birdsong.mp3\",\n    \"title\": \"Morning Birdsong\",\n    \"description\": \"Listen to the sounds of birds in the morning.\",\n    \"transcript\": \"You can hear a variety of bird calls: chirping, whistling, and trilling.\",\n    \"captions\": [\n      { \"start\": 0, \"end\": 3, \"text\": \"Chirping sounds begin\" },\n      { \"start\": 3, \"end\": 6, \"text\": \"Whistling melodies join in\" },\n      { \"start\": 6, \"end\": 10, \"text\": \"A chorus of bird calls\" }\n    ],\n    \"showTranscript\": true,\n    \"bookmarks\": true,\n    \"interactive\": false\n  }\n}",
+      "tips": [
+        "Always provide a transcript for accessibility",
+        "Use short audio clips (1-3 minutes) for focused listening",
+        "Timed captions help students follow along",
+        "Audio files should be placed in your lesson package directory"
+      ],
+      "sidebarPosition": 14,
+      "relatedWidgets": [
+        {
+          "id": "core.video-player",
+          "name": "Video Player",
+          "domain": "core",
+          "slug": "video-player"
+        }
+      ]
+    }
+  },
+  {
+    "id": "core.video-player",
+    "name": "Video Player",
+    "description": "Educational video playback with chapters, captions, and transcript",
+    "domain": "core",
+    "status": "stable",
+    "keywords": ["video", "watch", "play", "chapters", "captions", "demonstration"],
+    "learningIntents": ["observe", "understand"],
+    "capabilities": [
+      "supportsObserveMode",
+      "supportsKeyboard",
+      "supportsScreenReader",
+      "supportsHints",
+      "supportsTouch",
+      "supportsMouse",
+      "supportsAnalytics",
+      "supportsRewards",
+      "supportsAccessibility",
+      "supportsOffline",
+      "supportsLocalization"
+    ],
+    "accessibility": [
+      "highContrast",
+      "keyboardOnly",
+      "screenReader",
+      "tts",
+      "captions",
+      "audioDescription",
+      "reducedMotion",
+      "ariaSupport"
+    ],
+    "analytics": ["trackAttempts", "trackCompletionTime", "trackHints", "trackInteractions"],
+    "reward": {
+      "completionXP": 10,
+      "positiveMessage": "Great watching!",
+      "achievement": "first-watch"
+    },
+    "ai": {
+      "difficulty": "easy",
+      "estimatedMinutes": 10,
+      "bloomsLevel": "remember",
+      "cognitiveLoad": "low",
+      "recommendedAge": [5, 18],
+      "readingLevel": "grade-3",
+      "subjectTags": ["general", "science", "history"],
+      "learningObjectives": [
+        "Watch and comprehend educational video content",
+        "Navigate between video chapters",
+        "Follow along with captions and transcript"
+      ],
+      "commonMisconceptions": [
+        "Watching without pausing to reflect on content",
+        "Ignoring chapter markers that organize key concepts"
+      ],
+      "generationHints": [
+        "Break long videos into chapters with clear titles",
+        "Provide captions for accessibility",
+        "Include a transcript for reference"
+      ]
+    },
+    "guide": {
+      "oneLiner": "Play video clips with chapters, captions, and transcripts.",
+      "whatItDoes": "The Video Player widget plays a video file with full playback controls. Students can watch educational videos with chapter navigation, timed captions, and a transcript panel. It supports fullscreen mode and keyboard shortcuts.",
+      "whenToUse": [
+        "Showing educational animations and demonstrations",
+        "Video-based science experiments",
+        "Visual explanations of complex concepts",
+        "Documentary-style content for older students"
+      ],
+      "setupSteps": [
+        "Add an Exercise node to your lesson",
+        "Set the widget to \"core.video-player\"",
+        "Provide the path to your video file",
+        "Optionally add a poster image for the thumbnail",
+        "Add chapters for easy navigation, captions for accessibility"
+      ],
+      "configFields": [
+        {
+          "name": "video",
+          "type": "string",
+          "required": true,
+          "description": "Path to the video file (MP4 recommended)."
+        },
+        {
+          "name": "title",
+          "type": "string",
+          "required": false,
+          "description": "Title shown above the video player."
+        },
+        {
+          "name": "poster",
+          "type": "string",
+          "required": false,
+          "description": "Path to a poster image shown before the video plays."
+        },
+        {
+          "name": "chapters",
+          "type": "array of objects",
+          "required": false,
+          "description": "Video chapters. Each has time (number, seconds) and title (string)."
+        },
+        {
+          "name": "captions",
+          "type": "array of objects",
+          "required": false,
+          "description": "Timed captions. Each has start (number), end (number), and text (string)."
+        },
+        {
+          "name": "transcript",
+          "type": "string",
+          "required": false,
+          "description": "Full text transcript of the video content."
+        },
+        {
+          "name": "showTranscript",
+          "type": "boolean",
+          "required": false,
+          "description": "Show the transcript panel. Defaults to true."
+        },
+        {
+          "name": "allowFullscreen",
+          "type": "boolean",
+          "required": false,
+          "description": "Allow fullscreen mode. Defaults to true."
+        },
+        {
+          "name": "interactive",
+          "type": "boolean",
+          "required": false,
+          "description": "When false, plays in observe mode. Defaults to false."
+        }
+      ],
+      "exampleJson": "{\n  \"type\": \"exercise\",\n  \"title\": \"Photosynthesis Video\",\n  \"widget\": \"core.video-player\",\n  \"config\": {\n    \"video\": \"assets/video/photosynthesis.mp4\",\n    \"title\": \"Understanding Photosynthesis\",\n    \"chapters\": [\n      { \"time\": 0, \"title\": \"Introduction\" },\n      { \"time\": 60, \"title\": \"Light Reactions\" },\n      { \"time\": 180, \"title\": \"Calvin Cycle\" }\n    ],\n    \"showTranscript\": true,\n    \"interactive\": false\n  }\n}",
+      "tips": [
+        "Use short, focused clips (1-5 minutes)",
+        "Always add captions for accessibility",
+        "Chapters help students navigate to specific sections",
+        "Video files should be placed in your lesson package directory"
+      ],
+      "sidebarPosition": 15,
+      "relatedWidgets": [
+        {
+          "id": "core.audio-player",
+          "name": "Audio Player",
+          "domain": "core",
+          "slug": "audio-player"
+        }
+      ]
+    }
+  },
+  {
+    "id": "language.flashcard",
+    "name": "Flashcard",
+    "description": "Vocabulary and memory practice with flip cards",
+    "domain": "language",
+    "status": "stable",
+    "keywords": ["flashcard", "vocabulary", "memory", "recall", "flip", "quiz"],
+    "learningIntents": ["practice", "recall"],
+    "capabilities": [
+      "supportsObserveMode",
+      "supportsKeyboard",
+      "supportsScreenReader",
+      "supportsHints",
+      "supportsRetry",
+      "supportsTouch",
+      "supportsMouse",
+      "supportsAnalytics",
+      "supportsRewards",
+      "supportsAccessibility",
+      "supportsOffline",
+      "supportsLocalization"
+    ],
+    "accessibility": [
+      "highContrast",
+      "keyboardOnly",
+      "screenReader",
+      "ariaSupport",
+      "focusManagement"
+    ],
+    "analytics": [
+      "trackAttempts",
+      "trackCompletionTime",
+      "trackHints",
+      "trackSuccessRate",
+      "trackConfidence",
+      "trackInteractions",
+      "trackMistakes",
+      "trackRetries"
+    ],
+    "reward": {
+      "completionXP": 15,
+      "positiveMessage": "Great memorization!",
+      "achievement": "first-flashcard"
+    },
+    "ai": {
+      "difficulty": "easy",
+      "estimatedMinutes": 5,
+      "bloomsLevel": "remember",
+      "cognitiveLoad": "low",
+      "recommendedAge": [6, 18],
+      "readingLevel": "grade-2",
+      "subjectTags": ["language", "vocabulary"],
+      "learningObjectives": [
+        "Recall vocabulary or concepts from flashcards",
+        "Self-assess understanding through flip interaction",
+        "Practice retrieval through spaced repetition metadata"
+      ],
+      "commonMisconceptions": [
+        "Confusing similar-looking words or concepts",
+        "Overconfidence after seeing the answer"
+      ],
+      "generationHints": [
+        "Keep card fronts concise (1-5 words)",
+        "Write clear, specific backs",
+        "Add images for concrete nouns",
+        "Include pronunciation guides for language cards"
+      ]
+    },
+    "guide": {
+      "oneLiner": "Study terms and concepts with interactive flip-card flashcards.",
+      "whatItDoes": "The Flashcard widget shows cards with a front and back — tap to flip and reveal the answer. Students can rate their confidence (easy/medium/hard), shuffle the deck, and track their progress. It supports flip, multiple-choice, and spaced repetition modes.",
+      "whenToUse": [
+        "Vocabulary and spelling practice",
+        "Memorizing key terms and definitions",
+        "Language learning",
+        "Quick revision before assessments"
+      ],
+      "setupSteps": [
+        "Add an Exercise node to your lesson",
+        "Set the widget to \"language.flashcard\"",
+        "Create your cards — each needs a front and back",
+        "Optionally add hints, categories, and difficulty levels",
+        "Choose a study mode: flip, multiple, or spaced"
+      ],
+      "configFields": [
+        {
+          "name": "cards",
+          "type": "array of objects",
+          "required": true,
+          "description": "Flashcards. Each has front (string), back (string), and optional hint (string), category (string), difficulty (\"easy\"/\"medium\"/\"hard\"), image (string), and audio (string)."
+        },
+        {
+          "name": "mode",
+          "type": "string",
+          "required": false,
+          "description": "Study mode: \"flip\" (default), \"multiple\" for multiple-choice, or \"spaced\" for spaced repetition."
+        },
+        {
+          "name": "shuffle",
+          "type": "boolean",
+          "required": false,
+          "description": "Randomize card order. Defaults to false."
+        },
+        {
+          "name": "interactive",
+          "type": "boolean",
+          "required": false,
+          "description": "When false, shows cards in view-only mode. Defaults to false."
+        }
+      ],
+      "exampleJson": "{\n  \"type\": \"exercise\",\n  \"title\": \"Spanish Vocabulary\",\n  \"widget\": \"language.flashcard\",\n  \"config\": {\n    \"cards\": [\n      { \"front\": \"Hola\", \"back\": \"Hello\", \"hint\": \"Common greeting\", \"category\": \"Greetings\" },\n      { \"front\": \"Gracias\", \"back\": \"Thank you\", \"category\": \"Politeness\" },\n      { \"front\": \"Adios\", \"back\": \"Goodbye\", \"category\": \"Greetings\" },\n      { \"front\": \"Por favor\", \"back\": \"Please\", \"category\": \"Politeness\" }\n    ],\n    \"mode\": \"flip\",\n    \"shuffle\": true,\n    \"interactive\": true\n  }\n}",
+      "tips": [
+        "Keep front text short — one word or phrase",
+        "Use detailed back text for definitions and context",
+        "Add categories to help students organize their study",
+        "Group related cards together (e.g., all greetings, all food words)"
+      ],
+      "sidebarPosition": 1,
+      "relatedWidgets": [
+        {
+          "id": "core.matching",
+          "name": "Matching",
+          "domain": "core",
+          "slug": "matching"
+        },
+        {
+          "id": "core.fill-blank",
+          "name": "Fill in the Blank",
+          "domain": "core",
+          "slug": "fill-blank"
+        }
+      ]
+    }
+  },
+  {
+    "id": "science.process-diagram",
+    "name": "Process Diagram",
+    "description": "Visual explanation of systems and processes with nodes and connections",
+    "domain": "science",
+    "status": "stable",
+    "keywords": ["process", "diagram", "flow", "cycle", "system", "steps", "science"],
+    "learningIntents": ["observe", "understand"],
+    "capabilities": [
+      "supportsObserveMode",
+      "supportsKeyboard",
+      "supportsScreenReader",
+      "supportsHints",
+      "supportsTouch",
+      "supportsMouse",
+      "supportsAnalytics",
+      "supportsRewards",
+      "supportsAccessibility",
+      "supportsOffline",
+      "supportsAnimation",
+      "supportsLocalization"
+    ],
+    "accessibility": [
+      "highContrast",
+      "keyboardOnly",
+      "screenReader",
+      "reducedMotion",
+      "ariaSupport",
+      "focusManagement"
+    ],
+    "analytics": ["trackAttempts", "trackCompletionTime", "trackHints", "trackInteractions"],
+    "reward": {
+      "completionXP": 15,
+      "positiveMessage": "Process understood!",
+      "achievement": "first-process"
+    },
+    "ai": {
+      "difficulty": "medium",
+      "estimatedMinutes": 5,
+      "bloomsLevel": "understand",
+      "cognitiveLoad": "moderate",
+      "recommendedAge": [8, 18],
+      "readingLevel": "grade-4",
+      "subjectTags": ["science", "computer-science"],
+      "learningObjectives": [
+        "Understand the sequence of steps in a process",
+        "Identify relationships between process stages",
+        "Predict the next step in a known process"
+      ],
+      "commonMisconceptions": [
+        "Assuming processes always follow a linear path",
+        "Missing feedback loops in cyclical processes"
+      ],
+      "generationHints": [
+        "Use 3-8 nodes for clarity",
+        "Label connections with transition descriptions",
+        "Choose layout based on process shape (linear=horizontal, cyclical=cycle)"
+      ]
+    },
+    "guide": {
+      "oneLiner": "Explore step-by-step scientific processes with connected diagrams.",
+      "whatItDoes": "The Process Diagram widget shows a connected diagram of a scientific process — like the water cycle, food chain, or rock cycle. Nodes represent steps, and connections show the flow. It supports cycle, linear, and custom layouts with step-by-step reveal.",
+      "whenToUse": [
+        "Teaching the water cycle or rock cycle",
+        "Explaining food chains and food webs",
+        "Showing cause-and-effect processes",
+        "Visualizing life cycles with stages"
+      ],
+      "setupSteps": [
+        "Add an Exercise node to your lesson",
+        "Set the widget to \"science.process-diagram\"",
+        "Define process nodes — each has an id and title",
+        "Define connections between nodes with optional labels",
+        "Choose a layout: cycle, linear, or tree"
+      ],
+      "configFields": [
+        {
+          "name": "nodes",
+          "type": "array of objects",
+          "required": true,
+          "description": "Process steps. Each has id (string), title (string), and optional description (string) and icon (string)."
+        },
+        {
+          "name": "connections",
+          "type": "array of objects",
+          "required": true,
+          "description": "Connections between nodes. Each has from (node id), to (node id), and optional label (string) and type (\"arrow\", \"loop\", \"dashed\")."
+        },
+        {
+          "name": "layout",
+          "type": "string",
+          "required": false,
+          "description": "Layout style: \"cycle\", \"linear\", \"tree\", or \"flow\". Defaults to \"cycle\"."
+        },
+        {
+          "name": "title",
+          "type": "string",
+          "required": false,
+          "description": "An overall title for the diagram."
+        },
+        {
+          "name": "stepByStep",
+          "type": "boolean",
+          "required": false,
+          "description": "Reveal nodes one at a time. Defaults to false."
+        },
+        {
+          "name": "interactive",
+          "type": "boolean",
+          "required": false,
+          "description": "When false, shows the complete diagram. Defaults to false."
+        }
+      ],
+      "exampleJson": "{\n  \"type\": \"exercise\",\n  \"title\": \"The Water Cycle\",\n  \"widget\": \"science.process-diagram\",\n  \"config\": {\n    \"nodes\": [\n      { \"id\": \"evaporation\", \"title\": \"Evaporation\", \"description\": \"Sun heats water, turning it into vapor\", \"icon\": \"☀️\" },\n      { \"id\": \"condensation\", \"title\": \"Condensation\", \"description\": \"Water vapor cools and forms clouds\", \"icon\": \"☁️\" },\n      { \"id\": \"precipitation\", \"title\": \"Precipitation\", \"description\": \"Water falls as rain, snow, or hail\", \"icon\": \"🌧️\" },\n      { \"id\": \"collection\", \"title\": \"Collection\", \"description\": \"Water gathers in oceans and lakes\", \"icon\": \"🌊\" }\n    ],\n    \"connections\": [\n      { \"from\": \"evaporation\", \"to\": \"condensation\", \"label\": \"vapor rises\" },\n      { \"from\": \"condensation\", \"to\": \"precipitation\", \"label\": \"clouds form\" },\n      { \"from\": \"precipitation\", \"to\": \"collection\", \"label\": \"water falls\" },\n      { \"from\": \"collection\", \"to\": \"evaporation\", \"type\": \"loop\", \"label\": \"cycle repeats\" }\n    ],\n    \"layout\": \"cycle\",\n    \"title\": \"The Water Cycle\",\n    \"stepByStep\": true,\n    \"interactive\": false\n  }\n}",
+      "tips": [
+        "Use clear step labels that students can read easily",
+        "Show arrows to indicate the direction of the process",
+        "Add brief descriptions for each step",
+        "Cycle layout works best for repeating processes"
+      ],
+      "sidebarPosition": 3,
+      "relatedWidgets": [
+        {
+          "id": "core.sequencing",
+          "name": "Sequencing",
+          "domain": "core",
+          "slug": "sequencing"
+        },
+        {
+          "id": "core.timeline",
+          "name": "Timeline",
+          "domain": "core",
+          "slug": "timeline"
+        }
+      ]
+    }
+  },
+  {
+    "id": "math.number-line",
+    "name": "Number Line",
+    "description": "Visual number reasoning with interactive number line",
+    "domain": "math",
+    "status": "stable",
+    "keywords": ["number-line", "math", "integers", "decimals", "fractions", "estimate"],
+    "learningIntents": ["observe", "practice", "compare"],
+    "capabilities": [
+      "supportsObserveMode",
+      "supportsKeyboard",
+      "supportsScreenReader",
+      "supportsHints",
+      "supportsTouch",
+      "supportsMouse",
+      "supportsAnalytics",
+      "supportsRewards",
+      "supportsAccessibility",
+      "supportsOffline",
+      "supportsLocalization"
+    ],
+    "accessibility": ["highContrast", "keyboardOnly", "screenReader", "ariaSupport"],
+    "analytics": [
+      "trackAttempts",
+      "trackCompletionTime",
+      "trackHints",
+      "trackSuccessRate",
+      "trackInteractions",
+      "trackMistakes"
+    ],
+    "reward": {
+      "completionXP": 15,
+      "positiveMessage": "Number sense strengthened!",
+      "achievement": "first-numberline"
+    },
+    "ai": {
+      "difficulty": "medium",
+      "estimatedMinutes": 3,
+      "bloomsLevel": "understand",
+      "cognitiveLoad": "moderate",
+      "recommendedAge": [6, 14],
+      "readingLevel": "grade-2",
+      "subjectTags": ["math", "number-sense"],
+      "learningObjectives": [
+        "Locate numbers on a number line",
+        "Compare relative positions of numbers",
+        "Estimate values between marked points"
+      ],
+      "commonMisconceptions": [
+        "Confusing the direction of negative numbers",
+        "Assuming equal spacing between non-uniform intervals"
+      ],
+      "generationHints": [
+        "Use a reasonable range (0-10 for early learners, -10 to 10 for negatives)",
+        "Include at least 5 tick marks for reference",
+        "Place target values at non-obvious positions for challenge"
       ]
     },
     "guide": {
@@ -2143,514 +3544,44 @@
     }
   },
   {
-    "id": "core.callout",
-    "name": "Callout",
-    "description": "Highlight key concepts with callout cards",
-    "domain": "core",
-    "status": "experimental",
-    "keywords": ["callout", "highlight", "info", "card"],
-    "learningIntents": ["Observe"],
-    "capabilities": ["Keyboard", "ScreenReader", "Accessibility", "Offline"],
-    "accessibility": [
-      "HighContrast",
-      "KeyboardOnly",
-      "ScreenReader",
-      "TTS",
-      "FocusManagement",
-      "AriaSupport"
-    ],
-    "analytics": [],
-    "reward": {
-      "completionXP": 5
-    },
-    "ai": {
-      "difficulty": "easy",
-      "estimatedMinutes": 1,
-      "bloomsLevel": "remember",
-      "cognitiveLoad": "low",
-      "recommendedAge": [3, 18],
-      "readingLevel": "pre-reader",
-      "learningObjectives": ["Read and absorb key information"],
-      "commonMisconceptions": [],
-      "generationHints": ["Keep text concise and scannable", "Use bold for emphasis"]
-    },
-    "guide": {
-      "oneLiner": "Highlight key information with a styled callout card.",
-      "whatItDoes": "The Callout widget displays important information in a visually distinct card. You can choose from different styles — tip, info, warning, or success — and add an optional icon. It is a passive display widget, not interactive.",
-      "whenToUse": [
-        "Highlighting key takeaways or important notes",
-        "Displaying fun facts or \"Did you know?\" boxes",
-        "Showing safety warnings or reminders",
-        "Adding emphasis to critical information"
-      ],
-      "setupSteps": [
-        "Add an Exercise node to your lesson",
-        "Set the widget to \"core.callout\"",
-        "Choose a type: tip, info, warning, or success",
-        "Write a title and the content text",
-        "Optionally add an emoji icon"
-      ],
-      "configFields": [
-        {
-          "name": "type",
-          "type": "string",
-          "required": true,
-          "description": "The callout style: \"tip\", \"info\", \"warning\", or \"success\"."
-        },
-        {
-          "name": "title",
-          "type": "string",
-          "required": false,
-          "description": "A heading for the callout card."
-        },
-        {
-          "name": "content",
-          "type": "string",
-          "required": true,
-          "description": "The main text content of the callout."
-        },
-        {
-          "name": "icon",
-          "type": "string",
-          "required": false,
-          "description": "An emoji icon to display with the callout, e.g. \"💡\" for tips."
-        }
-      ],
-      "exampleJson": "{\n  \"type\": \"exercise\",\n  \"title\": \"Did you know?\",\n  \"widget\": \"core.callout\",\n  \"config\": {\n    \"type\": \"tip\",\n    \"title\": \"Did you know?\",\n    \"content\": \"Plants make their own food using sunlight, water, and carbon dioxide through a process called photosynthesis.\",\n    \"icon\": \"🌿\"\n  }\n}",
-      "tips": [
-        "Keep content concise — 1-3 sentences is ideal",
-        "Use the right type for your message: tip for helpful hints, warning for important cautions",
-        "Emoji icons add visual appeal but are optional",
-        "Callouts work well between other activities to break up the lesson flow"
-      ],
-      "sidebarPosition": 10,
-      "relatedWidgets": []
-    }
-  },
-  {
-    "id": "core.image-compare",
-    "name": "Image Compare",
-    "description": "Compare two images and identify differences or similarities",
-    "domain": "core",
-    "status": "experimental",
-    "keywords": ["image", "compare", "visual", "spot"],
-    "learningIntents": ["Compare", "Observe"],
-    "capabilities": [
-      "Keyboard",
-      "ScreenReader",
-      "Hints",
-      "Retry",
-      "Scoring",
-      "Touch",
-      "Mouse",
-      "Analytics",
-      "Rewards",
-      "Accessibility",
-      "Offline",
-      "ObserveMode"
-    ],
-    "accessibility": [
-      "HighContrast",
-      "KeyboardOnly",
-      "ScreenReader",
-      "TTS",
-      "FocusManagement",
-      "AriaSupport"
-    ],
-    "analytics": ["Attempts", "CompletionTime", "SuccessRate", "Hints", "Retries"],
-    "reward": {
-      "completionXP": 10,
-      "positiveMessage": "Comparison correct!",
-      "achievement": "first-compare"
-    },
-    "ai": {
-      "difficulty": "medium",
-      "estimatedMinutes": 3,
-      "bloomsLevel": "analyze",
-      "cognitiveLoad": "moderate",
-      "recommendedAge": [5, 14],
-      "readingLevel": "grade-2",
-      "learningObjectives": [
-        "Identify differences between two images",
-        "Compare visual elements systematically"
-      ],
-      "commonMisconceptions": ["Missing subtle differences", "Focusing on one area only"],
-      "generationHints": [
-        "Use clear, high-contrast images",
-        "Limit differences to 3-5 for manageability"
-      ]
-    },
-    "guide": {
-      "oneLiner": "Compare two images side by side with an interactive slider.",
-      "whatItDoes": "The Image Compare widget places two images side by side (or overlapped with a draggable slider) so students can compare differences and similarities. It supports a slider mode for before/after comparisons and a side-by-side mode.",
-      "whenToUse": [
-        "Comparing healthy vs diseased plants or organisms",
-        "Before and after science experiments",
-        "Visual differences and similarities activities",
-        "Art comparison and analysis"
-      ],
-      "setupSteps": [
-        "Add an Exercise node to your lesson",
-        "Set the widget to \"core.image-compare\"",
-        "Provide paths to your left and right images",
-        "Add labels and alt text for each image",
-        "Choose slider or side-by-side mode"
-      ],
-      "configFields": [
-        {
-          "name": "leftImage",
-          "type": "string",
-          "required": true,
-          "description": "Path to the left (or top) image file."
-        },
-        {
-          "name": "rightImage",
-          "type": "string",
-          "required": true,
-          "description": "Path to the right (or bottom) image file."
-        },
-        {
-          "name": "leftLabel",
-          "type": "string",
-          "required": false,
-          "description": "Label shown under the left image."
-        },
-        {
-          "name": "rightLabel",
-          "type": "string",
-          "required": false,
-          "description": "Label shown under the right image."
-        },
-        {
-          "name": "mode",
-          "type": "string",
-          "required": false,
-          "description": "\"slider\" for draggable overlay or \"side-by-side\". Defaults to \"slider\"."
-        },
-        {
-          "name": "altText",
-          "type": "object",
-          "required": false,
-          "description": "Accessibility descriptions: `{ left: string, right: string }`."
-        },
-        {
-          "name": "caption",
-          "type": "string",
-          "required": false,
-          "description": "Caption text shown below both images."
-        }
-      ],
-      "exampleJson": "{\n  \"type\": \"exercise\",\n  \"title\": \"Leaf Comparison\",\n  \"widget\": \"core.image-compare\",\n  \"config\": {\n    \"leftImage\": \"assets/images/healthy-leaf.png\",\n    \"rightImage\": \"assets/images/diseased-leaf.png\",\n    \"leftLabel\": \"Healthy Leaf\",\n    \"rightLabel\": \"Diseased Leaf\",\n    \"mode\": \"slider\",\n    \"altText\": {\n      \"left\": \"A healthy green leaf\",\n      \"right\": \"A diseased leaf with brown spots\"\n    },\n    \"caption\": \"Compare a healthy leaf with a diseased one\"\n  }\n}",
-      "tips": [
-        "Use clear, high-contrast images for best comparison results",
-        "Always provide alt text for accessibility",
-        "The slider mode works best for before/after comparisons",
-        "Image files should be placed in your lesson package directory"
-      ],
-      "sidebarPosition": 11,
-      "relatedWidgets": [
-        {
-          "id": "core.hotspot",
-          "name": "Hotspot",
-          "domain": "core",
-          "slug": "hotspot"
-        }
-      ]
-    }
-  },
-  {
-    "id": "core.hotspot",
-    "name": "Hotspot",
-    "description": "Tap or click specific regions of an image to answer questions",
-    "domain": "core",
-    "status": "experimental",
-    "keywords": ["hotspot", "tap", "click", "image", "region"],
-    "learningIntents": ["Explore", "Assess"],
-    "capabilities": [
-      "Keyboard",
-      "ScreenReader",
-      "Hints",
-      "Retry",
-      "Scoring",
-      "Touch",
-      "Mouse",
-      "Analytics",
-      "Rewards",
-      "Accessibility",
-      "Offline",
-      "ObserveMode"
-    ],
-    "accessibility": [
-      "HighContrast",
-      "KeyboardOnly",
-      "ScreenReader",
-      "TTS",
-      "FocusManagement",
-      "AriaSupport"
-    ],
-    "analytics": ["Attempts", "CompletionTime", "SuccessRate", "Hints", "Retries"],
-    "reward": {
-      "completionXP": 10,
-      "positiveMessage": "Hotspot found!",
-      "achievement": "first-hotspot"
-    },
-    "ai": {
-      "difficulty": "medium",
-      "estimatedMinutes": 3,
-      "bloomsLevel": "apply",
-      "cognitiveLoad": "moderate",
-      "recommendedAge": [5, 14],
-      "readingLevel": "grade-2",
-      "learningObjectives": [
-        "Identify specific regions in an image",
-        "Apply knowledge to locate correct areas"
-      ],
-      "commonMisconceptions": ["Tapping too broadly", "Missing small target regions"],
-      "generationHints": [
-        "Define clear, non-overlapping hotspot regions",
-        "Use descriptive labels for each region"
-      ]
-    },
-    "guide": {
-      "oneLiner": "Tap or click specific regions of an image to answer questions.",
-      "whatItDoes": "The Hotspot widget overlays clickable regions on an image. Students tap the correct area to answer a question — like \"Find Maharashtra on this map.\" It supports single-select and multi-select modes with visual feedback for correct and incorrect taps.",
-      "whenToUse": [
-        "Identifying locations on maps",
-        "Pointing out parts of a diagram or image",
-        "Geography and anatomy exercises",
-        "Interactive image exploration"
-      ],
-      "setupSteps": [
-        "Add an Exercise node to your lesson",
-        "Set the widget to \"core.hotspot\"",
-        "Provide an image path and alt text",
-        "Define hotspot regions — each needs id, x/y position (0-100), radius, and label",
-        "Mark the correct hotspot with correct: true"
-      ],
-      "configFields": [
-        {
-          "name": "image",
-          "type": "string",
-          "required": true,
-          "description": "Path to the image file."
-        },
-        {
-          "name": "altText",
-          "type": "string",
-          "required": true,
-          "description": "Description of the image for screen readers."
-        },
-        {
-          "name": "hotspots",
-          "type": "array of objects",
-          "required": true,
-          "description": "Clickable regions. Each has id (string), x (number 0-100), y (number 0-100), radius (number, default 5), label (string), correct (boolean), and optional description (string)."
-        },
-        {
-          "name": "mode",
-          "type": "string",
-          "required": false,
-          "description": "\"single\" for one correct hotspot (default) or \"multiple\" for selecting several."
-        },
-        {
-          "name": "hints",
-          "type": "array of strings",
-          "required": false,
-          "description": "Progressive hints to help students find the right region."
-        },
-        {
-          "name": "interactive",
-          "type": "boolean",
-          "required": false,
-          "description": "When false, highlights hotspots for observation. Defaults to false."
-        }
-      ],
-      "exampleJson": "{\n  \"type\": \"exercise\",\n  \"title\": \"Identify Maharashtra\",\n  \"widget\": \"core.hotspot\",\n  \"config\": {\n    \"image\": \"assets/images/india-map.png\",\n    \"altText\": \"Map of India with states highlighted\",\n    \"hotspots\": [\n      { \"id\": \"mh\", \"x\": 45, \"y\": 55, \"radius\": 8, \"label\": \"Maharashtra\", \"correct\": true, \"description\": \"Capital: Mumbai\" },\n      { \"id\": \"ka\", \"x\": 42, \"y\": 65, \"radius\": 8, \"label\": \"Karnataka\", \"correct\": false },\n      { \"id\": \"dl\", \"x\": 48, \"y\": 30, \"radius\": 8, \"label\": \"Delhi\", \"correct\": false }\n    ],\n    \"mode\": \"single\",\n    \"interactive\": true,\n    \"hints\": [\"Look for the western coastal state\"]\n  }\n}",
-      "tips": [
-        "Define clear, non-overlapping hotspot regions",
-        "Use x/y values between 0-100 for responsive positioning",
-        "Provide descriptive labels and alt text for each region",
-        "Add hints for students who struggle to find the right area"
-      ],
-      "sidebarPosition": 12,
-      "relatedWidgets": [
-        {
-          "id": "science.image-label",
-          "name": "Image Label",
-          "domain": "science",
-          "slug": "image-label"
-        },
-        {
-          "id": "science.label-diagram",
-          "name": "Label Diagram",
-          "domain": "science",
-          "slug": "label-diagram"
-        }
-      ]
-    }
-  },
-  {
-    "id": "core.timeline",
-    "name": "Timeline",
-    "description": "Arrange events on a chronological timeline",
-    "domain": "core",
-    "status": "experimental",
-    "keywords": ["timeline", "events", "chronological", "history"],
-    "learningIntents": ["Apply", "Observe"],
-    "capabilities": [
-      "Keyboard",
-      "ScreenReader",
-      "Hints",
-      "Retry",
-      "Scoring",
-      "Touch",
-      "Mouse",
-      "Analytics",
-      "Rewards",
-      "Accessibility",
-      "Offline",
-      "ObserveMode",
-      "Animation"
-    ],
-    "accessibility": [
-      "HighContrast",
-      "KeyboardOnly",
-      "ScreenReader",
-      "TTS",
-      "FocusManagement",
-      "AriaSupport"
-    ],
-    "analytics": ["Attempts", "CompletionTime", "SuccessRate", "Hints", "Retries"],
-    "reward": {
-      "completionXP": 10,
-      "positiveMessage": "Timeline correct!",
-      "achievement": "first-timeline"
-    },
-    "ai": {
-      "difficulty": "medium",
-      "estimatedMinutes": 4,
-      "bloomsLevel": "understand",
-      "cognitiveLoad": "moderate",
-      "recommendedAge": [6, 14],
-      "readingLevel": "grade-3",
-      "learningObjectives": [
-        "Place events in chronological order",
-        "Understand temporal relationships between events"
-      ],
-      "commonMisconceptions": ["Confusing earlier and later", "Ignoring date labels"],
-      "generationHints": ["Use clear date labels", "Space events evenly on the line"]
-    },
-    "guide": {
-      "oneLiner": "Display events in chronological order on an interactive timeline.",
-      "whatItDoes": "The Timeline widget arranges events along a visual timeline. Students can observe events in order or interactively arrange them. It supports horizontal, vertical, and compact layouts with optional dates, images, and descriptions.",
-      "whenToUse": [
-        "Teaching historical sequences and chronology",
-        "Showing life cycles and growth stages",
-        "Displaying project milestones or steps",
-        "Visualizing process timelines in science"
-      ],
-      "setupSteps": [
-        "Add an Exercise node to your lesson",
-        "Set the widget to \"core.timeline\"",
-        "Define your events — each needs an id and title",
-        "Optionally add dates, descriptions, icons, and images",
-        "Choose a layout: horizontal, vertical, or compact"
-      ],
-      "configFields": [
-        {
-          "name": "events",
-          "type": "array of objects",
-          "required": true,
-          "description": "Timeline events. Each has id (string), title (string), and optional date (string), icon (string), description (string), image (string)."
-        },
-        {
-          "name": "title",
-          "type": "string",
-          "required": false,
-          "description": "An overall title for the timeline."
-        },
-        {
-          "name": "layout",
-          "type": "string",
-          "required": false,
-          "description": "\"horizontal\", \"vertical\" (default), or \"compact\"."
-        },
-        {
-          "name": "showDates",
-          "type": "boolean",
-          "required": false,
-          "description": "Show dates on the timeline. Defaults to true."
-        },
-        {
-          "name": "showImages",
-          "type": "boolean",
-          "required": false,
-          "description": "Show images on the timeline. Defaults to false."
-        },
-        {
-          "name": "interactive",
-          "type": "boolean",
-          "required": false,
-          "description": "When false, shows events for observation only. Defaults to false."
-        }
-      ],
-      "exampleJson": "{\n  \"type\": \"exercise\",\n  \"title\": \"The Water Cycle\",\n  \"widget\": \"core.timeline\",\n  \"config\": {\n    \"title\": \"The Water Cycle\",\n    \"events\": [\n      { \"id\": \"evap\", \"title\": \"Evaporation\", \"icon\": \"☀️\", \"description\": \"Water heats up and rises as vapor\" },\n      { \"id\": \"cond\", \"title\": \"Condensation\", \"icon\": \"☁️\", \"description\": \"Water vapor cools and forms clouds\" },\n      { \"id\": \"rain\", \"title\": \"Rain\", \"icon\": \"🌧️\", \"description\": \"Water falls as precipitation\" },\n      { \"id\": \"collect\", \"title\": \"Collection\", \"icon\": \"🌊\", \"description\": \"Water collects in oceans and lakes\" }\n    ],\n    \"layout\": \"vertical\",\n    \"showDates\": false,\n    \"showImages\": false,\n    \"interactive\": false\n  }\n}",
-      "tips": [
-        "Use clear, descriptive event titles",
-        "Add emoji icons to make events visually distinct",
-        "Keep descriptions short — 1 sentence or less",
-        "For interactive mode, make sure the correct order is unambiguous"
-      ],
-      "sidebarPosition": 13,
-      "relatedWidgets": [
-        {
-          "id": "core.sequencing",
-          "name": "Sequencing",
-          "domain": "core",
-          "slug": "sequencing"
-        },
-        {
-          "id": "science.process-diagram",
-          "name": "Process Diagram",
-          "domain": "science",
-          "slug": "process-diagram"
-        }
-      ]
-    }
-  },
-  {
-    "id": "core.process-explainer",
-    "name": "Process Explainer",
-    "description": "Step-by-step explanation of a process with progressive reveal",
-    "domain": "core",
+    "id": "social.map",
+    "name": "Interactive Map",
+    "description": "Interactive educational maps for geography and history",
+    "domain": "social",
     "status": "stable",
-    "keywords": ["process", "explainer", "steps", "step-by-step", "sequence", "how-it-works"],
-    "learningIntents": ["Observe", "Understand"],
+    "keywords": ["map", "geography", "regions", "countries", "states", "explore"],
+    "learningIntents": ["explore", "observe"],
     "capabilities": [
-      "Keyboard",
-      "ScreenReader",
-      "Hints",
-      "Touch",
-      "Mouse",
-      "Analytics",
-      "Rewards",
-      "Accessibility",
-      "Offline",
-      "ObserveMode",
-      "Animation"
+      "supportsObserveMode",
+      "supportsKeyboard",
+      "supportsScreenReader",
+      "supportsHints",
+      "supportsTouch",
+      "supportsMouse",
+      "supportsAnalytics",
+      "supportsRewards",
+      "supportsAccessibility",
+      "supportsOffline",
+      "supportsLocalization"
     ],
     "accessibility": [
-      "HighContrast",
-      "KeyboardOnly",
-      "ScreenReader",
-      "FocusManagement",
-      "AriaSupport"
+      "highContrast",
+      "keyboardOnly",
+      "screenReader",
+      "ariaSupport",
+      "focusManagement"
     ],
-    "analytics": ["Attempts", "CompletionTime", "SuccessRate", "Hints", "Interactions"],
+    "analytics": [
+      "trackAttempts",
+      "trackCompletionTime",
+      "trackHints",
+      "trackSuccessRate",
+      "trackInteractions"
+    ],
     "reward": {
       "completionXP": 15,
-      "positiveMessage": "Process understood!",
-      "achievement": "first-process-explainer"
+      "positiveMessage": "Geography explored!",
+      "achievement": "first-map"
     },
     "ai": {
       "difficulty": "medium",
@@ -2659,934 +3590,21 @@
       "cognitiveLoad": "moderate",
       "recommendedAge": [8, 18],
       "readingLevel": "grade-4",
+      "subjectTags": ["geography", "history", "social-studies"],
       "learningObjectives": [
-        "Understand the sequence of steps in a process",
-        "Identify relationships between process stages",
-        "Explain each stage of a process in their own words"
+        "Identify regions on an interactive map",
+        "Explore geographical relationships",
+        "Locate specific features using map references"
       ],
       "commonMisconceptions": [
-        "Skipping intermediate steps in a process",
-        "Confusing the order of stages"
+        "Confusing similar-sounding region names",
+        "Misreading map scale and relative distances"
       ],
       "generationHints": [
-        "Use 3-8 steps for clarity",
-        "Keep each step description to 1-2 sentences",
-        "Provide an icon or simple media asset per step when possible"
-      ]
-    },
-    "guide": {
-      "oneLiner": "Walk through a process one step at a time with clear explanations.",
-      "whatItDoes": "The Process Explainer widget presents a process as a numbered list of steps. In step-by-step mode, each step is revealed progressively, keeping focus on one idea at a time. Optional dotLottie or SVG animations can be attached via config.animation.",
-      "whenToUse": [
-        "Teaching multi-stage processes step by step",
-        "Explaining how a system works",
-        "Guiding learners through a procedure"
-      ],
-      "setupSteps": [
-        "Add an Exercise node to your lesson",
-        "Set the widget to \"core.process-explainer\"",
-        "Define your steps — each needs an id and title",
-        "Optionally add descriptions, icons, and media per step",
-        "Optionally attach an animation config for dotLottie/SVG effects"
-      ],
-      "configFields": [
-        {
-          "name": "title",
-          "type": "string",
-          "required": false,
-          "description": "An overall title for the explainer."
-        },
-        {
-          "name": "steps",
-          "type": "array of objects",
-          "required": true,
-          "description": "Explainer steps. Each has id (string) and title (string), with optional description (string), icon (string), and media (string)."
-        },
-        {
-          "name": "stepByStep",
-          "type": "boolean",
-          "required": false,
-          "description": "Reveal steps one at a time. Defaults to true."
-        },
-        {
-          "name": "interactive",
-          "type": "boolean",
-          "required": false,
-          "description": "When false, shows steps for observation only. Defaults to false."
-        },
-        {
-          "name": "animation",
-          "type": "object",
-          "required": false,
-          "description": "Optional OAS animation config (backend lottie/svg, src, trigger, reducedMotion, effects)."
-        }
-      ],
-      "exampleJson": "{\n  \"type\": \"exercise\",\n  \"title\": \"Water Cycle\",\n  \"widget\": \"core.process-explainer\",\n  \"config\": {\n    \"title\": \"The Water Cycle\",\n    \"stepByStep\": true,\n    \"interactive\": true,\n    \"steps\": [\n      { \"id\": \"evap\", \"title\": \"Evaporation\", \"description\": \"Sun heats water into vapor\" },\n      { \"id\": \"cond\", \"title\": \"Condensation\", \"description\": \"Vapor cools into clouds\" },\n      { \"id\": \"rain\", \"title\": \"Precipitation\", \"description\": \"Water falls as rain or snow\" },\n      { \"id\": \"collect\", \"title\": \"Collection\", \"description\": \"Water gathers in oceans and lakes\" }\n    ]\n  }\n}",
-      "tips": [
-        "Use 3-8 steps for clarity",
-        "Keep step descriptions to 1-2 sentences",
-        "Use stepByStep mode to reduce cognitive load"
-      ],
-      "sidebarPosition": 14,
-      "relatedWidgets": [
-        {
-          "id": "science.process-diagram",
-          "name": "Process Diagram",
-          "domain": "science",
-          "slug": "process-diagram"
-        },
-        {
-          "id": "core.timeline",
-          "name": "Timeline",
-          "domain": "core",
-          "slug": "timeline"
-        }
-      ]
-    }
-  },
-  {
-    "id": "science.label-diagram",
-    "name": "Label Diagram",
-    "description": "Label parts of a scientific diagram by dragging labels",
-    "domain": "science",
-    "status": "experimental",
-    "keywords": ["label", "diagram", "science", "drag"],
-    "learningIntents": ["Apply", "Assess"],
-    "capabilities": [
-      "Keyboard",
-      "ScreenReader",
-      "Hints",
-      "Retry",
-      "Scoring",
-      "Touch",
-      "Mouse",
-      "Analytics",
-      "Rewards",
-      "Accessibility",
-      "Offline",
-      "ObserveMode"
-    ],
-    "accessibility": [
-      "HighContrast",
-      "KeyboardOnly",
-      "ScreenReader",
-      "TTS",
-      "FocusManagement",
-      "AriaSupport"
-    ],
-    "analytics": ["Attempts", "CompletionTime", "SuccessRate", "Hints", "Retries"],
-    "reward": {
-      "completionXP": 10,
-      "positiveMessage": "Labels correct!",
-      "achievement": "first-label"
-    },
-    "ai": {
-      "difficulty": "medium",
-      "estimatedMinutes": 4,
-      "bloomsLevel": "apply",
-      "cognitiveLoad": "moderate",
-      "recommendedAge": [7, 14],
-      "readingLevel": "grade-3",
-      "learningObjectives": [
-        "Identify parts of a scientific diagram",
-        "Apply vocabulary to label correct regions"
-      ],
-      "commonMisconceptions": [
-        "Confusing similar-looking parts",
-        "Guessing without reading labels"
-      ],
-      "generationHints": [
-        "Use clear, high-contrast diagrams",
-        "Provide 4-8 labels for manageable complexity"
-      ]
-    },
-    "guide": {
-      "oneLiner": "Label parts of a scientific diagram by dragging labels to the correct spots.",
-      "whatItDoes": "The Label Diagram widget shows a scientific diagram with draggable labels. Students drag each label from a word bank to the correct position on the diagram. Common uses include labeling plant parts, human anatomy, or machine components.",
-      "whenToUse": [
-        "Teaching anatomy and biology diagrams",
-        "Labeling parts of a machine or system",
-        "Science vocabulary reinforcement",
-        "Geography and map labeling"
-      ],
-      "setupSteps": [
-        "Add an Exercise node to your lesson",
-        "Set the widget to \"science.label-diagram\"",
-        "Provide a clear diagram image with alt text",
-        "Define each label with id, text, x/y target position, and optional hint",
-        "Set interactive to true for drag-and-label mode"
-      ],
-      "configFields": [
-        {
-          "name": "image",
-          "type": "string",
-          "required": true,
-          "description": "Path to the diagram image file."
-        },
-        {
-          "name": "altText",
-          "type": "string",
-          "required": true,
-          "description": "Description of the diagram for screen readers."
-        },
-        {
-          "name": "labels",
-          "type": "array of objects",
-          "required": true,
-          "description": "Labels to drag. Each has id (string), text (string), target with x/y (percent), and optional hint (string)."
-        },
-        {
-          "name": "hints",
-          "type": "array of strings",
-          "required": false,
-          "description": "Progressive hints for students who need help."
-        },
-        {
-          "name": "interactive",
-          "type": "boolean",
-          "required": false,
-          "description": "When false, shows labels in position. Defaults to false."
-        }
-      ],
-      "exampleJson": "{\n  \"type\": \"exercise\",\n  \"title\": \"Plant Anatomy Labeling\",\n  \"widget\": \"science.label-diagram\",\n  \"config\": {\n    \"image\": \"assets/images/plant-anatomy.png\",\n    \"altText\": \"Diagram of a plant with parts to label\",\n    \"labels\": [\n      { \"id\": \"roots\", \"text\": \"Roots\", \"target\": { \"x\": 50, \"y\": 90 }, \"hint\": \"Below the soil\" },\n      { \"id\": \"stem\", \"text\": \"Stem\", \"target\": { \"x\": 50, \"y\": 60 }, \"hint\": \"Supports the plant\" },\n      { \"id\": \"leaves\", \"text\": \"Leaves\", \"target\": { \"x\": 30, \"y\": 40 }, \"hint\": \"Green and flat\" },\n      { \"id\": \"flower\", \"text\": \"Flower\", \"target\": { \"x\": 50, \"y\": 20 }, \"hint\": \"Colorful top\" }\n    ],\n    \"interactive\": true,\n    \"hints\": [\"Roots are found underground\", \"The stem connects roots to leaves\"]\n  }\n}",
-      "tips": [
-        "Use clear, high-contrast diagrams with obvious label areas",
-        "Provide 4-8 labels for manageable complexity",
-        "Add hints to each label for students who get stuck",
-        "Target x/y positions should use percentage values (0-100)"
-      ],
-      "sidebarPosition": 1,
-      "relatedWidgets": [
-        {
-          "id": "science.image-label",
-          "name": "Image Label",
-          "domain": "science",
-          "slug": "image-label"
-        },
-        {
-          "id": "core.hotspot",
-          "name": "Hotspot",
-          "domain": "core",
-          "slug": "hotspot"
-        }
-      ]
-    }
-  },
-  {
-    "id": "science.image-label",
-    "name": "Image Label",
-    "description": "Label parts of an image by tapping regions",
-    "domain": "science",
-    "status": "experimental",
-    "keywords": ["image", "label", "science", "tap"],
-    "learningIntents": ["Observe", "Apply"],
-    "capabilities": [
-      "Keyboard",
-      "ScreenReader",
-      "Hints",
-      "Retry",
-      "Scoring",
-      "Touch",
-      "Mouse",
-      "Analytics",
-      "Rewards",
-      "Accessibility",
-      "Offline",
-      "ObserveMode"
-    ],
-    "accessibility": [
-      "HighContrast",
-      "KeyboardOnly",
-      "ScreenReader",
-      "TTS",
-      "FocusManagement",
-      "AriaSupport"
-    ],
-    "analytics": ["Attempts", "CompletionTime", "SuccessRate", "Hints", "Retries"],
-    "reward": {
-      "completionXP": 10,
-      "positiveMessage": "Labels correct!",
-      "achievement": "first-image-label"
-    },
-    "ai": {
-      "difficulty": "medium",
-      "estimatedMinutes": 3,
-      "bloomsLevel": "apply",
-      "cognitiveLoad": "moderate",
-      "recommendedAge": [6, 14],
-      "readingLevel": "grade-2",
-      "learningObjectives": [
-        "Identify labeled regions in an image",
-        "Match terms to visual elements"
-      ],
-      "commonMisconceptions": ["Tapping the wrong region", "Not reading the label before tapping"],
-      "generationHints": [
-        "Use images with clearly defined regions",
-        "Provide descriptive label text"
-      ]
-    },
-    "guide": {
-      "oneLiner": "Tap regions of an image to identify and learn about them.",
-      "whatItDoes": "The Image Label widget shows an image with tappable regions. When students tap a region, they see its name and description. It works like an interactive exploration tool — great for planetariums, maps, and detailed diagrams.",
-      "whenToUse": [
-        "Interactive exploration of labeled images",
-        "Solar system and astronomy activities",
-        "Museum-style exhibit exploration",
-        "Teaching visual identification skills"
-      ],
-      "setupSteps": [
-        "Add an Exercise node to your lesson",
-        "Set the widget to \"science.image-label\"",
-        "Provide an image with alt text",
-        "Define clickable regions with x/y positions, titles, and descriptions",
-        "Optionally add hints for guided exploration"
-      ],
-      "configFields": [
-        {
-          "name": "image",
-          "type": "string",
-          "required": true,
-          "description": "Path to the image file."
-        },
-        {
-          "name": "altText",
-          "type": "string",
-          "required": true,
-          "description": "Description of the image for screen readers."
-        },
-        {
-          "name": "regions",
-          "type": "array of objects",
-          "required": true,
-          "description": "Clickable regions. Each has id (string), title (string), description (string), x (number), y (number), and optional tooltip (string)."
-        },
-        {
-          "name": "hints",
-          "type": "array of strings",
-          "required": false,
-          "description": "Hints to guide exploration."
-        },
-        {
-          "name": "interactive",
-          "type": "boolean",
-          "required": false,
-          "description": "When false, regions can still be tapped for information. Defaults to false."
-        }
-      ],
-      "exampleJson": "{\n  \"type\": \"exercise\",\n  \"title\": \"Solar System Explorer\",\n  \"widget\": \"science.image-label\",\n  \"config\": {\n    \"image\": \"assets/images/solar-system.png\",\n    \"altText\": \"Solar system with clickable planets\",\n    \"regions\": [\n      { \"id\": \"mars\", \"title\": \"Mars\", \"description\": \"The Red Planet, 4th from the Sun\", \"x\": 45, \"y\": 30, \"tooltip\": \"Click to learn about Mars\" },\n      { \"id\": \"jupiter\", \"title\": \"Jupiter\", \"description\": \"Largest planet in our solar system\", \"x\": 60, \"y\": 50, \"tooltip\": \"Click to learn about Jupiter\" },\n      { \"id\": \"earth\", \"title\": \"Earth\", \"description\": \"Our home planet, 3rd from the Sun\", \"x\": 35, \"y\": 40, \"tooltip\": \"Click to learn about Earth\" }\n    ],\n    \"interactive\": false,\n    \"hints\": [\"Mars is known as the Red Planet\", \"Jupiter is the largest planet\"]\n  }\n}",
-      "tips": [
-        "Use images with clearly defined, non-overlapping regions",
-        "Keep region descriptions concise — 1-2 sentences",
-        "Position regions carefully to cover the right part of the image",
-        "Add tooltips to hint at what students will discover"
-      ],
-      "sidebarPosition": 2,
-      "relatedWidgets": [
-        {
-          "id": "science.label-diagram",
-          "name": "Label Diagram",
-          "domain": "science",
-          "slug": "label-diagram"
-        },
-        {
-          "id": "core.hotspot",
-          "name": "Hotspot",
-          "domain": "core",
-          "slug": "hotspot"
-        }
-      ]
-    }
-  },
-  {
-    "id": "core.audio-player",
-    "name": "Audio Player",
-    "description": "Listen to audio clips and answer comprehension questions",
-    "domain": "core",
-    "status": "stable",
-    "keywords": ["audio", "listen", "sound", "comprehension"],
-    "learningIntents": ["Observe", "Listen"],
-    "capabilities": [
-      "Keyboard",
-      "ScreenReader",
-      "Hints",
-      "Retry",
-      "Scoring",
-      "Touch",
-      "Mouse",
-      "Analytics",
-      "Rewards",
-      "Accessibility",
-      "Offline",
-      "ObserveMode"
-    ],
-    "accessibility": [
-      "HighContrast",
-      "KeyboardOnly",
-      "ScreenReader",
-      "TTS",
-      "Captions",
-      "FocusManagement",
-      "AriaSupport"
-    ],
-    "analytics": ["Attempts", "CompletionTime", "SuccessRate", "Hints", "Retries"],
-    "reward": {
-      "completionXP": 10,
-      "positiveMessage": "Listening correct!",
-      "achievement": "first-audio"
-    },
-    "ai": {
-      "difficulty": "easy",
-      "estimatedMinutes": 3,
-      "bloomsLevel": "understand",
-      "cognitiveLoad": "low",
-      "recommendedAge": [4, 12],
-      "readingLevel": "pre-reader",
-      "learningObjectives": [
-        "Listen carefully to audio content",
-        "Identify key information from audio"
-      ],
-      "commonMisconceptions": [
-        "Missing details due to fast playback",
-        "Confusing similar-sounding words"
-      ],
-      "generationHints": ["Use clear, slow-paced audio", "Include captions when possible"]
-    },
-    "guide": {
-      "oneLiner": "Play audio clips with transcripts, captions, and comprehension support.",
-      "whatItDoes": "The Audio Player widget plays an audio file with playback controls. Students can listen to spoken content, read along with a transcript, and view timed captions. It supports bookmarks, waveform visualization, and keyboard controls.",
-      "whenToUse": [
-        "Language learning with pronunciation examples",
-        "Listening comprehension exercises",
-        "Audio-based instructions for young learners",
-        "Storytelling and read-aloud activities"
-      ],
-      "setupSteps": [
-        "Add an Exercise node to your lesson",
-        "Set the widget to \"core.audio-player\"",
-        "Provide the path to your audio file",
-        "Add a title and optional description",
-        "Optionally provide a transcript and timed captions"
-      ],
-      "configFields": [
-        {
-          "name": "audio",
-          "type": "string",
-          "required": true,
-          "description": "Path to the audio file (MP3, WAV, etc.)."
-        },
-        {
-          "name": "title",
-          "type": "string",
-          "required": false,
-          "description": "Title shown above the audio player."
-        },
-        {
-          "name": "description",
-          "type": "string",
-          "required": false,
-          "description": "Additional context about the audio."
-        },
-        {
-          "name": "transcript",
-          "type": "string",
-          "required": false,
-          "description": "Full text transcript of the audio content."
-        },
-        {
-          "name": "captions",
-          "type": "array of objects",
-          "required": false,
-          "description": "Timed captions. Each has start (number, seconds), end (number, seconds), and text (string)."
-        },
-        {
-          "name": "showTranscript",
-          "type": "boolean",
-          "required": false,
-          "description": "Show the transcript panel. Defaults to true."
-        },
-        {
-          "name": "waveform",
-          "type": "boolean",
-          "required": false,
-          "description": "Show audio waveform visualization. Defaults to false."
-        },
-        {
-          "name": "bookmarks",
-          "type": "boolean",
-          "required": false,
-          "description": "Allow students to bookmark positions. Defaults to true."
-        },
-        {
-          "name": "interactive",
-          "type": "boolean",
-          "required": false,
-          "description": "When false, plays in observe mode. Defaults to false."
-        }
-      ],
-      "exampleJson": "{\n  \"type\": \"exercise\",\n  \"title\": \"Listen to Bird Sounds\",\n  \"widget\": \"core.audio-player\",\n  \"config\": {\n    \"audio\": \"assets/audio/birdsong.mp3\",\n    \"title\": \"Morning Birdsong\",\n    \"description\": \"Listen to the sounds of birds in the morning.\",\n    \"transcript\": \"You can hear a variety of bird calls: chirping, whistling, and trilling.\",\n    \"captions\": [\n      { \"start\": 0, \"end\": 3, \"text\": \"Chirping sounds begin\" },\n      { \"start\": 3, \"end\": 6, \"text\": \"Whistling melodies join in\" },\n      { \"start\": 6, \"end\": 10, \"text\": \"A chorus of bird calls\" }\n    ],\n    \"showTranscript\": true,\n    \"bookmarks\": true,\n    \"interactive\": false\n  }\n}",
-      "tips": [
-        "Always provide a transcript for accessibility",
-        "Use short audio clips (1-3 minutes) for focused listening",
-        "Timed captions help students follow along",
-        "Audio files should be placed in your lesson package directory"
-      ],
-      "sidebarPosition": 14,
-      "relatedWidgets": [
-        {
-          "id": "core.video-player",
-          "name": "Video Player",
-          "domain": "core",
-          "slug": "video-player"
-        }
-      ]
-    }
-  },
-  {
-    "id": "core.video-player",
-    "name": "Video Player",
-    "description": "Watch video clips and answer comprehension questions",
-    "domain": "core",
-    "status": "stable",
-    "keywords": ["video", "watch", "visual", "comprehension"],
-    "learningIntents": ["Observe", "Understand"],
-    "capabilities": [
-      "Keyboard",
-      "ScreenReader",
-      "Hints",
-      "Retry",
-      "Scoring",
-      "Touch",
-      "Mouse",
-      "Analytics",
-      "Rewards",
-      "Accessibility",
-      "Offline",
-      "ObserveMode"
-    ],
-    "accessibility": [
-      "HighContrast",
-      "KeyboardOnly",
-      "ScreenReader",
-      "TTS",
-      "Captions",
-      "FocusManagement",
-      "AriaSupport"
-    ],
-    "analytics": ["Attempts", "CompletionTime", "SuccessRate", "Hints", "Retries"],
-    "reward": {
-      "completionXP": 10,
-      "positiveMessage": "Watching correct!",
-      "achievement": "first-video"
-    },
-    "ai": {
-      "difficulty": "easy",
-      "estimatedMinutes": 3,
-      "bloomsLevel": "understand",
-      "cognitiveLoad": "low",
-      "recommendedAge": [4, 14],
-      "readingLevel": "pre-reader",
-      "learningObjectives": [
-        "Watch and understand video content",
-        "Identify key events in a video sequence"
-      ],
-      "commonMisconceptions": ["Missing visual details", "Focusing on audio and ignoring visuals"],
-      "generationHints": ["Use short, focused clips (1-3 min)", "Include clear visual content"]
-    },
-    "guide": {
-      "oneLiner": "Play video clips with chapters, captions, and transcripts.",
-      "whatItDoes": "The Video Player widget plays a video file with full playback controls. Students can watch educational videos with chapter navigation, timed captions, and a transcript panel. It supports fullscreen mode and keyboard shortcuts.",
-      "whenToUse": [
-        "Showing educational animations and demonstrations",
-        "Video-based science experiments",
-        "Visual explanations of complex concepts",
-        "Documentary-style content for older students"
-      ],
-      "setupSteps": [
-        "Add an Exercise node to your lesson",
-        "Set the widget to \"core.video-player\"",
-        "Provide the path to your video file",
-        "Optionally add a poster image for the thumbnail",
-        "Add chapters for easy navigation, captions for accessibility"
-      ],
-      "configFields": [
-        {
-          "name": "video",
-          "type": "string",
-          "required": true,
-          "description": "Path to the video file (MP4 recommended)."
-        },
-        {
-          "name": "title",
-          "type": "string",
-          "required": false,
-          "description": "Title shown above the video player."
-        },
-        {
-          "name": "poster",
-          "type": "string",
-          "required": false,
-          "description": "Path to a poster image shown before the video plays."
-        },
-        {
-          "name": "chapters",
-          "type": "array of objects",
-          "required": false,
-          "description": "Video chapters. Each has time (number, seconds) and title (string)."
-        },
-        {
-          "name": "captions",
-          "type": "array of objects",
-          "required": false,
-          "description": "Timed captions. Each has start (number), end (number), and text (string)."
-        },
-        {
-          "name": "transcript",
-          "type": "string",
-          "required": false,
-          "description": "Full text transcript of the video content."
-        },
-        {
-          "name": "showTranscript",
-          "type": "boolean",
-          "required": false,
-          "description": "Show the transcript panel. Defaults to true."
-        },
-        {
-          "name": "allowFullscreen",
-          "type": "boolean",
-          "required": false,
-          "description": "Allow fullscreen mode. Defaults to true."
-        },
-        {
-          "name": "interactive",
-          "type": "boolean",
-          "required": false,
-          "description": "When false, plays in observe mode. Defaults to false."
-        }
-      ],
-      "exampleJson": "{\n  \"type\": \"exercise\",\n  \"title\": \"Photosynthesis Video\",\n  \"widget\": \"core.video-player\",\n  \"config\": {\n    \"video\": \"assets/video/photosynthesis.mp4\",\n    \"title\": \"Understanding Photosynthesis\",\n    \"chapters\": [\n      { \"time\": 0, \"title\": \"Introduction\" },\n      { \"time\": 60, \"title\": \"Light Reactions\" },\n      { \"time\": 180, \"title\": \"Calvin Cycle\" }\n    ],\n    \"showTranscript\": true,\n    \"interactive\": false\n  }\n}",
-      "tips": [
-        "Use short, focused clips (1-5 minutes)",
-        "Always add captions for accessibility",
-        "Chapters help students navigate to specific sections",
-        "Video files should be placed in your lesson package directory"
-      ],
-      "sidebarPosition": 15,
-      "relatedWidgets": [
-        {
-          "id": "core.audio-player",
-          "name": "Audio Player",
-          "domain": "core",
-          "slug": "audio-player"
-        }
-      ]
-    }
-  },
-  {
-    "id": "language.flashcard",
-    "name": "Flashcard",
-    "description": "Study terms and concepts with flip-card flashcards",
-    "domain": "language",
-    "status": "stable",
-    "keywords": ["flashcard", "study", "terms", "vocabulary"],
-    "learningIntents": ["Practice", "Recall"],
-    "capabilities": [
-      "Keyboard",
-      "ScreenReader",
-      "Hints",
-      "Retry",
-      "Scoring",
-      "Touch",
-      "Mouse",
-      "Analytics",
-      "Rewards",
-      "Accessibility",
-      "Offline",
-      "ObserveMode"
-    ],
-    "accessibility": [
-      "HighContrast",
-      "KeyboardOnly",
-      "ScreenReader",
-      "TTS",
-      "FocusManagement",
-      "AriaSupport"
-    ],
-    "analytics": ["Attempts", "CompletionTime", "SuccessRate", "Hints", "Retries"],
-    "reward": {
-      "completionXP": 10,
-      "positiveMessage": "Cards studied!",
-      "achievement": "first-flashcard"
-    },
-    "ai": {
-      "difficulty": "easy",
-      "estimatedMinutes": 3,
-      "bloomsLevel": "remember",
-      "cognitiveLoad": "low",
-      "recommendedAge": [5, 18],
-      "readingLevel": "grade-2",
-      "learningObjectives": [
-        "Memorize key terms and definitions",
-        "Recall information from memory"
-      ],
-      "commonMisconceptions": ["Skimming without reading fully", "Not flipping cards to check"],
-      "generationHints": [
-        "Keep front text concise",
-        "Use clear, detailed back text",
-        "Group related cards together"
-      ]
-    },
-    "guide": {
-      "oneLiner": "Study terms and concepts with interactive flip-card flashcards.",
-      "whatItDoes": "The Flashcard widget shows cards with a front and back — tap to flip and reveal the answer. Students can rate their confidence (easy/medium/hard), shuffle the deck, and track their progress. It supports flip, multiple-choice, and spaced repetition modes.",
-      "whenToUse": [
-        "Vocabulary and spelling practice",
-        "Memorizing key terms and definitions",
-        "Language learning",
-        "Quick revision before assessments"
-      ],
-      "setupSteps": [
-        "Add an Exercise node to your lesson",
-        "Set the widget to \"language.flashcard\"",
-        "Create your cards — each needs a front and back",
-        "Optionally add hints, categories, and difficulty levels",
-        "Choose a study mode: flip, multiple, or spaced"
-      ],
-      "configFields": [
-        {
-          "name": "cards",
-          "type": "array of objects",
-          "required": true,
-          "description": "Flashcards. Each has front (string), back (string), and optional hint (string), category (string), difficulty (\"easy\"/\"medium\"/\"hard\"), image (string), and audio (string)."
-        },
-        {
-          "name": "mode",
-          "type": "string",
-          "required": false,
-          "description": "Study mode: \"flip\" (default), \"multiple\" for multiple-choice, or \"spaced\" for spaced repetition."
-        },
-        {
-          "name": "shuffle",
-          "type": "boolean",
-          "required": false,
-          "description": "Randomize card order. Defaults to false."
-        },
-        {
-          "name": "interactive",
-          "type": "boolean",
-          "required": false,
-          "description": "When false, shows cards in view-only mode. Defaults to false."
-        }
-      ],
-      "exampleJson": "{\n  \"type\": \"exercise\",\n  \"title\": \"Spanish Vocabulary\",\n  \"widget\": \"language.flashcard\",\n  \"config\": {\n    \"cards\": [\n      { \"front\": \"Hola\", \"back\": \"Hello\", \"hint\": \"Common greeting\", \"category\": \"Greetings\" },\n      { \"front\": \"Gracias\", \"back\": \"Thank you\", \"category\": \"Politeness\" },\n      { \"front\": \"Adios\", \"back\": \"Goodbye\", \"category\": \"Greetings\" },\n      { \"front\": \"Por favor\", \"back\": \"Please\", \"category\": \"Politeness\" }\n    ],\n    \"mode\": \"flip\",\n    \"shuffle\": true,\n    \"interactive\": true\n  }\n}",
-      "tips": [
-        "Keep front text short — one word or phrase",
-        "Use detailed back text for definitions and context",
-        "Add categories to help students organize their study",
-        "Group related cards together (e.g., all greetings, all food words)"
-      ],
-      "sidebarPosition": 1,
-      "relatedWidgets": [
-        {
-          "id": "core.matching",
-          "name": "Matching",
-          "domain": "core",
-          "slug": "matching"
-        },
-        {
-          "id": "core.fill-blank",
-          "name": "Fill in the Blank",
-          "domain": "core",
-          "slug": "fill-blank"
-        }
-      ]
-    }
-  },
-  {
-    "id": "science.process-diagram",
-    "name": "Process Diagram",
-    "description": "Explore and label step-by-step scientific processes",
-    "domain": "science",
-    "status": "stable",
-    "keywords": ["process", "diagram", "science", "steps"],
-    "learningIntents": ["Observe", "Understand"],
-    "capabilities": [
-      "Keyboard",
-      "ScreenReader",
-      "Hints",
-      "Retry",
-      "Scoring",
-      "Touch",
-      "Mouse",
-      "Analytics",
-      "Rewards",
-      "Accessibility",
-      "Offline",
-      "ObserveMode",
-      "Animation"
-    ],
-    "accessibility": [
-      "HighContrast",
-      "KeyboardOnly",
-      "ScreenReader",
-      "TTS",
-      "FocusManagement",
-      "AriaSupport"
-    ],
-    "analytics": ["Attempts", "CompletionTime", "SuccessRate", "Hints", "Retries"],
-    "reward": {
-      "completionXP": 10,
-      "positiveMessage": "Process understood!",
-      "achievement": "first-process"
-    },
-    "ai": {
-      "difficulty": "medium",
-      "estimatedMinutes": 4,
-      "bloomsLevel": "understand",
-      "cognitiveLoad": "moderate",
-      "recommendedAge": [7, 14],
-      "readingLevel": "grade-3",
-      "learningObjectives": [
-        "Understand the sequence of a scientific process",
-        "Identify cause-and-effect relationships in processes"
-      ],
-      "commonMisconceptions": ["Skipping steps", "Confusing cause and effect"],
-      "generationHints": [
-        "Use clear step labels",
-        "Show arrows connecting steps",
-        "Include brief descriptions for each step"
-      ]
-    },
-    "guide": {
-      "oneLiner": "Explore step-by-step scientific processes with connected diagrams.",
-      "whatItDoes": "The Process Diagram widget shows a connected diagram of a scientific process — like the water cycle, food chain, or rock cycle. Nodes represent steps, and connections show the flow. It supports cycle, linear, and custom layouts with step-by-step reveal.",
-      "whenToUse": [
-        "Teaching the water cycle or rock cycle",
-        "Explaining food chains and food webs",
-        "Showing cause-and-effect processes",
-        "Visualizing life cycles with stages"
-      ],
-      "setupSteps": [
-        "Add an Exercise node to your lesson",
-        "Set the widget to \"science.process-diagram\"",
-        "Define process nodes — each has an id and title",
-        "Define connections between nodes with optional labels",
-        "Choose a layout: cycle, linear, or tree"
-      ],
-      "configFields": [
-        {
-          "name": "nodes",
-          "type": "array of objects",
-          "required": true,
-          "description": "Process steps. Each has id (string), title (string), and optional description (string) and icon (string)."
-        },
-        {
-          "name": "connections",
-          "type": "array of objects",
-          "required": true,
-          "description": "Connections between nodes. Each has from (node id), to (node id), and optional label (string) and type (\"arrow\", \"loop\", \"dashed\")."
-        },
-        {
-          "name": "layout",
-          "type": "string",
-          "required": false,
-          "description": "Layout style: \"cycle\", \"linear\", \"tree\", or \"flow\". Defaults to \"cycle\"."
-        },
-        {
-          "name": "title",
-          "type": "string",
-          "required": false,
-          "description": "An overall title for the diagram."
-        },
-        {
-          "name": "stepByStep",
-          "type": "boolean",
-          "required": false,
-          "description": "Reveal nodes one at a time. Defaults to false."
-        },
-        {
-          "name": "interactive",
-          "type": "boolean",
-          "required": false,
-          "description": "When false, shows the complete diagram. Defaults to false."
-        }
-      ],
-      "exampleJson": "{\n  \"type\": \"exercise\",\n  \"title\": \"The Water Cycle\",\n  \"widget\": \"science.process-diagram\",\n  \"config\": {\n    \"nodes\": [\n      { \"id\": \"evaporation\", \"title\": \"Evaporation\", \"description\": \"Sun heats water, turning it into vapor\", \"icon\": \"☀️\" },\n      { \"id\": \"condensation\", \"title\": \"Condensation\", \"description\": \"Water vapor cools and forms clouds\", \"icon\": \"☁️\" },\n      { \"id\": \"precipitation\", \"title\": \"Precipitation\", \"description\": \"Water falls as rain, snow, or hail\", \"icon\": \"🌧️\" },\n      { \"id\": \"collection\", \"title\": \"Collection\", \"description\": \"Water gathers in oceans and lakes\", \"icon\": \"🌊\" }\n    ],\n    \"connections\": [\n      { \"from\": \"evaporation\", \"to\": \"condensation\", \"label\": \"vapor rises\" },\n      { \"from\": \"condensation\", \"to\": \"precipitation\", \"label\": \"clouds form\" },\n      { \"from\": \"precipitation\", \"to\": \"collection\", \"label\": \"water falls\" },\n      { \"from\": \"collection\", \"to\": \"evaporation\", \"type\": \"loop\", \"label\": \"cycle repeats\" }\n    ],\n    \"layout\": \"cycle\",\n    \"title\": \"The Water Cycle\",\n    \"stepByStep\": true,\n    \"interactive\": false\n  }\n}",
-      "tips": [
-        "Use clear step labels that students can read easily",
-        "Show arrows to indicate the direction of the process",
-        "Add brief descriptions for each step",
-        "Cycle layout works best for repeating processes"
-      ],
-      "sidebarPosition": 3,
-      "relatedWidgets": [
-        {
-          "id": "core.sequencing",
-          "name": "Sequencing",
-          "domain": "core",
-          "slug": "sequencing"
-        },
-        {
-          "id": "core.timeline",
-          "name": "Timeline",
-          "domain": "core",
-          "slug": "timeline"
-        }
-      ]
-    }
-  },
-  {
-    "id": "social.map",
-    "name": "Social Map",
-    "description": "Explore geographic and social concepts on an interactive map",
-    "domain": "social",
-    "status": "stable",
-    "keywords": ["map", "geography", "social", "explore"],
-    "learningIntents": ["Explore", "Observe"],
-    "capabilities": [
-      "Keyboard",
-      "ScreenReader",
-      "Hints",
-      "Retry",
-      "Scoring",
-      "Touch",
-      "Mouse",
-      "Analytics",
-      "Rewards",
-      "Accessibility",
-      "Offline",
-      "ObserveMode"
-    ],
-    "accessibility": [
-      "HighContrast",
-      "KeyboardOnly",
-      "ScreenReader",
-      "TTS",
-      "FocusManagement",
-      "AriaSupport"
-    ],
-    "analytics": ["Attempts", "CompletionTime", "SuccessRate", "Hints", "Retries"],
-    "reward": {
-      "completionXP": 10,
-      "positiveMessage": "Map explored!",
-      "achievement": "first-map"
-    },
-    "ai": {
-      "difficulty": "medium",
-      "estimatedMinutes": 4,
-      "bloomsLevel": "understand",
-      "cognitiveLoad": "moderate",
-      "recommendedAge": [6, 14],
-      "readingLevel": "grade-3",
-      "learningObjectives": [
-        "Identify locations on a map",
-        "Understand spatial relationships between regions"
-      ],
-      "commonMisconceptions": ["Confusing cardinal directions", "Misreading map scale"],
-      "generationHints": [
-        "Use clear, labeled maps",
-        "Include a legend when needed",
-        "Start with simple geographic features"
+        "Use SVG paths for accurate region boundaries",
+        "Provide clear labels and distinct colors",
+        "Include a legend for color-coded regions",
+        "Add markers for key locations"
       ]
     },
     "guide": {
@@ -3700,33 +3718,161 @@
     }
   },
   {
+    "id": "core.process-explainer",
+    "name": "Process Explainer",
+    "description": "Step-by-step explanation of a process with progressive reveal",
+    "domain": "core",
+    "status": "stable",
+    "keywords": ["process", "explainer", "steps", "step-by-step", "sequence", "how-it-works"],
+    "learningIntents": ["observe", "understand"],
+    "capabilities": [
+      "supportsObserveMode",
+      "supportsKeyboard",
+      "supportsScreenReader",
+      "supportsHints",
+      "supportsTouch",
+      "supportsMouse",
+      "supportsAnalytics",
+      "supportsRewards",
+      "supportsAccessibility",
+      "supportsOffline",
+      "supportsAnimation",
+      "supportsLocalization"
+    ],
+    "accessibility": [
+      "highContrast",
+      "keyboardOnly",
+      "screenReader",
+      "reducedMotion",
+      "ariaSupport",
+      "focusManagement"
+    ],
+    "analytics": ["trackAttempts", "trackCompletionTime", "trackHints", "trackInteractions"],
+    "reward": {
+      "completionXP": 15,
+      "positiveMessage": "Process understood!",
+      "achievement": "first-process-explainer"
+    },
+    "ai": {
+      "difficulty": "medium",
+      "estimatedMinutes": 5,
+      "bloomsLevel": "understand",
+      "cognitiveLoad": "moderate",
+      "recommendedAge": [8, 18],
+      "readingLevel": "grade-4",
+      "learningObjectives": [
+        "Understand the sequence of steps in a process",
+        "Identify relationships between process stages",
+        "Explain each stage of a process in their own words"
+      ],
+      "commonMisconceptions": [
+        "Skipping intermediate steps in a process",
+        "Confusing the order of stages"
+      ],
+      "generationHints": [
+        "Use 3-8 steps for clarity",
+        "Keep each step description to 1-2 sentences",
+        "Provide an icon or simple media asset per step when possible"
+      ]
+    },
+    "guide": {
+      "oneLiner": "Walk through a process one step at a time with clear explanations.",
+      "whatItDoes": "The Process Explainer widget presents a process as a numbered list of steps. In step-by-step mode, each step is revealed progressively, keeping focus on one idea at a time. Optional dotLottie or SVG animations can be attached via config.animation.",
+      "whenToUse": [
+        "Teaching multi-stage processes step by step",
+        "Explaining how a system works",
+        "Guiding learners through a procedure"
+      ],
+      "setupSteps": [
+        "Add an Exercise node to your lesson",
+        "Set the widget to \"core.process-explainer\"",
+        "Define your steps — each needs an id and title",
+        "Optionally add descriptions, icons, and media per step",
+        "Optionally attach an animation config for dotLottie/SVG effects"
+      ],
+      "configFields": [
+        {
+          "name": "title",
+          "type": "string",
+          "required": false,
+          "description": "An overall title for the explainer."
+        },
+        {
+          "name": "steps",
+          "type": "array of objects",
+          "required": true,
+          "description": "Explainer steps. Each has id (string) and title (string), with optional description (string), icon (string), and media (string)."
+        },
+        {
+          "name": "stepByStep",
+          "type": "boolean",
+          "required": false,
+          "description": "Reveal steps one at a time. Defaults to true."
+        },
+        {
+          "name": "interactive",
+          "type": "boolean",
+          "required": false,
+          "description": "When false, shows steps for observation only. Defaults to false."
+        },
+        {
+          "name": "animation",
+          "type": "object",
+          "required": false,
+          "description": "Optional OAS animation config (backend lottie/svg, src, trigger, reducedMotion, effects)."
+        }
+      ],
+      "exampleJson": "{\n  \"type\": \"exercise\",\n  \"title\": \"Water Cycle\",\n  \"widget\": \"core.process-explainer\",\n  \"config\": {\n    \"title\": \"The Water Cycle\",\n    \"stepByStep\": true,\n    \"interactive\": true,\n    \"steps\": [\n      { \"id\": \"evap\", \"title\": \"Evaporation\", \"description\": \"Sun heats water into vapor\" },\n      { \"id\": \"cond\", \"title\": \"Condensation\", \"description\": \"Vapor cools into clouds\" },\n      { \"id\": \"rain\", \"title\": \"Precipitation\", \"description\": \"Water falls as rain or snow\" },\n      { \"id\": \"collect\", \"title\": \"Collection\", \"description\": \"Water gathers in oceans and lakes\" }\n    ]\n  }\n}",
+      "tips": [
+        "Use 3-8 steps for clarity",
+        "Keep step descriptions to 1-2 sentences",
+        "Use stepByStep mode to reduce cognitive load"
+      ],
+      "sidebarPosition": 14,
+      "relatedWidgets": [
+        {
+          "id": "science.process-diagram",
+          "name": "Process Diagram",
+          "domain": "science",
+          "slug": "process-diagram"
+        },
+        {
+          "id": "core.timeline",
+          "name": "Timeline",
+          "domain": "core",
+          "slug": "timeline"
+        }
+      ]
+    }
+  },
+  {
     "id": "core.timer",
     "name": "Timer",
     "description": "Visual countdown/count-up timer for breaks and transitions",
     "domain": "core",
     "status": "stable",
     "keywords": ["timer", "break", "countdown", "transition", "pause", "self-regulation"],
-    "learningIntents": ["Observe", "Reflect"],
+    "learningIntents": ["observe", "reflect"],
     "capabilities": [
-      "Keyboard",
-      "ScreenReader",
-      "Touch",
-      "Mouse",
-      "Analytics",
-      "Accessibility",
-      "Offline",
-      "ObserveMode"
+      "supportsObserveMode",
+      "supportsKeyboard",
+      "supportsScreenReader",
+      "supportsTouch",
+      "supportsMouse",
+      "supportsAnalytics",
+      "supportsAccessibility",
+      "supportsOffline"
     ],
     "accessibility": [
-      "HighContrast",
-      "KeyboardOnly",
-      "ScreenReader",
-      "TTS",
-      "ReducedMotion",
-      "FocusManagement",
-      "AriaSupport"
+      "highContrast",
+      "keyboardOnly",
+      "screenReader",
+      "tts",
+      "reducedMotion",
+      "focusManagement",
+      "ariaSupport"
     ],
-    "analytics": ["Attempts", "CompletionTime", "Interactions"],
+    "analytics": ["trackAttempts", "trackCompletionTime", "trackInteractions"],
     "reward": {
       "positiveMessage": "Break complete — great job!",
       "achievement": "first-timer"

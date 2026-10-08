@@ -4,7 +4,7 @@ sidebar_position: 10
 
 # Callout
 
-**Widget ID:** `core.callout` | **Domain:** core | **Status:** experimental
+**Widget ID:** `core.callout` | **Domain:** core | **Status:** stable
 
 > Highlight key information with a styled callout card.
 

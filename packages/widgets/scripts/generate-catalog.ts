@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
- * Generates widget-catalog-data.json in @open-edu/core from the canonical
- * source in @open-edu/widgets/src/widget-catalog-source.ts.
+ * Generates widget-catalog-data.json in @open-edu/core from the built-in
+ * widget roster (single source of truth).
  *
  * Run: pnpm --filter @open-edu/widgets generate:catalog
  */
@@ -11,12 +11,11 @@ import { fileURLToPath } from 'node:url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-// Import the source data directly — no React, no design-system dependency
-const { WIDGET_CATALOG_ENTRIES } = await import('../src/widget-catalog-source.ts');
+const { BUILTIN_WIDGETS } = await import('../src/builtin-roster.ts');
+const { toWidgetCatalogEntries } = await import('../src/catalog-gen.ts');
 
+const entries = toWidgetCatalogEntries(BUILTIN_WIDGETS);
 const outputPath = resolve(__dirname, '../../core/src/widget-catalog-data.json');
 
-const json = JSON.stringify(WIDGET_CATALOG_ENTRIES, null, 2) + '\n';
-writeFileSync(outputPath, json, 'utf-8');
-
-console.log(`Generated ${WIDGET_CATALOG_ENTRIES.length} widget entries → ${outputPath}`);
+writeFileSync(outputPath, JSON.stringify(entries, null, 2) + '\n', 'utf-8');
+console.log(`Generated ${entries.length} widget entries → ${outputPath}`);

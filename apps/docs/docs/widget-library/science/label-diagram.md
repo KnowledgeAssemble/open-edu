@@ -4,7 +4,7 @@ sidebar_position: 1
 
 # Label Diagram
 
-**Widget ID:** `science.label-diagram` | **Domain:** science | **Status:** experimental
+**Widget ID:** `science.label-diagram` | **Domain:** science | **Status:** stable
 
 > Label parts of a scientific diagram by dragging labels to the correct spots.
 

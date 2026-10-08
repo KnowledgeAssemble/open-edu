@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 /**
- * Generates per-widget documentation pages from the guide field in
- * widget-catalog-source.ts. Writes markdown to apps/docs/docs/widget-library/.
+ * Generates per-widget documentation pages from the guide field on the built-in
+ * widget roster (builtin-roster.ts → catalog-gen.ts). Writes markdown to
+ * apps/docs/docs/widget-library/.
  *
  * Run: pnpm --filter @open-edu/widgets generate:widget-docs
  */
@@ -12,9 +13,12 @@ import { renderWidgetGuideMarkdown } from '../src/guide-markdown.ts';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-const { WIDGET_CATALOG_ENTRIES } = await import('../src/widget-catalog-source.ts');
+const { BUILTIN_WIDGETS } = await import('../src/builtin-roster.ts');
+const { toWidgetCatalogEntries } = await import('../src/catalog-gen.ts');
 
-const entriesWithGuide = WIDGET_CATALOG_ENTRIES.filter((e) => !e.deprecated && e.guide);
+const entriesWithGuide = toWidgetCatalogEntries(BUILTIN_WIDGETS).filter(
+  (e) => !e.deprecated && e.guide,
+);
 
 const outputBaseDir = resolve(__dirname, '../../../apps/docs/docs/widget-library');
 

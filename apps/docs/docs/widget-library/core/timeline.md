@@ -4,7 +4,7 @@ sidebar_position: 13
 
 # Timeline
 
-**Widget ID:** `core.timeline` | **Domain:** core | **Status:** experimental
+**Widget ID:** `core.timeline` | **Domain:** core | **Status:** stable
 
 > Display events in chronological order on an interactive timeline.
 

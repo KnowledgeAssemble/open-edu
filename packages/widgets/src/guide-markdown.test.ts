@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { renderWidgetGuideMarkdown } from './guide-markdown.js';
-import type { WidgetCatalogEntry } from './widget-catalog-source.js';
+import type { WidgetCatalogEntry } from '@open-edu/schemas';
 
 const entry: WidgetCatalogEntry = {
   id: 'core.multiple-choice',

@@ -2,7 +2,7 @@
 sidebar_position: 1
 ---
 
-# Social Map
+# Interactive Map
 
 **Widget ID:** `social.map` | **Domain:** social | **Status:** stable
 
