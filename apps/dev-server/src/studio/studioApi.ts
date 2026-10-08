@@ -11,12 +11,7 @@ import type {
 import type { LibraryEntry } from './library/types.js';
 import type { ActivitySummary } from './types.js';
 import type { LoadedPackage } from '@open-edu/core';
-import type {
-  PackSummary,
-  PackDetail,
-  AuthoringContext,
-  PackDiagnostic,
-} from '@open-edu/packs';
+import type { PackSummary, PackDetail, AuthoringContext, PackDiagnostic } from '@open-edu/packs';
 
 export interface StudioApiError extends Error {
   code?: AiEndpointErrorCode | string;
@@ -103,7 +98,7 @@ export interface StudioApi {
   commitCourseDraft(
     draftId: string,
     force?: boolean,
-  ): Promise<{ success: boolean; title?: string; error?: string }>;
+  ): Promise<{ success: boolean; title?: string; error?: string; capabilityGaps?: string[] }>;
   discardCourseDraft(draftId: string): Promise<{ success: boolean }>;
   generateItemAdd(
     kind: 'lesson' | 'quiz' | 'practice',

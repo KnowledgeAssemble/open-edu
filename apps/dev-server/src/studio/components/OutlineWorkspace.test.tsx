@@ -112,4 +112,14 @@ describe('OutlineWorkspace', () => {
     expect(screen.getByRole('tab', { name: 'Outline' })).toBeInTheDocument();
     expect(screen.getByRole('tab', { name: 'Files' })).toBeInTheDocument();
   });
+
+  it('shows a Packs tab that renders the pack browser panel', async () => {
+    const user = userEvent.setup();
+    render(wrap(<Controlled initial="outline" />));
+    await screen.findByText('Intro');
+    const packsTab = screen.getByRole('tab', { name: 'Packs' });
+    expect(packsTab).toBeInTheDocument();
+    await user.click(packsTab);
+    expect((await screen.findAllByText('No concepts in scope.')).length).toBeGreaterThan(0);
+  });
 });

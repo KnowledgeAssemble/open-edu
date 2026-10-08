@@ -40,6 +40,7 @@ export interface CommitCourseDraftResult {
   title?: string;
   error?: string;
   code?: 'draft-not-found' | 'draft-expired' | 'has-content' | 'write';
+  capabilityGaps?: string[];
 }
 
 function hasNodes(packageDir: string): boolean {
