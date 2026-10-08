@@ -102,4 +102,25 @@ describe('buildSystemPrompt authoring context', () => {
     expect(prompt).toContain('AUTHORING CONTEXT (compact):');
     expect(prompt).toContain('curriculum/nios-math-level-a@0.1.0');
   });
+
+  it('caps the compact objective-id line for very large authoring contexts', () => {
+    const snapshot: StudioContextSnapshot = {
+      view: 'home',
+      locale: 'en',
+      aiAvailable: true,
+      authoring: {
+        ...largeAuthoring(),
+        objectives: Array.from({ length: 1200 }, (_, i) => ({
+          id: `objective-${i}`,
+          description: 'A measurable objective description. '.repeat(6),
+          concepts: [],
+          requiresIntents: [LearningIntent.Practice, LearningIntent.Compare],
+        })),
+      },
+    };
+    const prompt = buildSystemPrompt(snapshot);
+    expect(prompt.length).toBeLessThan(MAX_CONTEXT_CHARS);
+    expect(prompt).toContain('…(+1150 more)');
+    expect(prompt).not.toContain('objective-1150');
+  });
 });

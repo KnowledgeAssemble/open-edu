@@ -1,4 +1,5 @@
 import widgetCatalogData from '@open-edu/core/widget-catalog-data';
+import { LearningIntent } from '@open-edu/widgets/intents';
 import {
   resolveAuthoringContext,
   summarizePack,
@@ -10,6 +11,8 @@ import {
 } from '@open-edu/packs';
 import type { LoadedPack } from '@open-edu/packs';
 import type { StudioApiError } from '../studioApi';
+
+const VALID_INTENTS = new Set<string>(Object.values(LearningIntent));
 
 export function buildAvailableActivities(): AuthoringContext['availableActivities'] {
   return (
@@ -27,8 +30,7 @@ export function buildAvailableActivities(): AuthoringContext['availableActivitie
       id: e.id,
       name: e.name,
       domain: e.domain,
-      intents: (e.learningIntents ??
-        []) as AuthoringContext['availableActivities'][number]['intents'],
+      intents: (e.learningIntents ?? []).filter((i): i is LearningIntent => VALID_INTENTS.has(i)),
       subjectTags: e.ai?.subjectTags ?? [],
     }));
 }

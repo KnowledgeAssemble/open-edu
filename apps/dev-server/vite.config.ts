@@ -1428,25 +1428,30 @@ function findWorkspaceRoot(startDir: string): string {
 }
 
 function eduPacksLoader(): Plugin {
-  let packData: LoadedPack[] | null = null;
+  let workspaceRoot = '';
   let packsDir = '';
   let logger: { error: (msg: string) => void } | null = null;
+
+  const refresh = (): LoadedPack[] => {
+    const { packs, diagnostics } = loadPacksDir(packsDir);
+    for (const diagnostic of diagnostics) {
+      logger?.error(`[edu-packs] ${diagnostic.code}: ${diagnostic.message}`);
+    }
+    return Array.from(packs.values());
+  };
 
   return {
     name: 'edu-packs-loader',
     enforce: 'pre',
     configResolved(config) {
       logger = config.logger;
+      workspaceRoot = findWorkspaceRoot(__dirname);
       const configured = process.env.OPEN_EDU_PACKS_DIR ?? 'packs';
-      packsDir = resolve(findWorkspaceRoot(__dirname), configured);
+      packsDir = resolve(workspaceRoot, configured);
     },
     buildStart() {
       try {
-        const { packs, diagnostics } = loadPacksDir(packsDir);
-        packData = Array.from(packs.values());
-        for (const diagnostic of diagnostics) {
-          logger?.error(`[edu-packs] ${diagnostic.code}: ${diagnostic.message}`);
-        }
+        refresh();
       } catch (err) {
         logger?.error(`[edu-packs] Failed to load packs from ${packsDir}: ${String(err)}`);
       }
@@ -1456,8 +1461,27 @@ function eduPacksLoader(): Plugin {
     },
     load(id) {
       if (id === RESOLVED_PACKS_VIRTUAL_ID) {
-        return `export const packData = ${JSON.stringify(packData ?? null)};`;
+        try {
+          const packs = refresh();
+          for (const file of [
+            'manifest.json',
+            'concepts.json',
+            'curriculum.json',
+            'sources.json',
+          ]) {
+            for (const pack of packs) this.addWatchFile(join(pack.dir, file));
+          }
+          const sanitized = packs.map((pack) => ({
+            ...pack,
+            dir: relative(workspaceRoot, pack.dir),
+          }));
+          return `export const packData = ${JSON.stringify(sanitized)};`;
+        } catch (err) {
+          logger?.error(`[edu-packs] Failed to reload packs from ${packsDir}: ${String(err)}`);
+          return `export const packData = null;`;
+        }
       }
+      return undefined;
     },
   };
 }

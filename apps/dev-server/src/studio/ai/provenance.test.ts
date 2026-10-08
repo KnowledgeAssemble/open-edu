@@ -103,4 +103,27 @@ describe('buildProvenance', () => {
     const { record } = buildProvenance(custom, model(), 'now');
     expect(record.nodes[0]!.objectives).toEqual(['represent-fraction']);
   });
+
+  it('matches paraphrased lesson objectives by containment when exact match fails', () => {
+    const custom: AuthoringContext = {
+      ...authoring,
+      objectives: [
+        {
+          id: 'like-denominators',
+          description: 'Fractions with like denominators.',
+          concepts: [],
+          requiresIntents: [LearningIntent.Practice],
+        },
+      ],
+    };
+    const customModel = model();
+    customModel.modules[0]!.lessons[0]!.objectives = [
+      {
+        id: 'o1',
+        description: 'This lesson covers fractions with like denominators and ordering.',
+      },
+    ];
+    const { record } = buildProvenance(custom, customModel, 'now');
+    expect(record.nodes[0]!.objectives).toEqual(['like-denominators']);
+  });
 });

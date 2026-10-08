@@ -337,6 +337,22 @@ describe('commitCourseDraft blueprint validation + provenance', () => {
     }
   });
 
+  it('returns spec-invalid when the draft spec can no longer be read', async () => {
+    const packageDir = await makePackageDir();
+    try {
+      const draft = await makeDraft(packageDir, 'math.number-line', AUTHORING);
+      const entry = getDraftEntry(draft.draftId)!;
+      await rm(join(entry.tempDir, 'course-spec.json'), { force: true });
+      const result = await commitCourseDraft({ draftId: draft.draftId, packageDir });
+      expect(result.success).toBe(false);
+      expect(result.code).toBe('spec-invalid');
+      expect(existsSync(join(packageDir, 'package.json'))).toBe(false);
+      expect(getDraftEntry(draft.draftId)).toBeDefined();
+    } finally {
+      await rm(packageDir, { recursive: true, force: true });
+    }
+  });
+
   it('commits a valid authoring draft and writes provenance.json', async () => {
     const packageDir = await makePackageDir();
     try {

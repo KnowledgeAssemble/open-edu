@@ -39,6 +39,7 @@ export interface CourseDraftResult {
   draftId: string;
   error?: string;
   code?: AiGenerateErrorCode;
+  capabilityGaps?: string[];
 }
 
 export interface AiStatus {

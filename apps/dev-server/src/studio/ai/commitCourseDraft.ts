@@ -3,6 +3,7 @@ import { cp, rm, writeFile } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
 import { loadPackage } from '@open-edu/core';
 import { parseCourseSpec, parseCourseSpecJSON } from '@open-edu/course-compiler';
+import type { CourseModel } from '@open-edu/course-compiler';
 import { getProfile } from '@open-edu/domain-guidance';
 import { validateBlueprint } from '@open-edu/packs';
 import type { ReproductionRecord } from '@open-edu/schemas';
@@ -44,7 +45,13 @@ export interface CommitCourseDraftResult {
   success: boolean;
   title?: string;
   error?: string;
-  code?: 'draft-not-found' | 'draft-expired' | 'has-content' | 'write' | 'invalid-blueprint';
+  code?:
+    | 'draft-not-found'
+    | 'draft-expired'
+    | 'has-content'
+    | 'write'
+    | 'invalid-blueprint'
+    | 'spec-invalid';
   capabilityGaps?: string[];
 }
 
@@ -102,15 +109,37 @@ export async function commitCourseDraft(
   let provenanceRecord: ReproductionRecord | undefined;
   let capabilityGaps: string[] = [];
   if (entry.authoring) {
-    const specText = readFileSync(entry.specPath, 'utf-8');
-    const model = entry.specPath.endsWith('.json')
-      ? parseCourseSpecJSON(specText).model
-      : parseCourseSpec(specText).model;
+    let specText: string;
+    try {
+      specText = readFileSync(entry.specPath, 'utf-8');
+    } catch (error) {
+      return {
+        success: false,
+        error: `Could not read the course spec: ${
+          error instanceof Error ? error.message : String(error)
+        }`,
+        code: 'spec-invalid',
+      };
+    }
+    let model: CourseModel | null | undefined;
+    try {
+      model = entry.specPath.endsWith('.json')
+        ? parseCourseSpecJSON(specText).model
+        : parseCourseSpec(specText).model;
+    } catch (error) {
+      return {
+        success: false,
+        error: `course spec failed to parse: ${
+          error instanceof Error ? error.message : String(error)
+        }`,
+        code: 'spec-invalid',
+      };
+    }
     if (!model) {
       return {
         success: false,
         error: 'course spec failed to parse',
-        code: 'invalid-blueprint',
+        code: 'spec-invalid',
       };
     }
     const facts = factsFromModel(model);

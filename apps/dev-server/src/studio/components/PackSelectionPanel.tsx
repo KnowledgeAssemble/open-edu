@@ -17,7 +17,7 @@ import { SUPPORTED_LOCALES } from '@open-edu/i18n/locale';
 import { listProfiles } from '@open-edu/domain-guidance/profiles';
 import type { AuthoringContext, PackDiagnostic, PackDetail, PackSummary } from '@open-edu/packs';
 import { useStudioAssistant } from '../ai/StudioAssistantProvider';
-import type { StudioApi } from '../studioApi.js';
+import type { StudioApi, StudioApiError } from '../studioApi.js';
 
 export function PackSelectionPanel({
   api,
@@ -39,6 +39,7 @@ export function PackSelectionPanel({
   const [learner, setLearner] = useState<string>('neurotypical');
   const [locale, setLocale] = useState<string>('en');
   const [busy, setBusy] = useState(false);
+  const [applied, setApplied] = useState<{ pack: string; unit: string } | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -93,15 +94,21 @@ export function PackSelectionPanel({
         locale,
       });
       onAuthoring(context, warnings);
+      const summary = curricula?.find((c) => c.id === curriculumId);
+      const unitTitle = unit
+        ? (detail?.units.find((u) => u.id === unit)?.title ?? unit)
+        : t('studio.packs.unitAll');
+      setApplied({ pack: summary?.name ?? curriculumId, unit: unitTitle });
       openWithPreset({
         message: t('studio.packs.assistantPreset', {
-          unit: unit || t('studio.packs.unitAll'),
+          unit: unitTitle,
           curriculum: curriculumId,
         }),
         prefill: true,
       });
     } catch (err) {
-      onError(err instanceof Error ? err.message : t('studio.errors.generic'));
+      const code = (err as StudioApiError).code ?? 'unknown';
+      onError(t('studio.packs.loadError', { code }));
     } finally {
       setBusy(false);
     }
@@ -211,6 +218,11 @@ export function PackSelectionPanel({
           >
             {t('studio.packs.createButton')}
           </Button>
+          {applied ? (
+            <p role="status" className="text-on-surface-variant mt-2 text-xs">
+              {t('studio.packs.contextApplied', { pack: applied.pack, unit: applied.unit })}
+            </p>
+          ) : null}
         </div>
       </CardContent>
     </Card>

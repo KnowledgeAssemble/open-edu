@@ -45,7 +45,7 @@ export function PackBrowserPanel({
               ))}
             </ul>
           ) : (
-            <p className="text-on-surface-variant text-sm">{t('studio.packs.conceptsEmpty')}</p>
+            <p className="text-on-surface-variant text-sm">{t('studio.packs.objectivesEmpty')}</p>
           )}
         </CardContent>
       </Card>
@@ -112,7 +112,10 @@ export function PackBrowserPanel({
                   </span>
                   <span className="text-on-surface-variant">
                     {' '}
-                    — {p.documents.join(', ') || t('studio.packs.provenanceEmpty')}
+                    —{' '}
+                    {p.documents.length > 0
+                      ? `${t('studio.packs.sourceDocument')}: ${p.documents.join(', ')}`
+                      : t('studio.packs.provenanceEmpty')}
                   </span>
                 </li>
               ))}

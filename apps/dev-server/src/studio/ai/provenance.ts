@@ -25,6 +25,32 @@ export function factsFromModel(model: CourseModel): BlueprintFacts {
   };
 }
 
+function normalizeDescription(text: string): string {
+  return text
+    .toLowerCase()
+    .replace(/[^\p{L}\p{N}]+/gu, ' ')
+    .trim();
+}
+
+function matchLessonObjective(
+  authoring: AuthoringContext,
+  lessonObjective: { description: string },
+  index: number,
+): AuthoringContext['objectives'][number] | undefined {
+  const lessonNorm = normalizeDescription(lessonObjective.description);
+  const exact = authoring.objectives.find(
+    (ctx) => normalizeDescription(ctx.description) === lessonNorm,
+  );
+  if (exact) return exact;
+  const partial = authoring.objectives.find((ctx) => {
+    const ctxNorm = normalizeDescription(ctx.description);
+    if (!ctxNorm || !lessonNorm) return false;
+    return lessonNorm.includes(ctxNorm) || ctxNorm.includes(lessonNorm);
+  });
+  if (partial) return partial;
+  return authoring.objectives[index];
+}
+
 export function buildProvenance(
   authoring: AuthoringContext,
   model: CourseModel,
@@ -35,18 +61,26 @@ export function buildProvenance(
   const { capabilityGaps } = validateBlueprint(authoring, facts);
 
   const nodes = modelLessons(model).map((lesson) => {
-    const matchedObjectiveIds = lesson.objectives
-      .map(
-        (o, i) =>
-          authoring.objectives.find((ctx) => ctx.description === o.description)?.id ??
-          authoring.objectives[i]?.id,
-      )
-      .filter((id): id is string => Boolean(id));
-    const objectives = authoring.objectives.filter((o) => matchedObjectiveIds.includes(o.id));
+    const matchedObjectives: AuthoringContext['objectives'] = [];
+    lesson.objectives.forEach((lessonObjective, i) => {
+      const matched = matchLessonObjective(authoring, lessonObjective, i);
+      if (matched && !matchedObjectives.includes(matched)) {
+        matchedObjectives.push(matched);
+      }
+    });
+    const matchedObjectiveIds = matchedObjectives.map((o) => o.id);
+    const concepts = matchedObjectives.flatMap((o) => o.concepts);
+    const seenConcepts = new Set<string>();
+    const uniqueConcepts = concepts.filter((c) => {
+      const key = `${c.pack}/${c.concept}`;
+      if (seenConcepts.has(key)) return false;
+      seenConcepts.add(key);
+      return true;
+    });
     return {
       path: `nodes/${lesson.id}.md`,
       objectives: matchedObjectiveIds,
-      concepts: objectives.flatMap((o) => o.concepts),
+      concepts: uniqueConcepts,
       widgets: widgetIds(lesson),
       capabilityGaps: capabilityGaps.filter((g) =>
         matchedObjectiveIds.some((id) => g.startsWith(`objective-${id}:`)),

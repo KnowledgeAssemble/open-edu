@@ -41,13 +41,18 @@ export function validateBlueprint(
     });
   }
 
-  // Check 2 — every objective's requiresIntents is satisfied by an emitted activity, else CAPABILITY_GAP.
+  // Check 2 — every objective's requiresIntents is satisfied by the emitted
+  // activities (all-of across the union of their intents), else CAPABILITY_GAP.
   const emittedWidgetIds = new Set(facts.lessons.flatMap((l) => l.widgetIds));
+  const emittedIntents = new Set<string>();
+  for (const id of emittedWidgetIds) {
+    const activity = available.get(id);
+    if (activity) {
+      for (const intent of activity.intents) emittedIntents.add(intent);
+    }
+  }
   for (const objective of authoring.objectives) {
-    const satisfied = [...emittedWidgetIds].some((id) => {
-      const activity = available.get(id);
-      return activity && objective.requiresIntents.every((i) => activity.intents.includes(i));
-    });
+    const satisfied = objective.requiresIntents.every((i) => emittedIntents.has(i));
     if (!satisfied) {
       gaps.push(
         `objective-${objective.id}: no activity matched intents [${objective.requiresIntents.join(', ')}]`,

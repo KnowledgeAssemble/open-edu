@@ -9,6 +9,7 @@ import {
   WorkspaceUnavailableError,
   getOpfsRoot,
   type CourseWorkspace,
+  type StoredStudioFile,
   walkWorkspace,
 } from '@open-edu/storage';
 import type {
@@ -153,6 +154,7 @@ export function createBrowserStudioApi(options: BrowserStudioApiOptions = {}): S
   const session = options.session ?? createBrowserStudioSession();
   const onPackageChanged = options.onPackageChanged ?? (() => {});
   const aiClient = options.aiClient ?? createBrowserAiGateway();
+  const pendingCapabilityGaps = new Map<string, string[]>();
 
   async function requireActiveCourse(): Promise<BrowserCourse> {
     if (!session.activeCourseId) {
@@ -613,20 +615,28 @@ export function createBrowserStudioApi(options: BrowserStudioApiOptions = {}): S
   }
 
   function toCourseDraftResult(
-    id: string,
-    hasFiles: boolean,
-    title: string | undefined,
-    outlinePreview: Array<{ title: string; kind: string }>,
-    quality: Array<{ id: string; labelKey: string; passed: boolean; detail?: string }>,
+    response: CourseDraftResult & { files: StoredStudioFile[] },
   ): CourseDraftResult {
+    const hasFiles = response.files.length > 0;
+    const success = response.success !== false && hasFiles;
+    if (success) {
+      return {
+        success: true,
+        title: response.title,
+        outlinePreview: response.outlinePreview,
+        quality: response.quality,
+        draftId: response.draftId,
+        ...(response.capabilityGaps ? { capabilityGaps: response.capabilityGaps } : {}),
+      };
+    }
     return {
-      success: hasFiles,
-      title,
-      outlinePreview,
-      quality,
-      draftId: hasFiles ? id : '',
-      error: hasFiles ? undefined : 'Could not generate a course draft.',
-      code: hasFiles ? undefined : 'compile',
+      success: false,
+      title: response.title,
+      outlinePreview: response.outlinePreview,
+      quality: response.quality,
+      draftId: '',
+      error: response.error ?? 'Could not generate a course draft.',
+      code: response.success === false ? (response.code ?? 'compile') : 'compile',
     };
   }
 
@@ -642,13 +652,11 @@ export function createBrowserStudioApi(options: BrowserStudioApiOptions = {}): S
     }
     try {
       const response = await aiClient.generateDraft(input, session.activeCourseId);
-      return toCourseDraftResult(
-        response.draftId,
-        response.files.length > 0,
-        response.title,
-        response.outlinePreview,
-        response.quality,
-      );
+      const result = toCourseDraftResult(response);
+      if (result.success && result.capabilityGaps) {
+        pendingCapabilityGaps.set(result.draftId, result.capabilityGaps);
+      }
+      return result;
     } catch (err) {
       const code = (err as { code?: string }).code ?? 'llm';
       return {
@@ -666,7 +674,7 @@ export function createBrowserStudioApi(options: BrowserStudioApiOptions = {}): S
   async function commitLocalDraft(
     draftId: string,
     force?: boolean,
-  ): Promise<{ success: boolean; title?: string; error?: string }> {
+  ): Promise<{ success: boolean; title?: string; error?: string; capabilityGaps?: string[] }> {
     void force;
     if (!session.activeCourseId) {
       return { success: false, error: 'No course is open' };
@@ -688,7 +696,9 @@ export function createBrowserStudioApi(options: BrowserStudioApiOptions = {}): S
     }
     await aiClient.discardDraft(draftId);
     onPackageChanged();
-    return { success: true, title: draft.title };
+    const capabilityGaps = pendingCapabilityGaps.get(draftId);
+    pendingCapabilityGaps.delete(draftId);
+    return { success: true, title: draft.title, capabilityGaps };
   }
 
   /** Existing activity titles from the active course, used as LLM context so the

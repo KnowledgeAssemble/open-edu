@@ -79,4 +79,70 @@ describe('validateBlueprint', () => {
     expect(capabilityGaps).toHaveLength(1);
     expect(capabilityGaps[0]).toContain('objective-represent-fraction');
   });
+
+  it('treats intents covered together across emitted activities as satisfied', () => {
+    const split: AuthoringContext = {
+      packs: [],
+      availableActivities: [
+        {
+          id: 'w.practice',
+          name: 'Practice',
+          intents: [LearningIntent.Practice],
+          subjectTags: [],
+        },
+        {
+          id: 'w.compare',
+          name: 'Compare',
+          intents: [LearningIntent.Compare],
+          subjectTags: [],
+        },
+      ],
+      concepts: [],
+      objectives: [
+        {
+          id: 'cover-both',
+          description: 'Cover it.',
+          concepts: [],
+          requiresIntents: [LearningIntent.Practice, LearningIntent.Compare],
+        },
+      ],
+      budget: { maxChars: 20000, usedChars: 0, truncated: [] },
+      provenance: [],
+    };
+    const { capabilityGaps } = validateBlueprint(split, {
+      lessons: [{ id: 'l1', objectives: [], widgetIds: ['w.practice', 'w.compare'] }],
+    });
+    expect(capabilityGaps).toEqual([]);
+  });
+
+  it('still gaps an objective when one required intent is uncovered', () => {
+    const split: AuthoringContext = {
+      packs: [],
+      availableActivities: [
+        {
+          id: 'w.practice',
+          name: 'Practice',
+          intents: [LearningIntent.Practice],
+          subjectTags: [],
+        },
+      ],
+      concepts: [],
+      objectives: [
+        {
+          id: 'cover-partial',
+          description: 'Cover partially.',
+          concepts: [],
+          requiresIntents: [LearningIntent.Practice, LearningIntent.Compare],
+        },
+      ],
+      budget: { maxChars: 20000, usedChars: 0, truncated: [] },
+      provenance: [],
+    };
+    const { capabilityGaps } = validateBlueprint(split, {
+      lessons: [{ id: 'l1', objectives: [], widgetIds: ['w.practice'] }],
+    });
+    expect(capabilityGaps).toEqual([
+      'objective-cover-partial: no activity matched intents [practice, compare]',
+    ]);
+  });
 });

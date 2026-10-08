@@ -105,6 +105,9 @@ describe('PackSelectionPanel', () => {
       learner: 'neurotypical',
       locale: 'en',
     });
+    expect(
+      await screen.findByText('Grounded on NIOS Mathematics Level A (Fractions)'),
+    ).toBeInTheDocument();
   });
 
   it('reports selection errors through onError', async () => {
@@ -118,6 +121,8 @@ describe('PackSelectionPanel', () => {
     fireEvent.click(await screen.findByRole('option', { name: 'NIOS Mathematics Level A' }));
     await userEvent.click(screen.getByRole('button', { name: /create learning experience/i }));
 
-    await waitFor(() => expect(onError).toHaveBeenCalledWith('boom'));
+    await waitFor(() =>
+      expect(onError).toHaveBeenCalledWith('Could not load the authoring context: unknown'),
+    );
   });
 });

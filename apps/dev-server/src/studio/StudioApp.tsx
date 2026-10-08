@@ -87,6 +87,12 @@ export function StudioApp({
   const [authoring, setAuthoring] = useState<AuthoringContext | null>(null);
   const [authoringWarnings, setAuthoringWarnings] = useState<PackDiagnostic[]>([]);
   const [capabilityGaps, setCapabilityGaps] = useState<string[]>([]);
+  const courseKey = loadedPackage ? `${loadedPackage.rootDir}::${loadedPackage.manifest.id}` : null;
+  useEffect(() => {
+    setAuthoring(null);
+    setAuthoringWarnings([]);
+    setCapabilityGaps([]);
+  }, [courseKey]);
   const filesPaneRef = useRef<PackageSourcePaneHandle>(null);
 
   const handleTargetLearnerKindChange = useCallback((kind: string) => {

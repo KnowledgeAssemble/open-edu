@@ -199,6 +199,7 @@ export async function generateCourseDraft(
   const quality = mapDiagnosticsToQuality(result.diagnostics, outlinePreview);
   const firstError = result.diagnostics.find((diagnostic) => diagnostic.severity === 'error');
 
+  let capabilityGaps: string[] | undefined;
   if (result.success && options.finalize && options.authoring) {
     const specText = readFileSync(specPath, 'utf-8');
     const model = specPath.endsWith('.json')
@@ -206,7 +207,7 @@ export async function generateCourseDraft(
       : parseCourseSpec(specText).model;
     if (!model) {
       await rm(tempDir, { recursive: true, force: true }).catch(() => {});
-      return errorResult('invalid-blueprint', 'course spec failed to parse');
+      return errorResult('spec-invalid', 'course spec failed to parse');
     }
     const facts = factsFromModel(model);
     facts.expectedAudience = options.authoring.learner
@@ -218,6 +219,7 @@ export async function generateCourseDraft(
       return errorResult('invalid-blueprint', violations[0]!.message);
     }
     const provenance = buildProvenance(options.authoring, model, new Date().toISOString());
+    capabilityGaps = provenance.capabilityGaps;
     await writeFile(
       join(outputDir, 'provenance.json'),
       JSON.stringify(provenance.record, null, 2),
@@ -265,5 +267,6 @@ export async function generateCourseDraft(
     outlinePreview,
     title,
     draftId,
+    ...(capabilityGaps ? { capabilityGaps } : {}),
   };
 }

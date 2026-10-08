@@ -486,6 +486,71 @@ describe('BrowserStudioApi', () => {
     );
   });
 
+  it('propagates the server draft code and message from a failed generate', async () => {
+    const store = createBrowserCourseStore({ nonPersistent: true });
+    const session = createBrowserStudioSession();
+    const aiClient = {
+      generateDraft: vi.fn().mockResolvedValue({
+        success: false,
+        code: 'invalid-blueprint',
+        error: 'lesson "l1" references unavailable widget "ghost.widget"',
+        draftId: '',
+        title: undefined,
+        outlinePreview: [],
+        quality: [],
+        files: [],
+      }),
+    } as unknown as BrowserAiGateway;
+    const api = createBrowserStudioApi({ store, session, aiClient });
+    await api.applyTemplate('reading-lesson');
+    await api.openLibraryCourse('reading-lesson');
+
+    const result = await api.generateCourseDraft('teach fractions');
+    expect(result.success).toBe(false);
+    expect(result.code).toBe('invalid-blueprint');
+    expect(result.error).toContain('ghost.widget');
+    expect(result.draftId).toBe('');
+  });
+
+  it('returns generate-time capabilityGaps when committing a browser AI draft', async () => {
+    const store = createBrowserCourseStore({ nonPersistent: true });
+    const session = createBrowserStudioSession();
+    const draft = {
+      id: 'draft-gaps',
+      courseId: 'reading-lesson',
+      version: '1.0.0',
+      title: 'AI Draft',
+      files: [{ path: 'nodes/ai-lesson.md', data: enc('ai content').buffer }],
+      createdAt: '2024-01-01T00:00:00Z',
+      updatedAt: '2024-01-01T00:00:00Z',
+    };
+    const gaps = ['objective-o1: no activity matched intents [recall]'];
+    const aiClient = {
+      generateDraft: vi.fn().mockResolvedValue({
+        success: true,
+        title: 'AI Draft',
+        draftId: 'draft-gaps',
+        outlinePreview: [],
+        quality: [],
+        capabilityGaps: gaps,
+        files: [{ path: 'nodes/ai-lesson.md', data: enc('ai content').buffer }],
+      }),
+      getDraft: vi.fn().mockResolvedValue(draft),
+      discardDraft: vi.fn().mockResolvedValue(undefined),
+    } as unknown as BrowserAiGateway;
+    const api = createBrowserStudioApi({ store, session, aiClient });
+    await api.applyTemplate('reading-lesson');
+    await api.openLibraryCourse('reading-lesson');
+
+    const generated = await api.generateCourseDraft('teach fractions');
+    expect(generated.success).toBe(true);
+    expect(generated.capabilityGaps).toEqual(gaps);
+
+    const result = await api.commitCourseDraft('draft-gaps');
+    expect(result.success).toBe(true);
+    expect(result.capabilityGaps).toEqual(gaps);
+  });
+
   it('reports AI availability through the gateway client (unavailable without fetch)', async () => {
     const { api } = createBrowserApi();
     // Without a stubbed fetch the client reports AI as unavailable (manual

@@ -69,7 +69,7 @@ export function createSkillResolver(registry: { list(): CompanionSkill[] }): Ski
       // Rule 3: objective-intent skill
       if (ctx?.authoring?.objectives && ctx.authoring.objectives.length > 0) {
         const skill = allSkills.find((s) => s.id === 'objective-intent');
-        if (skill) resolved.push(skill);
+        if (skill && !resolved.some((s) => s.id === skill.id)) resolved.push(skill);
       }
 
       return resolved;

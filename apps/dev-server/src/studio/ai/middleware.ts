@@ -1,5 +1,5 @@
 import type { IncomingMessage, ServerResponse } from 'node:http';
-import { mkdir } from 'node:fs/promises';
+import { mkdir, rm } from 'node:fs/promises';
 import { join } from 'node:path';
 import {
   generateCourseDraft,
@@ -209,6 +209,8 @@ export function createStudioAiMiddleware(
             setPackageDir(targetDir);
           }
           onCommitSuccess?.(targetDir);
+        } else if (isNewCourse) {
+          await rm(targetDir, { recursive: true, force: true }).catch(() => {});
         }
 
         res.end(JSON.stringify(commitResult));
