@@ -8,37 +8,7 @@ import type {
 } from './types';
 import { WidgetRegistrationError } from './types';
 import { WIDGET_ALIAS_MAP } from './domains';
-import {
-  multipleChoicePractice,
-  visualCounting,
-  multipleChoice,
-  matching,
-  dragDrop,
-  sequencing,
-  fillBlank,
-  storyQuestion,
-  realWorld,
-  fractionVisual,
-  placeValueChart,
-  gridArea,
-  chartReader,
-  clockTime,
-  measurementScale,
-  callout,
-  imageCompare,
-  hotspot,
-  timeline,
-  labelDiagram,
-  imageLabel,
-  audioPlayer,
-  videoPlayer,
-  flashcard,
-  processDiagram,
-  numberLine,
-  socialMap,
-  processExplainer,
-  timer,
-} from './builtins';
+import { BUILTIN_WIDGETS } from './builtin-roster';
 
 export function createWidgetRegistry(): WidgetRegistry {
   const widgets = new Map<string, WidgetDefinition>();
@@ -151,38 +121,6 @@ export function createWidgetRegistry(): WidgetRegistry {
     },
   };
 }
-
-const BUILTIN_WIDGETS: WidgetDefinition[] = [
-  multipleChoicePractice,
-  visualCounting,
-  multipleChoice,
-  matching,
-  dragDrop,
-  sequencing,
-  fillBlank,
-  storyQuestion,
-  realWorld,
-  fractionVisual,
-  placeValueChart,
-  gridArea,
-  chartReader,
-  clockTime,
-  measurementScale,
-  callout,
-  imageCompare,
-  hotspot,
-  timeline,
-  labelDiagram,
-  imageLabel,
-  audioPlayer,
-  videoPlayer,
-  flashcard,
-  processDiagram,
-  numberLine,
-  socialMap,
-  processExplainer,
-  timer,
-];
 
 export function registerAllBuiltins(registry: WidgetRegistry): void {
   for (const widget of BUILTIN_WIDGETS) {

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { createWidgetRegistry, registerAllBuiltins } from '../registry';
+import { createWidgetRegistry, registerAllBuiltins, createDefaultRegistry } from '../registry';
 import type { WidgetDefinition, WidgetDefinitionV2 } from '../types';
 
 function makeWidget(id: string, overrides?: Partial<WidgetDefinition>): WidgetDefinition {
@@ -130,5 +130,11 @@ describe('WidgetRegistry alias resolution', () => {
     expect(registry.has('open-edu.matching')).toBe(true);
     expect(registry.has('core.multiple-choice')).toBe(true);
     expect(registry.has('open-edu.multiple-choice')).toBe(true);
+  });
+
+  it('resolves the retired practice alias to core.multiple-choice without listing it', () => {
+    const registry = createDefaultRegistry();
+    expect(registry.get('open-edu.multiple-choice-practice')?.id).toBe('core.multiple-choice');
+    expect(registry.getAll().map((w) => w.id)).not.toContain('open-edu.multiple-choice-practice');
   });
 });

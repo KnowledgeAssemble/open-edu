@@ -41,9 +41,7 @@ describe('Registry searchWithFilters', () => {
 
   it('filters by learning intents with all-of logic', () => {
     const r = createWidgetRegistry();
-    r.register(
-      v2('a', { learningIntents: [LearningIntent.Practice, LearningIntent.Compare] }),
-    );
+    r.register(v2('a', { learningIntents: [LearningIntent.Practice, LearningIntent.Compare] }));
     r.register(v2('b', { learningIntents: [LearningIntent.Practice] }));
     const result = r.searchWithFilters({
       intents: [LearningIntent.Practice, LearningIntent.Compare],
@@ -85,8 +83,12 @@ describe('Registry searchWithFilters', () => {
 
   it('requires both intents and subjectTags when combined', () => {
     const r = createWidgetRegistry();
-    r.register(v2('a', { learningIntents: [LearningIntent.Practice], ai: { subjectTags: ['math'] } }));
-    r.register(v2('b', { learningIntents: [LearningIntent.Practice], ai: { subjectTags: ['science'] } }));
+    r.register(
+      v2('a', { learningIntents: [LearningIntent.Practice], ai: { subjectTags: ['math'] } }),
+    );
+    r.register(
+      v2('b', { learningIntents: [LearningIntent.Practice], ai: { subjectTags: ['science'] } }),
+    );
     const result = r.searchWithFilters({
       intents: [LearningIntent.Practice],
       subjectTags: ['math'],

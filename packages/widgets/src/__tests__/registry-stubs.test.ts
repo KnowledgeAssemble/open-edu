@@ -20,11 +20,11 @@ describe('Widget registration', () => {
     });
   }
 
-  it('registers all 29 builtins', () => {
+  it('registers all 28 builtins', () => {
     const registry = createWidgetRegistry();
     registerAllBuiltins(registry);
     const all = registry.getAll();
-    expect(all).toHaveLength(29);
+    expect(all).toHaveLength(28);
     const stable = all.filter((w) => (w as unknown as Record<string, unknown>).status === 'stable');
     expect(stable.length).toBeGreaterThanOrEqual(20);
   });
