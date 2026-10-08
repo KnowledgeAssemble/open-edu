@@ -9,6 +9,7 @@
 import { existsSync, mkdirSync, readdirSync, unlinkSync, writeFileSync } from 'node:fs';
 import { resolve, dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import prettier from 'prettier';
 import { renderWidgetGuideMarkdown } from '../src/guide-markdown.ts';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -41,7 +42,8 @@ for (const entry of entriesWithGuide) {
   const md = `---\nsidebar_position: ${g.sidebarPosition}\n---\n\n` + body;
   const filename = entry.id.split('.').slice(1).join('-') + '.md';
   const filePath = join(outputBaseDir, entry.domain!, filename);
-  writeFileSync(filePath, md, 'utf-8');
+  const formatted = await prettier.format(md, { parser: 'markdown', printWidth: 100 });
+  writeFileSync(filePath, formatted, 'utf-8');
 }
 
 console.log(`Generated ${entriesWithGuide.length} widget doc pages → ${outputBaseDir}`);
