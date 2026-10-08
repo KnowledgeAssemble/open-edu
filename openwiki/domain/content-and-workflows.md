@@ -167,6 +167,10 @@ The skill ships with 15 evaluation scenarios (`evals/evals.json`) covering porta
 - Repository adapter: `skills/openedu-course-authoring/references/repository-adapter.md`
 - Source materials: `skills/openedu-course-authoring/references/source-materials.md`
 
+## Packs and authoring context
+
+Packs are declarative curriculum/knowledge inputs (`manifest.json` + `curriculum.json` / `concepts.json`) that sit in front of packages during **Studio AI drafting** — they provide the objectives, concept references, and required intents a generated course spec must trace back to. `@open-edu/packs` resolves a curriculum/unit selection into a bounded `AuthoringContext` (character budget with explicit truncation), and the Studio AI pipeline threads it into prompts, validates the compiled draft against it (`validateBlueprint`: widget IDs must exist in the context; intents must be covered or reported as `capabilityGaps[]`), and records pack lineage in `provenance.json`. Pack fixtures live in `examples/packs/` (`OPEN_EDU_PACKS_DIR=examples/packs`). Canonical reference: the [Packs domain guide](packs.md) and `docs/OPENEDU-PACK-SYSTEM.md`.
+
 ## Where to start when changing content behavior
 
 - Update schema shape or validation rules in `packages/schemas`

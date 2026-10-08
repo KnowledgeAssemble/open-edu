@@ -14,6 +14,7 @@ Open-Edu is a pnpm TypeScript monorepo for educational experiences. It separates
 - [Architecture overview](architecture/overview.md)
 - [Content, workflows, and examples](domain/content-and-workflows.md)
 - [Agentic course authoring](domain/content-and-workflows.md#agentic-course-authoring)
+- [Packs and AI-grounded authoring](domain/packs.md)
 - [Learner app](domain/learner-app.md)
 - [Design system and UI architecture](domain/design-system.md)
 - [Operations, commands, and tests](operations/testing-and-changes.md)
@@ -51,6 +52,7 @@ Open-Edu is a pnpm TypeScript monorepo for educational experiences. It separates
 - `packages/pwa-core` — framework-agnostic PWA primitives (install prompt, update detection, connectivity monitoring, storage quota queries).
 - `packages/oep-distribution` — course distribution system: `.oep` ZIP archive writer/reader with SHA-256 integrity, install coordinator, catalog loader, source adapters, ZIP security, and version comparison.
 - `packages/registry` — GitHub-native course registry tooling: GitHub Releases API client, catalog builder (metadata + releases → `catalog.json`), release-asset validation via `OepReader`, JSON Schema generation, and the `open-edu-registry` CLI. Consumed by the `openedu-library` registry repo.
+- `packages/packs` — OpenEdu Pack System (`@open-edu/packs`): knowledge/curriculum pack schemas, loader (`@open-edu/packs/loader`), bounded authoring-context resolution, and blueprint validation with capability gaps. Grounds Course Creator Studio AI drafts. See [Packs](domain/packs.md).
 
 ### Example content
 
@@ -60,6 +62,7 @@ Open-Edu is a pnpm TypeScript monorepo for educational experiences. It separates
 - `examples/level-b-math` — multi-module bundle example.
 - `examples/widget-showcase`, `examples/widget-practice`, `examples/remote-widget-demo` — widget patterns.
 - `examples/autism-reading`, `examples/living-vs-nonliving` — accessibility and rewards/card-heavy flows.
+- `examples/packs` — pack fixtures (`knowledge/openedu-fractions`, `curriculum/nios-math-level-a`); load with `OPEN_EDU_PACKS_DIR=examples/packs` (the workspace `packs/` dir is gitignored).
 
 ## What this repository is for
 
@@ -104,6 +107,7 @@ The UI is intentionally split between low-level primitives and opinionated visua
 - Change the Course Creator Studio (unified shell, Outline | Files tabs, Preview DevTools drawer, activity editors, AI drafting, library/units, share/export): start in `apps/dev-server/src/studio/` (UI + `StudioAPI` client), `apps/dev-server/vite.config.ts` (local `/api/package/*` + `/api/studio/*` adapters and browser/OPFS mode), and `packages/i18n/locales/en/studio.json`. The product spec lives in `docs/superpowers/specs/2026-09-01-studio-unified-view-design.md` (supersedes the mode split in `2026-08-05-course-creator-studio-design.md`).
 - Change course-authoring skill behavior: start in `skills/openedu-course-authoring/` — see [agentic course authoring](domain/content-and-workflows.md#agentic-course-authoring).
 - Change course distribution (`.oep` build, install, catalog, updates): start in `packages/oep-distribution` and `apps/learner/src/courseDownload.ts`.
+- Change packs (curriculum/knowledge format, authoring context, capability gaps, pack selection UI): start in `packages/packs/src/` and `apps/dev-server/src/studio/packs/` — see [Packs](domain/packs.md).
 - Change course registry tooling (catalog generation, release validation): start in `packages/registry` and the `openedu-library` repo.
 - Change Pipili AI companion (chat, hints, context mapping): start in `packages/ai-companion/src/pipili/` and `apps/learner/src/pipili/`.
 

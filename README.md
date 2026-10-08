@@ -1,6 +1,6 @@
 # Open-Edu Framework
 
-An open runtime for educational experiences that separates content from delivery platforms. Learning packages (Markdown + JSON) are loaded, validated, and rendered through a configurable runtime with accessibility, telemetry, internationalization, rewards, course distribution (`.oep`), and an AI companion (Pipili).
+An open runtime for educational experiences that separates content from delivery platforms. Learning packages (Markdown + JSON) are loaded, validated, and rendered through a configurable runtime with accessibility, telemetry, internationalization, rewards, course distribution (`.oep`), curriculum packs for AI-grounded authoring, and an AI companion (Pipili).
 
 > **Vision:** Educational experiences as portable, extensible, observable, and accessible as modern software. — [Full Vision](./docs/VISION.md)
 
@@ -9,6 +9,7 @@ An open runtime for educational experiences that separates content from delivery
 - **Learning packages** — Markdown + JSON content with workflow routing, quizzes, widgets, and rewards
 - **Learner app** — Course catalog, themed runtime, PWA/offline support, and Pipili AI companion
 - **Course Creator Studio** — Unified authoring shell (Outline | Files, Preview, AI Author Assistant)
+- **Curriculum packs** — Declarative knowledge + curriculum packs that ground Studio AI drafts in objectives and concepts, with capability-gap reporting and provenance
 - **CLI** — Validate, build, compile, lint, and distribute courses (`edu` commands)
 - **Extensible widgets** — Built-in widgets plus a community widget SDK
 - **i18n & a11y** — Internationalization and accessibility first-class in the runtime
@@ -36,6 +37,7 @@ edu validate ./examples/fractions
 edu create ./my-lesson --id my-lesson --title "My Lesson" --author "Me"
 edu compile ./course-spec.md -o ./output
 edu oep:build ./my-course -o ./dist
+edu pack validate ./examples/packs/knowledge/openedu-fractions
 ```
 
 ### Docker
@@ -61,6 +63,7 @@ Optional AI keys: copy `.env.example` to `.env`. AI features degrade gracefully 
 | [Component Guide](./docs/COMPONENT_GUIDE.md)                      | UI component conventions                          |
 | [Release Process](./docs/RELEASE.md)                              | Changesets, publish, and rollback                 |
 | [Agentic Course Authoring](./apps/docs/docs/agentic-authoring.md) | AI skill-based course generation                  |
+| [Pack System](./docs/OPENEDU-PACK-SYSTEM.md)                      | Curriculum packs, authoring context, AI grounding |
 
 ## Examples
 

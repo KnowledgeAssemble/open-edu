@@ -33,6 +33,8 @@ From the repository root:
 - `pnpm --filter @open-edu/cli build && node packages/cli/dist/cli.js i18n:missing ./locales ./target-lang` — find missing translations for a target language
 - Curriculum pipeline (`@open-edu/pipeline`) moved to the standalone `open-edu-pipeline` repo — see its `packages/pipeline/README.md` for `curriculum:generate` usage
 - `pnpm --filter @open-edu/registry test` — run the registry package tests (catalog builder, release validation, metadata validation)
+- `pnpm --filter @open-edu/packs test` — run the pack system tests (loader, manifest, curriculum, authoring-context bounds, blueprint validation)
+- `pnpm --filter @open-edu/cli build && node packages/cli/dist/cli.js pack validate ./examples/packs/knowledge/openedu-fractions` — validate a pack directory (manifest, concepts/curriculum, prerequisites)
 - `pnpm --filter @open-edu/widget-sdk test` — run widget-sdk tests (framework-agnostic protocol, fixtures, build helpers)
 - `pnpm test:e2e tests/e2e/community-widget.spec.ts` — run community widget E2E tests (sandbox isolation, persistence, revocation)
 - `EDU_WIDGET_DIR=./examples/community-widget-counter pnpm --filter @open-edu/learner dev` — manually test community widgets in the learner app (auto-discovers catalog, no globals needed)
@@ -66,6 +68,13 @@ Unit coverage for the surface lives in `apps/dev-server/src/studio/ai/`:
   `/api/studio/ai/chat` in both modes and never routes intents
 - `browserAiGateway.test.ts` — browser-mode status/draft/item calls against
   `/api/studio/ai/*` (no `/api/ai/*` anywhere)
+- Pack/authoring-context coverage — `packages/packs/src/*.test.ts`;
+  `apps/dev-server/src/studio/packs/packApi.test.ts`,
+  `components/PackSelectionPanel.test.tsx`, `components/PackBrowserPanel.test.tsx`,
+  `ai/provenance.test.ts`, `ai/commitCourseDraft.test.ts` (draft codes incl. `spec-invalid`),
+  `ai/chat/policy.test.ts` (system-prompt bounds), `browserStudioApi.test.ts`
+  (draft code propagation + capability gaps); E2E in `tests/e2e/pack-selection.spec.ts`
+  (`OPEN_EDU_PACKS_DIR=examples/packs`, set repo-wide in `playwright.config.ts`)
 - The chat wire schema + `toAiSdkMessages` / `fromUIMessage` converters live in
   `@open-edu/companion/chat` (see `packages/companion/src/chat.test.ts`).
 
@@ -95,6 +104,7 @@ This matters because runtime and dev-server styling are intentionally coupled th
 - workflow logic: `packages/workflow`
 - learner UI: `apps/learner`, `packages/runtime`, `packages/design-system`
 - Course Creator Studio UI/API/authoring: `apps/dev-server/src/studio/`, `apps/dev-server/vite.config.ts`, and the `studio` i18n namespace in `packages/i18n/locales/en/studio.json`
+- packs and authoring context: `packages/packs/src/`, `apps/dev-server/src/studio/packs/`, and `apps/dev-server/src/studio/ai/` (see the [Packs domain guide](../domain/packs.md))
 - CLI behavior: `packages/cli`
 - test coverage and test utilities: the package-level `src/**/*.test.ts[x]` files plus `tests/e2e/`
 - translation and locale management: `packages/i18n`
