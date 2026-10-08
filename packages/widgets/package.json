@@ -20,6 +20,10 @@
     "./catalog": {
       "types": "./dist/resolver/catalog.d.ts",
       "import": "./dist/resolver/catalog.js"
+    },
+    "./guide": {
+      "types": "./dist/guide-markdown.d.ts",
+      "import": "./dist/guide-markdown.js"
     }
   },
   "files": [
