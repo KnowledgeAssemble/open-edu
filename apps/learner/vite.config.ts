@@ -386,6 +386,7 @@ export default defineConfig(({ mode }) => {
         includeAssets: ['favicon.svg', 'icon-192.png', 'icon-512.png', 'icon-maskable.png'],
         manifest: false,
         workbox: {
+          maximumFileSizeToCacheInBytes: 3 * 1024 * 1024,
           globPatterns: ['**/*.{js,css,html,svg,png,woff,woff2}'],
           navigateFallback: '/index.html',
           navigateFallbackDenylist: [/^\/api\//],
@@ -430,6 +431,9 @@ export default defineConfig(({ mode }) => {
       eduDataPlugin(),
       widgetRegistryPlugin(),
     ].filter((plugin): plugin is Plugin => plugin !== undefined),
+    build: {
+      chunkSizeWarningLimit: 1024,
+    },
     resolve: {
       alias: [
         { find: /^fs\/promises$/, replacement: resolve(__dirname, 'src/stubs/fs-promises.ts') },
