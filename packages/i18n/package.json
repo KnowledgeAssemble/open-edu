@@ -13,7 +13,7 @@
     },
     "./locale": {
       "types": "./src/locale.ts",
-      "import": "./src/locale.ts"
+      "import": "./dist/locale.js"
     },
     "./locales/*": "./locales/*"
   },
