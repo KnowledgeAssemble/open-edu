@@ -9,6 +9,7 @@ import type {
 import { WidgetRegistrationError } from './types';
 import { WIDGET_ALIAS_MAP } from './domains';
 import { BUILTIN_WIDGETS } from './builtin-roster';
+import { matchesIntentTagFilters } from './search-filter';
 
 export function createWidgetRegistry(): WidgetRegistry {
   const widgets = new Map<string, WidgetDefinition>();
@@ -76,14 +77,13 @@ export function createWidgetRegistry(): WidgetRegistry {
         if (filters.domain && v2.domain !== filters.domain) return false;
 
         const intents = filters.intents ?? (filters.intent ? [filters.intent] : undefined);
-        if (intents && intents.length > 0) {
-          const declared = v2.learningIntents ?? [];
-          if (!intents.every((i) => declared.includes(i))) return false;
-        }
-
-        if (filters.subjectTags && filters.subjectTags.length > 0) {
-          const declared = v2.ai?.subjectTags ?? [];
-          if (!filters.subjectTags.some((t) => declared.includes(t))) return false;
+        if (
+          !matchesIntentTagFilters(
+            { intents: v2.learningIntents, subjectTags: v2.ai?.subjectTags },
+            { intents, subjectTags: filters.subjectTags },
+          )
+        ) {
+          return false;
         }
 
         if (filters.difficulty && v2.ai?.difficulty !== filters.difficulty) return false;
