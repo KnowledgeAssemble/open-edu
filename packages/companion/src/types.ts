@@ -19,7 +19,8 @@ export type AiGenerateErrorCode =
   | 'write'
   | 'compile'
   | 'spec-invalid'
-  | 'item-retry-failed';
+  | 'item-retry-failed'
+  | 'invalid-blueprint';
 
 export interface AiGenerateResult {
   success: boolean;

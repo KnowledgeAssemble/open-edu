@@ -6,3 +6,4 @@ export * from './pack-info.js';
 export * from './context.js';
 export * from './objectives.js';
 export * from './resolve.js';
+export * from './blueprint.js';

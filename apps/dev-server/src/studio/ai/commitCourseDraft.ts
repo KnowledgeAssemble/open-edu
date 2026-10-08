@@ -1,7 +1,12 @@
-import { existsSync, readdirSync } from 'node:fs';
-import { cp, rm } from 'node:fs/promises';
+import { existsSync, readdirSync, readFileSync } from 'node:fs';
+import { cp, rm, writeFile } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
 import { loadPackage } from '@open-edu/core';
+import { parseCourseSpec, parseCourseSpecJSON } from '@open-edu/course-compiler';
+import { getProfile } from '@open-edu/domain-guidance';
+import { validateBlueprint } from '@open-edu/packs';
+import type { ReproductionRecord } from '@open-edu/schemas';
+import { buildProvenance, factsFromModel } from './provenance.js';
 import { getDraftEntry, deleteDraft } from './generateCourse.js';
 
 /**
@@ -39,7 +44,7 @@ export interface CommitCourseDraftResult {
   success: boolean;
   title?: string;
   error?: string;
-  code?: 'draft-not-found' | 'draft-expired' | 'has-content' | 'write';
+  code?: 'draft-not-found' | 'draft-expired' | 'has-content' | 'write' | 'invalid-blueprint';
   capabilityGaps?: string[];
 }
 
@@ -57,7 +62,13 @@ async function clearPackageContents(packageDir: string): Promise<void> {
   if (existsSync(assetsDir)) {
     await rm(assetsDir, { recursive: true, force: true });
   }
-  for (const rel of ['workflow.json', 'package.json', 'rewards.json', 'cards.json']) {
+  for (const rel of [
+    'workflow.json',
+    'package.json',
+    'rewards.json',
+    'cards.json',
+    'provenance.json',
+  ]) {
     const abs = join(packageDir, rel);
     if (existsSync(abs)) {
       await rm(abs, { force: true });
@@ -88,11 +99,49 @@ export async function commitCourseDraft(
     };
   }
 
+  let provenanceRecord: ReproductionRecord | undefined;
+  let capabilityGaps: string[] = [];
+  if (entry.authoring) {
+    const specText = readFileSync(entry.specPath, 'utf-8');
+    const model = entry.specPath.endsWith('.json')
+      ? parseCourseSpecJSON(specText).model
+      : parseCourseSpec(specText).model;
+    if (!model) {
+      return {
+        success: false,
+        error: 'course spec failed to parse',
+        code: 'invalid-blueprint',
+      };
+    }
+    const facts = factsFromModel(model);
+    facts.expectedAudience = entry.authoring.learner
+      ? getProfile(entry.authoring.learner)?.audience
+      : undefined;
+    const { violations } = validateBlueprint(entry.authoring, facts);
+    if (violations.length > 0) {
+      return {
+        success: false,
+        error: violations[0]!.message,
+        code: 'invalid-blueprint',
+      };
+    }
+    const provenance = buildProvenance(entry.authoring, model, new Date().toISOString());
+    provenanceRecord = provenance.record;
+    capabilityGaps = provenance.capabilityGaps;
+  }
+
   try {
     if (force && packageHasContent) {
       await clearPackageContents(packageDir);
     }
     await cp(entry.outputDir, packageDir, { recursive: true });
+    if (provenanceRecord) {
+      await writeFile(
+        join(packageDir, 'provenance.json'),
+        JSON.stringify(provenanceRecord, null, 2),
+        'utf-8',
+      );
+    }
   } catch (error) {
     return {
       success: false,
@@ -111,5 +160,5 @@ export async function commitCourseDraft(
     // loadPackage may fail if the draft is incomplete; title remains undefined
   }
 
-  return { success: true, title };
+  return { success: true, title, capabilityGaps };
 }
