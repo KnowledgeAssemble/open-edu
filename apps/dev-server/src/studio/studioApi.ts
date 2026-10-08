@@ -91,10 +91,26 @@ export interface StudioApi {
   getPreviewPackage(): Promise<LoadedPackage | null>;
   getStorageStatus(): Promise<StorageStatus>;
   getAiStatus(): Promise<AiStatus>;
-  generateFromNotes(notes: string, force?: boolean): Promise<CourseDraftResult>;
-  uploadSpec(spec: string, specExt: '.json' | '.md', force?: boolean): Promise<CourseDraftResult>;
-  generateCourseDraft(notes: string): Promise<CourseDraftResult>;
-  uploadSpecDraft(spec: string, specExt: '.json' | '.md'): Promise<CourseDraftResult>;
+  generateFromNotes(
+    notes: string,
+    force?: boolean,
+    options?: { authoring?: AuthoringContext; locale?: string },
+  ): Promise<CourseDraftResult>;
+  uploadSpec(
+    spec: string,
+    specExt: '.json' | '.md',
+    force?: boolean,
+    options?: { authoring?: AuthoringContext; locale?: string },
+  ): Promise<CourseDraftResult>;
+  generateCourseDraft(
+    notes: string,
+    options?: { authoring?: AuthoringContext; locale?: string },
+  ): Promise<CourseDraftResult>;
+  uploadSpecDraft(
+    spec: string,
+    specExt: '.json' | '.md',
+    options?: { authoring?: AuthoringContext; locale?: string },
+  ): Promise<CourseDraftResult>;
   commitCourseDraft(
     draftId: string,
     force?: boolean,

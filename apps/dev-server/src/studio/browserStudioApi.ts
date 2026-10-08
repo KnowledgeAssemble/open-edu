@@ -37,6 +37,7 @@ import type { LibraryEntry } from './library/types.js';
 import { createBrowserAiGateway, type BrowserAiGateway } from './browserAiGateway.js';
 import { getBundledPacks } from './packs/packSource.js';
 import { detailPack, resolveSelection, summarizePacks } from './packs/packApi.js';
+import type { AuthoringContext } from '@open-edu/packs';
 import { applyChangeSet } from './ai/applyChangeSet.js';
 import { createChangeSet, type WorkspaceChange } from '@open-edu/storage';
 import type {
@@ -633,6 +634,8 @@ export function createBrowserStudioApi(options: BrowserStudioApiOptions = {}): S
     notes?: string;
     spec?: string;
     specExt?: '.json' | '.md';
+    authoring?: AuthoringContext;
+    locale?: string;
   }): Promise<CourseDraftResult> {
     if (!session.activeCourseId) {
       throw new BrowserStudioApiError('no-active-course', 'No course is open');
@@ -726,12 +729,13 @@ export function createBrowserStudioApi(options: BrowserStudioApiOptions = {}): S
     getPreviewPackage,
     getStorageStatus,
     getAiStatus: () => aiClient.getStatus(),
-    generateFromNotes: (notes: string) => generateAndPersistDraft({ notes }),
-    uploadSpec: (spec: string, specExt: '.json' | '.md') =>
-      generateAndPersistDraft({ spec, specExt }),
-    generateCourseDraft: (notes: string) => generateAndPersistDraft({ notes }),
-    uploadSpecDraft: (spec: string, specExt: '.json' | '.md') =>
-      generateAndPersistDraft({ spec, specExt }),
+    generateFromNotes: (notes: string, _force?: boolean, options?: { authoring?: AuthoringContext; locale?: string }) =>
+      generateAndPersistDraft({ notes, ...options }),
+    uploadSpec: (spec: string, specExt: '.json' | '.md', _force?: boolean, options?: { authoring?: AuthoringContext; locale?: string }) =>
+      generateAndPersistDraft({ spec, specExt, ...options }),
+    generateCourseDraft: (notes: string, options?: { authoring?: AuthoringContext; locale?: string }) => generateAndPersistDraft({ notes, ...options }),
+    uploadSpecDraft: (spec: string, specExt: '.json' | '.md', options?: { authoring?: AuthoringContext; locale?: string }) =>
+      generateAndPersistDraft({ spec, specExt, ...options }),
     commitCourseDraft: (draftId: string, force?: boolean) => commitLocalDraft(draftId, force),
     discardCourseDraft: async (draftId: string) => {
       await aiClient.discardDraft(draftId);

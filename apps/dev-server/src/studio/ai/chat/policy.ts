@@ -111,5 +111,16 @@ QUALITY RUBRIC:
 
 Respond concisely and provide actionable suggestions. When you generate drafts, present them and ask the user if they want to apply them.`;
 
+  if (ctx.authoring) {
+    const a = ctx.authoring;
+    prompt += `\n\nAUTHORING CONTEXT (compact):
+Packs: ${a.packs.map((p) => `${p.type}/${p.id}@${p.version}`).join(', ') || '(none)'}
+Curriculum unit: ${a.curriculumUnit ?? '(none)'}
+Learner: ${a.learner ?? '(none)'} | Locale: ${a.locale ?? 'en'}
+Objectives: ${a.objectives.length} | Concepts: ${a.concepts.length} | Available activities: ${a.availableActivities.length}
+Objective ids: ${a.objectives.map((o) => o.id).join(', ') || '(none)'}
+`;
+  }
+
   return prompt;
 }

@@ -8,6 +8,7 @@ import { mapDiagnosticsToQuality } from './qualityMap.js';
 import { detectActivityKind, titleFromMarkdown, titleFromQuizJson } from '../outlineModel.js';
 import type { AiGenerateErrorCode, CourseDraftResult } from './types.js';
 import { resolveCourseSpec, type CourseSpecSource } from './generateCoursePackage.js';
+import type { AuthoringContext } from '@open-edu/packs';
 
 const DRAFT_TTL_MS = 30 * 60 * 1000;
 
@@ -17,13 +18,18 @@ export interface GenerateCourseOptions {
   source: CourseDraftSource;
   packageDir: string;
   compile?: typeof compileFromCourseCompiler;
+  authoring?: AuthoringContext;
+  locale?: string;
+  finalize?: boolean;
 }
 
 interface DraftEntry {
   tempDir: string;
   outputDir: string;
+  specPath: string;
   title?: string;
   createdAt: number;
+  authoring?: AuthoringContext;
 }
 
 const activeDrafts = new Map<string, DraftEntry>();
@@ -193,7 +199,9 @@ export async function generateCourseDraft(
   activeDrafts.set(draftId, {
     tempDir,
     outputDir,
+    specPath,
     createdAt: Date.now(),
+    ...(options.authoring ? { authoring: options.authoring } : {}),
   });
 
   if (!result.success) {

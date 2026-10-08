@@ -18,6 +18,7 @@ import {
 } from './itemGenerate.js';
 import { completeWithLlm, isAiAvailable } from './studioLlm.js';
 import { createStudioAssistantHandler } from './chat/handler.js';
+import { AuthoringContextSchema } from '@open-edu/packs';
 
 const STUDIO_AI_REGEXP = /^\/api\/studio\/ai\//;
 
@@ -123,10 +124,28 @@ export function createStudioAiMiddleware(
           spec?: string;
           specExt?: string;
           includeFiles?: boolean;
+          authoring?: unknown;
+          locale?: string;
         };
+        let authoring = undefined as ReturnType<typeof AuthoringContextSchema.parse> | undefined;
+        if (body.authoring !== undefined) {
+          const parsedAuthoring = AuthoringContextSchema.safeParse(body.authoring);
+          if (!parsedAuthoring.success) {
+            res.statusCode = 400;
+            res.end(JSON.stringify({ code: 'spec-invalid', error: 'Invalid authoring context' }));
+            return;
+          }
+          authoring = parsedAuthoring.data;
+        }
         let source: CourseDraftSource;
         if (body.notes && typeof body.notes === 'string') {
-          source = { kind: 'notes', notes: body.notes, completeText: completeWithLlm };
+          source = {
+            kind: 'notes',
+            notes: body.notes,
+            completeText: completeWithLlm,
+            authoring,
+            locale: body.locale,
+          };
         } else if (body.spec && typeof body.spec === 'string') {
           if (body.specExt !== '.json' && body.specExt !== '.md') {
             res.statusCode = 400;
@@ -139,7 +158,13 @@ export function createStudioAiMiddleware(
           res.end(JSON.stringify({ code: 'missing-spec', error: 'Missing spec or notes' }));
           return;
         }
-        const draftResult = await generateCourseDraft({ source, packageDir });
+        const draftResult = await generateCourseDraft({
+          source,
+          packageDir,
+          authoring,
+          locale: body.locale,
+          finalize: body.includeFiles === true,
+        });
         if (body.includeFiles === true && draftResult.success && draftResult.draftId) {
           const files = readDraftFiles(draftResult.draftId) ?? [];
           res.end(JSON.stringify({ ...draftResult, files }));

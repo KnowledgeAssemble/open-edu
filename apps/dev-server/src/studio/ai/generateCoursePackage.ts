@@ -8,6 +8,7 @@ import type { PackageFileSource } from '@open-edu/core';
 import { buildCourseSpecPrompt, extractJsonObject } from './prompts/index.js';
 import { mapDiagnosticsToQuality } from './qualityMap.js';
 import type { AiQualityItem } from './types.js';
+import type { AuthoringContext } from '@open-edu/packs';
 
 export const MIN_NOTES_LENGTH = 40;
 
@@ -17,6 +18,8 @@ export type CourseSpecSource =
       notes: string;
       completeText: (prompt: string, signal?: AbortSignal) => Promise<string>;
       signal?: AbortSignal;
+      locale?: string;
+      authoring?: AuthoringContext;
     }
   | { kind: 'spec'; spec: string; extension: '.json' | '.md' };
 
@@ -40,7 +43,10 @@ export async function resolveCourseSpec(source: CourseSpecSource): Promise<strin
 
   let raw: string;
   try {
-    raw = await source.completeText(buildCourseSpecPrompt(source.notes), source.signal);
+    raw = await source.completeText(
+      buildCourseSpecPrompt(source.notes, { locale: source.locale, authoring: source.authoring }),
+      source.signal,
+    );
   } catch (error) {
     throw new GenerateCoursePackageError(
       'llm',

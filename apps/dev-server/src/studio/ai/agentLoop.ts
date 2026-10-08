@@ -299,6 +299,8 @@ export async function* runDeterministicTool(
       packageDir: options.packageDir,
       completeText:
         options.completeText ?? (() => Promise.reject(new Error('completeText not injected'))),
+      authoring: request.context.authoring,
+      locale: request.context.authoring?.locale ?? request.context.locale,
     });
     yield { type: 'tool.completed', toolCallId: callId, result };
     if (result.ok) {
