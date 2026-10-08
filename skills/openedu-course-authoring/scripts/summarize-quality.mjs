@@ -456,7 +456,7 @@ export function summarizeQuality(outputDir, validationResult, options = {}) {
     for (const act of activities) {
       if (act.type === 'widget' && act.widgetId && catalogAvailable) {
         const widgetEntry = getWidgetById(catalog, act.widgetId);
-        if (widgetEntry?.accessibility && !widgetEntry.accessibility.includes('KeyboardOnly')) {
+        if (widgetEntry?.accessibility && !widgetEntry.accessibility.includes('keyboardOnly')) {
           findings.push({
             checkId: 'QC-ACC-02',
             severity: 'info',
@@ -475,7 +475,7 @@ export function summarizeQuality(outputDir, validationResult, options = {}) {
           const widgetEntry = getWidgetById(catalog, act.widgetId);
           const capabilities = widgetEntry?.capabilities || [];
           const tags = widgetEntry?.accessibility || [];
-          if (capabilities.includes('Animation') && !tags.includes('ReducedMotion')) {
+          if (capabilities.includes('supportsAnimation') && !tags.includes('reducedMotion')) {
             findings.push({
               checkId: 'QC-ACC-07',
               severity: 'info',
