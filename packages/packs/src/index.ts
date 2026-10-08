@@ -3,3 +3,6 @@ export * from './concept.js';
 export * from './curriculum.js';
 export * from './types.js';
 export * from './pack-info.js';
+export * from './context.js';
+export * from './objectives.js';
+export * from './resolve.js';
