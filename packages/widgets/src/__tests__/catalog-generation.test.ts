@@ -7,6 +7,9 @@ import type { WidgetDefinitionV2 } from '../types';
 import { toCatalogEntry, toWidgetCatalogEntries } from '../catalog-gen';
 import { BUILTIN_WIDGETS, WIDGET_LEARNING_INTENTS } from '../builtin-roster';
 import { LearningIntent } from '../metadata/learning-intents';
+import type { WidgetCapabilities } from '../metadata/capabilities';
+import type { AccessibilityMetadata } from '../metadata/accessibility';
+import type { AnalyticsMetadata } from '../metadata/analytics';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const CATALOG_JSON_PATH = resolve(__dirname, '../../../core/src/widget-catalog-data.json');
@@ -103,6 +106,74 @@ describe('catalog learning intents', () => {
     expect(union.has(LearningIntent.Create)).toBe(false);
     for (const intent of union) {
       expect(validIntents.has(intent)).toBe(true);
+    }
+  });
+});
+
+const CAPABILITY_KEYS: (keyof WidgetCapabilities)[] = [
+  'supportsObserveMode',
+  'supportsKeyboard',
+  'supportsScreenReader',
+  'supportsHints',
+  'supportsRetry',
+  'supportsScoring',
+  'supportsVoice',
+  'supportsOffline',
+  'supportsPrinting',
+  'supportsTouch',
+  'supportsMouse',
+  'supportsAnalytics',
+  'supportsRewards',
+  'supportsAccessibility',
+  'supportsAnimation',
+  'supportsLocalization',
+];
+
+const ACCESSIBILITY_KEYS: (keyof AccessibilityMetadata)[] = [
+  'highContrast',
+  'keyboardOnly',
+  'screenReader',
+  'tts',
+  'captions',
+  'signLanguageReady',
+  'easyLanguage',
+  'reducedMotion',
+  'audioDescription',
+  'focusManagement',
+  'ariaSupport',
+];
+
+const ANALYTICS_KEYS: (keyof AnalyticsMetadata)[] = [
+  'trackAttempts',
+  'trackHints',
+  'trackRetries',
+  'trackMistakes',
+  'trackCompletionTime',
+  'trackSuccessRate',
+  'trackConfidence',
+  'trackInteractions',
+];
+
+describe('catalog boolean flag maps', () => {
+  it('emits only known capability/accessibility/analytics keys', () => {
+    for (const entry of toWidgetCatalogEntries(BUILTIN_WIDGETS)) {
+      for (const key of entry.capabilities ?? []) {
+        expect(CAPABILITY_KEYS).toContain(key as keyof WidgetCapabilities);
+      }
+      for (const key of entry.accessibility ?? []) {
+        expect(ACCESSIBILITY_KEYS).toContain(key as keyof AccessibilityMetadata);
+      }
+      for (const key of entry.analytics ?? []) {
+        expect(ANALYTICS_KEYS).toContain(key as keyof AnalyticsMetadata);
+      }
+    }
+  });
+
+  it('only lists supportsVoice on widgets that declare it true', () => {
+    const v2ById = new Map(BUILTIN_WIDGETS.map((w) => [w.id, w]));
+    for (const entry of toWidgetCatalogEntries(BUILTIN_WIDGETS)) {
+      const declaredTrue = v2ById.get(entry.id)?.capabilities?.supportsVoice === true;
+      expect((entry.capabilities ?? []).includes('supportsVoice')).toBe(declaredTrue);
     }
   });
 });
