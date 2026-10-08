@@ -79,6 +79,27 @@ describe('browserAiGateway (single Node backend)', () => {
     expect(new TextDecoder().decode(new Uint8Array(stored.data))).toBe('# Lesson');
   });
 
+  it('does not persist a draft when generation fails and propagates the code', async () => {
+    fetchMock.mockResolvedValueOnce(
+      mockResponse(200, {
+        success: false,
+        code: 'invalid-blueprint',
+        error: 'lesson "l1" references unavailable widget "ghost.widget"',
+        draftId: '',
+        title: undefined,
+        outlinePreview: [],
+        quality: [],
+      }),
+    );
+    const gateway = createBrowserAiGateway();
+    const result = await gateway.generateDraft({ notes: 'teach fractions' }, 'course-a');
+    expect(result.success).toBe(false);
+    expect(result.code).toBe('invalid-blueprint');
+    expect(result.error).toContain('ghost.widget');
+    const drafts = await listStudioDraftsByCourse('course-a');
+    expect(drafts).toHaveLength(0);
+  });
+
   it('routes item generation to item/add (no intent) and item/edit (intent)', async () => {
     fetchMock.mockResolvedValueOnce(
       mockResponse(200, { ok: true, item: { kind: 'lesson', title: 'X', content: '# X' } }),

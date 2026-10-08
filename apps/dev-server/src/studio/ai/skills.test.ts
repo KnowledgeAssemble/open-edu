@@ -3,6 +3,7 @@ import type { StudioContextSnapshot } from '@open-edu/companion/context';
 import { InMemorySkillRegistry } from './skillRegistry.js';
 import { learnerAdaptationSkill } from './skills/learner-adaptation.js';
 import { createSkillResolver } from './skills/resolveSkills.js';
+import { LearningIntent } from '@open-edu/widgets/intents';
 
 const baseCtx: StudioContextSnapshot = {
   view: 'outline',
@@ -28,7 +29,8 @@ describe('InMemorySkillRegistry', () => {
     expect(ids).toContain('interactive-diagram');
     expect(ids).toContain('interactive-composition');
     expect(ids).toContain('interactive-authoring');
-    expect(ids).toHaveLength(8);
+    expect(ids).toContain('objective-intent');
+    expect(ids).toHaveLength(9);
     expect(learnerAdaptationSkill.tools).toContain('edit_item');
   });
 
@@ -58,5 +60,32 @@ describe('createSkillResolver', () => {
 
   it('is additive: a plain snapshot resolves no skills (whole library not injected)', () => {
     expect(resolver.resolve(baseCtx as never)).toHaveLength(0);
+  });
+
+  it('resolves objective-intent when the context carries authoring objectives', () => {
+    const withAuthoring: StudioContextSnapshot = {
+      ...baseCtx,
+      authoring: {
+        packs: [{ id: 'nios-math-level-a', version: '0.1.0', type: 'curriculum' }],
+        curriculumUnit: 'fractions',
+        availableActivities: [],
+        concepts: [],
+        objectives: [
+          {
+            id: 'represent-fraction',
+            description: 'Represent three-quarters.',
+            concepts: [],
+            requiresIntents: [LearningIntent.Practice],
+          },
+        ],
+        budget: { maxChars: 20000, usedChars: 0, truncated: [] },
+        provenance: [],
+      },
+    };
+    const ids = resolver.resolve(withAuthoring).map((skill) => skill.id);
+    expect(ids).toContain('objective-intent');
+    expect(resolver.resolve(baseCtx)).not.toContainEqual(
+      expect.objectContaining({ id: 'objective-intent' }),
+    );
   });
 });

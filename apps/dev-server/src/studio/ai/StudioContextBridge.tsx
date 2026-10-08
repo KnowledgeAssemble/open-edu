@@ -10,6 +10,7 @@ import {
 } from './context';
 import { useStudioAssistant } from './StudioAssistantProvider';
 import { useEditorBridge } from './EditorBridgeContext';
+import type { AuthoringContext } from '@open-edu/packs';
 
 interface StudioContextBridgeProps {
   view: string;
@@ -22,6 +23,8 @@ interface StudioContextBridgeProps {
   locale: string;
   /** Author-facing learner profile (spec §12). Default undefined → no styling. */
   learner?: LearnerProfile;
+  /** Resolved authoring context (packs). Travels with the snapshot to the AI. */
+  authoring?: AuthoringContext | null;
   api?: {
     getOutline: () => Promise<{
       activities: Array<{ path: string; title: string; kind: string }>;
@@ -43,6 +46,7 @@ export function StudioContextBridge({
   aiAvailable,
   locale,
   learner,
+  authoring,
   api,
 }: StudioContextBridgeProps) {
   const { setContext } = useStudioAssistant();
@@ -62,6 +66,10 @@ export function StudioContextBridge({
 
       if (learner) {
         snapshot.learner = learner;
+      }
+
+      if (authoring) {
+        snapshot.authoring = authoring;
       }
 
       if (loadedPackage) {
@@ -162,7 +170,7 @@ export function StudioContextBridge({
     return () => {
       cancelled = true;
     };
-  }, [view, selectedPath, loadedPackage, aiAvailable, locale, learner, setContext, api]);
+  }, [view, selectedPath, loadedPackage, aiAvailable, locale, learner, authoring, setContext, api]);
 
   // Patch live editor fields (selection, dirty, buffer excerpt) without re-fetching.
   // Debounced at ~300ms to avoid request spam while typing.

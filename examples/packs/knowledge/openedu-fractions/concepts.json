@@ -1,0 +1,47 @@
+[
+  {
+    "id": "fraction",
+    "title": "Fraction",
+    "summary": "A fraction names equal parts of a whole, written numerator over denominator.",
+    "domainTags": ["math", "fractions"],
+    "prerequisites": [],
+    "source": {
+      "documentId": "nios-math-ch1",
+      "section": "2.1",
+      "excerpt": "Fractions represent parts of a whole."
+    }
+  },
+  {
+    "id": "numerator",
+    "title": "Numerator",
+    "summary": "The top number of a fraction counts the parts taken.",
+    "domainTags": ["math", "fractions"],
+    "prerequisites": ["fraction"]
+  },
+  {
+    "id": "denominator",
+    "title": "Denominator",
+    "summary": "The bottom number of a fraction names the number of equal parts in the whole.",
+    "domainTags": ["math", "fractions"],
+    "prerequisites": ["fraction"]
+  },
+  {
+    "id": "equivalent-fraction",
+    "title": "Equivalent Fractions",
+    "summary": "Fractions that name the same amount, such as 1/2 and 2/4.",
+    "domainTags": ["math", "fractions"],
+    "prerequisites": ["fraction", "numerator", "denominator"]
+  },
+  {
+    "id": "compare-fractions",
+    "title": "Comparing Fractions",
+    "summary": "Deciding which of two fractions is greater using common denominators.",
+    "domainTags": ["math", "fractions"],
+    "prerequisites": ["equivalent-fraction"],
+    "source": {
+      "documentId": "nios-math-ch1",
+      "section": "2.1",
+      "excerpt": "Fractions represent parts of a whole."
+    }
+  }
+]

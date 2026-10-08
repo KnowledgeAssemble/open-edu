@@ -13,6 +13,17 @@ export default defineConfig({
         }
       },
     },
+    {
+      name: 'resolve-virtual-packs',
+      resolveId(id: string) {
+        if (id === 'virtual:open-edu-packs') return '\0virtual:open-edu-packs';
+      },
+      load(id: string) {
+        if (id === '\0virtual:open-edu-packs') {
+          return 'export const packData = null;';
+        }
+      },
+    },
   ],
   test: {
     globals: true,

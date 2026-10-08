@@ -198,6 +198,7 @@ const sidebars: SidebarsConfig = {
         'i18n',
         'oep-distribution',
         'registry',
+        'packs',
         'companion',
         'domain-guidance',
         'logger',

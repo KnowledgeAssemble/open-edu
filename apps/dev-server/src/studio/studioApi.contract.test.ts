@@ -57,6 +57,9 @@ describe('StudioApi contract', () => {
       'importCourseFolder',
       'createUnit',
       'exportUnitOep',
+      'listPacks',
+      'getPackDetail',
+      'setAuthoringSelection',
     ];
     const local = createLocalStudioApi();
     const browser = createBrowserStudioApi({ session: createBrowserStudioSession() });

@@ -24,6 +24,14 @@
     "./guide": {
       "types": "./dist/guide-markdown.d.ts",
       "import": "./dist/guide-markdown.js"
+    },
+    "./intents": {
+      "types": "./dist/metadata/learning-intents.d.ts",
+      "import": "./dist/metadata/learning-intents.js"
+    },
+    "./search": {
+      "types": "./dist/search-filter.d.ts",
+      "import": "./dist/search-filter.js"
     }
   },
   "files": [

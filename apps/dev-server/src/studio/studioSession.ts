@@ -5,7 +5,7 @@ const PATH_KEY = 'openedu.studio.selectedPath';
 const OUTLINE_TAB_KEY = 'openedu.studio.outlineTab';
 const FILES_PATH_KEY = 'openedu.studio.filesPath';
 
-export type OutlineTab = 'outline' | 'files';
+export type OutlineTab = 'outline' | 'files' | 'packs';
 
 const VALID_VIEWS: StudioView[] = [
   'home',
@@ -54,7 +54,7 @@ export function writeSelectedPath(path: string | null): void {
   }
 }
 
-const VALID_OUTLINE_TABS: OutlineTab[] = ['outline', 'files'];
+const VALID_OUTLINE_TABS: OutlineTab[] = ['outline', 'files', 'packs'];
 
 export function readOutlineTab(): OutlineTab {
   try {

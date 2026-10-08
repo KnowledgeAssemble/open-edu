@@ -49,6 +49,7 @@ import { StudioRightSidebar } from './components/StudioRightSidebar.js';
 
 import { getProfile } from '@open-edu/domain-guidance/profiles';
 import type { LearnerProfile } from './ai/context.js';
+import type { AuthoringContext, PackDiagnostic } from '@open-edu/packs';
 
 export function StudioApp({
   loadedPackage,
@@ -83,6 +84,15 @@ export function StudioApp({
   const [filesDirty, setFilesDirty] = useState(false);
   const [pendingNavigate, setPendingNavigate] = useState<StudioView | null>(null);
   const [outlineTab, setOutlineTab] = useState<OutlineTab>(() => readOutlineTab());
+  const [authoring, setAuthoring] = useState<AuthoringContext | null>(null);
+  const [authoringWarnings, setAuthoringWarnings] = useState<PackDiagnostic[]>([]);
+  const [capabilityGaps, setCapabilityGaps] = useState<string[]>([]);
+  const courseKey = loadedPackage ? `${loadedPackage.rootDir}::${loadedPackage.manifest.id}` : null;
+  useEffect(() => {
+    setAuthoring(null);
+    setAuthoringWarnings([]);
+    setCapabilityGaps([]);
+  }, [courseKey]);
   const filesPaneRef = useRef<PackageSourcePaneHandle>(null);
 
   const handleTargetLearnerKindChange = useCallback((kind: string) => {
@@ -233,6 +243,10 @@ export function StudioApp({
           courseTitle={loadedPackage?.manifest.title}
           onOpenCurrent={() => handleNavigate('outline')}
           onOpenLibrary={() => handleNavigate('library')}
+          onAuthoring={(context, warnings) => {
+            setAuthoring(context);
+            setAuthoringWarnings(warnings);
+          }}
         />
       );
       break;
@@ -254,6 +268,9 @@ export function StudioApp({
             writeOutlineTab(next);
           }}
           paneRef={filesPaneRef}
+          authoring={authoring}
+          authoringWarnings={authoringWarnings}
+          capabilityGaps={capabilityGaps}
         />
       );
       break;
@@ -321,6 +338,7 @@ export function StudioApp({
             setOutlineRevision((rev) => rev + 1);
             handleNavigate('outline');
           }}
+          onCapabilityGaps={setCapabilityGaps}
         >
           <StudioContextBridge
             view={view}
@@ -329,6 +347,7 @@ export function StudioApp({
             aiAvailable={aiAvailable}
             locale="en"
             learner={learner}
+            authoring={authoring}
             api={api}
           />
           <StudioAppInner

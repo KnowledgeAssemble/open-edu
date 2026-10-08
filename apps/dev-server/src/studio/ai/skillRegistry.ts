@@ -4,6 +4,7 @@ import {
   createInteractiveAuthoringSkills,
   interactiveAuthoringRouterSkill,
 } from './skills/interactive-authoring.js';
+import { objectiveIntentSkill } from './skills/objective-intent.js';
 
 /** In-memory `SkillRegistry` (spec §11): data-driven, no plugin system. */
 export class InMemorySkillRegistry implements SkillRegistry {
@@ -14,6 +15,7 @@ export class InMemorySkillRegistry implements SkillRegistry {
       learnerAdaptationSkill,
       ...createInteractiveAuthoringSkills(),
       interactiveAuthoringRouterSkill,
+      objectiveIntentSkill,
     ],
   ) {
     for (const skill of skills) this.skills.set(skill.id, skill);

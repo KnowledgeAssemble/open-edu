@@ -14,7 +14,9 @@ import { useTranslation } from '@open-edu/i18n';
 import { listRecentCourses } from '../recentCourses.js';
 import { AiStartPanel } from './AiStartPanel.js';
 import { HomeTemplateGallery } from './HomeTemplateGallery.js';
+import { PackSelectionPanel } from './PackSelectionPanel.js';
 import type { StudioApi } from '../studioApi.js';
+import type { AuthoringContext, PackDiagnostic } from '@open-edu/packs';
 
 export function HomeView({
   api,
@@ -23,6 +25,7 @@ export function HomeView({
   courseTitle,
   onOpenCurrent,
   onOpenLibrary,
+  onAuthoring,
 }: {
   api: StudioApi;
   onOpened: () => void;
@@ -30,6 +33,7 @@ export function HomeView({
   courseTitle?: string;
   onOpenCurrent: () => void;
   onOpenLibrary: () => void;
+  onAuthoring?: (context: AuthoringContext, warnings: PackDiagnostic[]) => void;
 }) {
   const { t } = useTranslation();
   const recent = listRecentCourses();
@@ -72,6 +76,8 @@ export function HomeView({
         onSelect={setSelectedTemplateId}
         onApply={setPendingTemplateId}
       />
+
+      <PackSelectionPanel api={api} onError={onError} onAuthoring={onAuthoring ?? (() => {})} />
 
       <section aria-labelledby="studio-ai-heading">
         <h2 id="studio-ai-heading" className="text-h2 text-on-surface mb-4">

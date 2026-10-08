@@ -2,7 +2,8 @@ import { describe, it, expect, vi } from 'vitest';
 import { mkdtemp, mkdir, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { generateCourseDraft } from './generateCourse';
+import { generateCourseDraft, getDraftEntry } from './generateCourse';
+import type { AuthoringContext } from '@open-edu/packs';
 
 const NOTES =
   'Teach fourth graders how to add and subtract fractions with like denominators. ' +
@@ -362,6 +363,53 @@ describe('generateCourseDraft', () => {
       expect(result.quality).toHaveLength(4);
       const completeness = result.quality.find((item) => item.id === 'completeness');
       expect(completeness?.passed).toBe(false);
+    } finally {
+      await rm(packageDir, { recursive: true, force: true });
+    }
+  });
+
+  it('stores the spec path and authoring context on the draft entry', async () => {
+    const packageDir = await makePackageDir();
+    try {
+      const authoring: AuthoringContext = {
+        packs: [{ id: 'nios-math-level-a', version: '0.1.0', type: 'curriculum' }],
+        curriculumUnit: 'fractions',
+        availableActivities: [],
+        concepts: [],
+        objectives: [],
+        budget: { maxChars: 20000, usedChars: 0, truncated: [] },
+        provenance: [],
+      };
+      const completeText = vi.fn().mockResolvedValue(
+        JSON.stringify({
+          format: 'openedu-course-spec',
+          version: 1,
+          metadata: { title: 'New', description: 'D', author: 'A' },
+          lessons: [],
+        }),
+      );
+      const compile = vi
+        .fn()
+        .mockImplementation(async (_specPath: string, options: { output: string }) => {
+          await mkdir(join(options.output, 'nodes'), { recursive: true });
+          await writeFile(
+            join(options.output, 'package.json'),
+            JSON.stringify({ id: 'new', title: 'New', version: '1.0.0' }),
+            'utf-8',
+          );
+          return { success: true, diagnostics: [] };
+        });
+
+      const result = await generateCourseDraft({
+        source: { kind: 'notes', notes: NOTES, completeText },
+        packageDir,
+        compile,
+        authoring,
+      });
+      expect(result.success).toBe(true);
+      const entry = getDraftEntry(result.draftId);
+      expect(entry?.authoring).toEqual(authoring);
+      expect(entry?.specPath.endsWith('course-spec.json')).toBe(true);
     } finally {
       await rm(packageDir, { recursive: true, force: true });
     }

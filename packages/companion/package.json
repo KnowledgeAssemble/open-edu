@@ -36,6 +36,7 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
+    "@open-edu/packs": "workspace:*",
     "@open-edu/storage": "workspace:*",
     "zod": "^3.22.0"
   },

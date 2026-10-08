@@ -11,6 +11,7 @@ import type {
 import type { LibraryEntry } from './library/types.js';
 import type { ActivitySummary } from './types.js';
 import type { LoadedPackage } from '@open-edu/core';
+import type { PackSummary, PackDetail, AuthoringContext, PackDiagnostic } from '@open-edu/packs';
 
 export interface StudioApiError extends Error {
   code?: AiEndpointErrorCode | string;
@@ -90,14 +91,30 @@ export interface StudioApi {
   getPreviewPackage(): Promise<LoadedPackage | null>;
   getStorageStatus(): Promise<StorageStatus>;
   getAiStatus(): Promise<AiStatus>;
-  generateFromNotes(notes: string, force?: boolean): Promise<CourseDraftResult>;
-  uploadSpec(spec: string, specExt: '.json' | '.md', force?: boolean): Promise<CourseDraftResult>;
-  generateCourseDraft(notes: string): Promise<CourseDraftResult>;
-  uploadSpecDraft(spec: string, specExt: '.json' | '.md'): Promise<CourseDraftResult>;
+  generateFromNotes(
+    notes: string,
+    force?: boolean,
+    options?: { authoring?: AuthoringContext; locale?: string },
+  ): Promise<CourseDraftResult>;
+  uploadSpec(
+    spec: string,
+    specExt: '.json' | '.md',
+    force?: boolean,
+    options?: { authoring?: AuthoringContext; locale?: string },
+  ): Promise<CourseDraftResult>;
+  generateCourseDraft(
+    notes: string,
+    options?: { authoring?: AuthoringContext; locale?: string },
+  ): Promise<CourseDraftResult>;
+  uploadSpecDraft(
+    spec: string,
+    specExt: '.json' | '.md',
+    options?: { authoring?: AuthoringContext; locale?: string },
+  ): Promise<CourseDraftResult>;
   commitCourseDraft(
     draftId: string,
     force?: boolean,
-  ): Promise<{ success: boolean; title?: string; error?: string }>;
+  ): Promise<{ success: boolean; title?: string; error?: string; capabilityGaps?: string[] }>;
   discardCourseDraft(draftId: string): Promise<{ success: boolean }>;
   generateItemAdd(
     kind: 'lesson' | 'quiz' | 'practice',
@@ -115,6 +132,14 @@ export interface StudioApi {
     courseRelativePaths: string[],
   ): Promise<{ success: boolean; entry: LibraryEntry }>;
   exportUnitOep(relativePath: string): Promise<ExportResult>;
+  listPacks(): Promise<PackSummary[]>;
+  getPackDetail(id: string, version: string): Promise<PackDetail | null>;
+  setAuthoringSelection(selection: {
+    curriculum: string;
+    unit?: string;
+    learner?: string;
+    locale?: string;
+  }): Promise<{ context: AuthoringContext; warnings: PackDiagnostic[] }>;
 }
 
 export type { AiStatus, LibraryEntry, ActivitySummary };

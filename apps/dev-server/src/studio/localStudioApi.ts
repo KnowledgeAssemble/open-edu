@@ -20,6 +20,9 @@ import type {
   ValidationResult,
 } from './studioApi.js';
 import { createStudioApiWorkspace } from './studioApiWorkspace.js';
+import { getBundledPacks } from './packs/packSource.js';
+import { detailPack, resolveSelection, summarizePacks } from './packs/packApi.js';
+import type { AuthoringContext } from '@open-edu/packs';
 
 const API_BASE = '/api/package';
 const AI_BASE = '/api/studio/ai';
@@ -130,25 +133,41 @@ export function createLocalStudioApi(): StudioApi {
         available: s.available,
         reason: s.reason as 'missing-key' | 'disabled' | undefined,
       })),
-    generateFromNotes: (notes: string, force?: boolean) =>
+    generateFromNotes: (
+      notes: string,
+      force?: boolean,
+      options?: { authoring?: AuthoringContext; locale?: string },
+    ) =>
       aiRequest<CourseDraftResult>('/generate-draft', {
         method: 'POST',
-        body: JSON.stringify({ notes, force }),
+        body: JSON.stringify({ notes, force, ...options }),
       }),
-    uploadSpec: (spec: string, specExt: '.json' | '.md', force?: boolean) =>
+    uploadSpec: (
+      spec: string,
+      specExt: '.json' | '.md',
+      force?: boolean,
+      options?: { authoring?: AuthoringContext; locale?: string },
+    ) =>
       aiRequest<CourseDraftResult>('/generate-draft', {
         method: 'POST',
-        body: JSON.stringify({ spec, specExt, force }),
+        body: JSON.stringify({ spec, specExt, force, ...options }),
       }),
-    generateCourseDraft: (notes: string) =>
+    generateCourseDraft: (
+      notes: string,
+      options?: { authoring?: AuthoringContext; locale?: string },
+    ) =>
       aiRequest<CourseDraftResult>('/generate-draft', {
         method: 'POST',
-        body: JSON.stringify({ notes }),
+        body: JSON.stringify({ notes, ...options }),
       }),
-    uploadSpecDraft: (spec: string, specExt: '.json' | '.md') =>
+    uploadSpecDraft: (
+      spec: string,
+      specExt: '.json' | '.md',
+      options?: { authoring?: AuthoringContext; locale?: string },
+    ) =>
       aiRequest<CourseDraftResult>('/generate-draft', {
         method: 'POST',
-        body: JSON.stringify({ spec, specExt }),
+        body: JSON.stringify({ spec, specExt, ...options }),
       }),
     commitCourseDraft: (draftId: string, force?: boolean) =>
       aiRequest<{ success: boolean; title?: string; error?: string }>('/commit', {
@@ -208,6 +227,9 @@ export function createLocalStudioApi(): StudioApi {
       }),
     exportUnitOep: (relativePath: string) =>
       downloadBlob(`${LIBRARY_BASE}/export-unit-oep`, 'unit.oep', { relativePath }),
+    listPacks: async () => summarizePacks(getBundledPacks()),
+    getPackDetail: async (id, version) => detailPack(getBundledPacks(), id, version) ?? null,
+    setAuthoringSelection: async (selection) => resolveSelection(getBundledPacks(), selection),
   };
   return api;
 }

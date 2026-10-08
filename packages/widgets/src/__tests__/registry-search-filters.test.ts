@@ -1,7 +1,8 @@
 import { describe, it, expect } from 'vitest';
 import { createWidgetRegistry } from '../registry';
-import type { WidgetDefinitionV2 } from '../types';
+import type { WidgetDefinitionV2, WidgetSearchFilters } from '../types';
 import { LearningIntent } from '../metadata/learning-intents';
+import { matchesIntentTagFilters } from '../search-filter';
 
 function v2(id: string, overrides: Partial<WidgetDefinitionV2> = {}): WidgetDefinitionV2 {
   return {
@@ -155,5 +156,28 @@ describe('Registry searchWithFilters', () => {
     const result = r.searchWithFilters({ domain: 'core', query: 'match' });
     expect(result).toHaveLength(1);
     expect(result[0]!.id).toBe('core.matching');
+  });
+
+  it('delegates intent/tag matching to matchesIntentTagFilters', () => {
+    const widget = v2('core.matching', {
+      learningIntents: [LearningIntent.Practice, LearningIntent.Compare],
+      ai: { subjectTags: ['math'] },
+    });
+    const r = createWidgetRegistry();
+    r.register(widget);
+    const cases: WidgetSearchFilters[] = [
+      { intents: [LearningIntent.Practice] },
+      { intents: [LearningIntent.Practice], subjectTags: ['math'] },
+      { subjectTags: ['science'] },
+      { intent: LearningIntent.Compare },
+    ];
+    for (const filters of cases) {
+      const intents = filters.intents ?? (filters.intent ? [filters.intent] : undefined);
+      const expected = matchesIntentTagFilters(
+        { intents: widget.learningIntents, subjectTags: widget.ai.subjectTags },
+        { intents, subjectTags: filters.subjectTags },
+      );
+      expect(r.searchWithFilters(filters).length === 1).toBe(expected);
+    }
   });
 });

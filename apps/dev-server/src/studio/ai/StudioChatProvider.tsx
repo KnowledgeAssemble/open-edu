@@ -61,6 +61,7 @@ interface StudioChatContextType {
   onOpenPath?: (path: string) => void;
   onError?: (message: string) => void;
   onOutlineChanged?: () => void;
+  onCapabilityGaps?: (gaps: string[]) => void;
 }
 
 const StudioChatContext = createContext<StudioChatContextType | null>(null);
@@ -86,6 +87,7 @@ interface StudioChatProviderProps {
   onOpenPath?: (path: string) => void;
   onError?: (message: string) => void;
   onOutlineChanged?: () => void;
+  onCapabilityGaps?: (gaps: string[]) => void;
 }
 
 /**
@@ -140,6 +142,7 @@ export function StudioChatProvider(props: StudioChatProviderProps) {
       onOpenPath={props.onOpenPath}
       onError={props.onError}
       onOutlineChanged={props.onOutlineChanged}
+      onCapabilityGaps={props.onCapabilityGaps}
     >
       {props.children}
     </ChatRuntime>
@@ -158,6 +161,7 @@ function ChatRuntime({
   onOpenPath,
   onError,
   onOutlineChanged,
+  onCapabilityGaps,
 }: {
   children: ReactNode;
   courseKey: string;
@@ -170,6 +174,7 @@ function ChatRuntime({
   onOpenPath?: (path: string) => void;
   onError?: (message: string) => void;
   onOutlineChanged?: () => void;
+  onCapabilityGaps?: (gaps: string[]) => void;
 }) {
   const { t } = useTranslation();
   const {
@@ -440,6 +445,7 @@ function ChatRuntime({
         onOpenPath,
         onError,
         onOutlineChanged,
+        onCapabilityGaps,
       }}
     >
       {children}

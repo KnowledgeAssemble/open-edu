@@ -167,6 +167,10 @@ The skill ships with 15 evaluation scenarios (`evals/evals.json`) covering porta
 - Repository adapter: `skills/openedu-course-authoring/references/repository-adapter.md`
 - Source materials: `skills/openedu-course-authoring/references/source-materials.md`
 
+## Packs and authoring context
+
+Packs are declarative curriculum/knowledge inputs (`manifest.json` + `curriculum.json` / `concepts.json`) that sit in front of packages during **Studio AI drafting** — they provide the objectives, concept references, and required intents a generated course spec must trace back to. `@open-edu/packs` resolves a curriculum/unit selection into a bounded `AuthoringContext` (character budget with explicit truncation), and the Studio AI pipeline threads it into prompts, validates the compiled draft against it (`validateBlueprint`: widget IDs must exist in the context; intents must be covered or reported as `capabilityGaps[]`), and records pack lineage in `provenance.json`. Pack fixtures live in `examples/packs/` (`OPEN_EDU_PACKS_DIR=examples/packs`). Canonical reference: the [Packs domain guide](packs.md) and `docs/OPENEDU-PACK-SYSTEM.md`.
+
 ## Where to start when changing content behavior
 
 - Update schema shape or validation rules in `packages/schemas`
@@ -177,7 +181,7 @@ The skill ships with 15 evaluation scenarios (`evals/evals.json`) covering porta
 
 ## Widget catalog and ID resolution
 
-Widget-based exercises depend on the registry and catalog pipeline. The canonical widget metadata is defined in `packages/widgets/src/widget-catalog-source.ts`, resolved through `packages/widgets/src/domains.ts`, and consumed by `packages/core/src/widget-catalog.ts` when the CLI builds prompt/catalog output. That separation keeps author-facing widget IDs stable while allowing legacy `open-edu.*` IDs to be migrated automatically. The SVG explorer widget family also lives under `packages/widgets/src/svg-explorer/` and extends the same catalog pathway for interactive content.
+Widget-based exercises depend on the registry and catalog pipeline. The canonical widget metadata is defined on the built-in `WidgetDefinitionV2` definitions, collected by `packages/widgets/src/builtin-roster.ts` and mapped to catalog entries by `packages/widgets/src/catalog-gen.ts`, resolved through `packages/widgets/src/domains.ts`, and consumed by `packages/core/src/widget-catalog.ts` when the CLI builds prompt/catalog output. That separation keeps author-facing widget IDs stable while allowing legacy `open-edu.*` IDs to be migrated automatically. The SVG explorer widget family also lives under `packages/widgets/src/svg-explorer/` and extends the same catalog pathway for interactive content.
 
 ### Community widgets
 

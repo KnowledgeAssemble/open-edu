@@ -12,8 +12,10 @@ import { useTranslation } from '@open-edu/i18n';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '../../components/ui/tabs';
 import { OutlineView } from './OutlineView.js';
 import { PackageSourcePane, type PackageSourcePaneHandle } from './PackageSourcePane.js';
+import { PackBrowserPanel } from './PackBrowserPanel.js';
 import { readFilesPath, writeFilesPath, type OutlineTab } from '../studioSession.js';
 import type { StudioApi } from '../studioApi.js';
+import type { AuthoringContext, PackDiagnostic } from '@open-edu/packs';
 
 export function OutlineWorkspace({
   api,
@@ -27,6 +29,9 @@ export function OutlineWorkspace({
   tab,
   onTabChange,
   paneRef,
+  authoring = null,
+  authoringWarnings = [],
+  capabilityGaps = [],
 }: {
   api: StudioApi;
   onEdit: (path: string) => void;
@@ -39,6 +44,9 @@ export function OutlineWorkspace({
   tab: OutlineTab;
   onTabChange: (tab: OutlineTab) => void;
   paneRef: RefObject<PackageSourcePaneHandle>;
+  authoring?: AuthoringContext | null;
+  authoringWarnings?: PackDiagnostic[];
+  capabilityGaps?: string[];
 }) {
   const { t } = useTranslation();
   const [pendingTab, setPendingTab] = useState<OutlineTab | null>(null);
@@ -83,6 +91,7 @@ export function OutlineWorkspace({
         <TabsList aria-label={t('studio.outline.tabsLabel')} className="mx-auto mt-4">
           <TabsTrigger value="outline">{t('studio.outline.tabOutline')}</TabsTrigger>
           <TabsTrigger value="files">{t('studio.outline.tabFiles')}</TabsTrigger>
+          <TabsTrigger value="packs">{t('studio.outline.tabPacks')}</TabsTrigger>
         </TabsList>
         <TabsContent value="outline" className="min-h-0 flex-1 overflow-auto">
           <OutlineView
@@ -102,6 +111,13 @@ export function OutlineWorkspace({
             onDirtyChange={onDirtyChange}
             onTreeChanged={onOutlineMutated}
             onSelectPath={writeFilesPath}
+          />
+        </TabsContent>
+        <TabsContent value="packs" className="min-h-0 flex-1 overflow-auto">
+          <PackBrowserPanel
+            authoring={authoring}
+            warnings={authoringWarnings}
+            capabilityGaps={capabilityGaps}
           />
         </TabsContent>
       </Tabs>

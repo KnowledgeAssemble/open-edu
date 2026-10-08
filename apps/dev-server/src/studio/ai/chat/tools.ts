@@ -1,6 +1,7 @@
 import { generateItemAdd, generateItemEdit, ItemRequestError } from '../itemGenerate';
 import { generateCourseDraft } from '../generateCourse';
 import type { DraftItem, ItemIntent, ItemIntentParams, CourseDraftResult } from '../types';
+import type { AuthoringContext } from '@open-edu/packs';
 
 export interface ToolCallRequest {
   type: 'draft_new' | 'edit_existing';
@@ -18,6 +19,8 @@ export interface GenerateCourseRequest {
   specExt?: '.json' | '.md';
   packageDir: string;
   completeText: (prompt: string) => Promise<string>;
+  authoring?: AuthoringContext;
+  locale?: string;
 }
 
 export type ToolCallResult = { ok: true; items: DraftItem[] } | { ok: false; error: string };
@@ -77,7 +80,13 @@ export async function generateCourseDraftTool(
 ): Promise<GenerateCourseToolResult> {
   try {
     const source = request.notes
-      ? { kind: 'notes' as const, notes: request.notes, completeText: request.completeText }
+      ? {
+          kind: 'notes' as const,
+          notes: request.notes,
+          completeText: request.completeText,
+          authoring: request.authoring,
+          locale: request.locale,
+        }
       : {
           kind: 'spec' as const,
           spec: request.spec || '',
@@ -87,6 +96,8 @@ export async function generateCourseDraftTool(
     const result = await generateCourseDraft({
       source,
       packageDir: request.packageDir,
+      authoring: request.authoring,
+      locale: request.locale,
     });
 
     if (!result.success) {

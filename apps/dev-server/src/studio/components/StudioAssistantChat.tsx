@@ -35,6 +35,7 @@ export function StudioAssistantChat() {
     onOpenPath,
     onError,
     onOutlineChanged,
+    onCapabilityGaps,
   } = useStudioChat();
   const { currentEditor } = useEditorBridge();
   const [input, setInput] = useState('');
@@ -215,6 +216,7 @@ export function StudioAssistantChat() {
         setLastCourseQuality(courseDraft.quality);
         setEphemeralSuggestions(resolvePostCommitSuggestions(t, courseDraft.quality));
         onOutlineChanged?.();
+        onCapabilityGaps?.(result.capabilityGaps ?? []);
       } else {
         appendAssistantNote(
           t('studio.assistant.courseDraft.failed', {

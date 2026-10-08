@@ -31,6 +31,7 @@ export const AUTHORED_PROMPT_RULES = [
   'Exactly one activity per lesson with "type": "quiz"; its questions are multiple-choice with exactly 4 options each.',
   'Use measurable objectives, never "understand", "know", or "learn".',
   'Widget ids must be chosen from the AVAILABLE WIDGETS table in this prompt (canonical catalog ids); never "open-edu.*".',
+  '"metadata.language" must be one of the supported locales ("en", "hi", "or"); use the locale requested by the author, defaulting to "en".',
   'All required fields above must be present and non-empty.',
 ];
 

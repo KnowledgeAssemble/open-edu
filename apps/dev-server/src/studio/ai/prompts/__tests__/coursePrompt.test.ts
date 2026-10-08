@@ -55,6 +55,27 @@ describe('coursePrompt', () => {
     expect(prompt).toContain('core.multiple-choice');
     expect(prompt).toContain('core.matching');
   });
+
+  it('appends the authoring context block when provided', () => {
+    const authoring = {
+      packs: [{ id: 'nios-math-level-a', version: '0.1.0', type: 'curriculum' as const }],
+      curriculumUnit: 'fractions',
+      availableActivities: [],
+      concepts: [],
+      objectives: [],
+      budget: { maxChars: 20000, usedChars: 0, truncated: [] },
+      provenance: [],
+    };
+    const prompt = buildCourseSpecPrompt('notes', { authoring });
+    expect(prompt).toContain('AUTHORING CONTEXT:');
+    expect(prompt).toContain('curriculum/nios-math-level-a@0.1.0');
+  });
+
+  it('appends a locale instruction when provided', () => {
+    const prompt = buildCourseSpecPrompt('notes', { locale: 'hi' });
+    expect(prompt).toContain('requested locale "hi"');
+    expect(prompt).toContain('metadata.language to "hi"');
+  });
 });
 
 describe('extractJsonObject', () => {

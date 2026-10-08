@@ -1,9 +1,12 @@
 import { describe, it, expect, vi } from 'vitest';
 import { mkdtemp, mkdir, rm, writeFile } from 'node:fs/promises';
+import { existsSync, readFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, basename } from 'node:path';
 import { commitCourseDraft, resolveNewCourseDir } from './commitCourseDraft';
-import { generateCourseDraft } from './generateCourse';
+import { generateCourseDraft, getDraftEntry } from './generateCourse';
+import type { AuthoringContext } from '@open-edu/packs';
+import { LearningIntent } from '@open-edu/widgets/intents';
 
 const NOTES = 'Teach fourth graders how to add and subtract fractions with like denominators.';
 
@@ -237,6 +240,146 @@ describe('resolveNewCourseDir', () => {
       expect(existsSync(dir)).toBe(false);
     } finally {
       await rm(workspace, { recursive: true, force: true });
+    }
+  });
+});
+
+describe('commitCourseDraft blueprint validation + provenance', () => {
+  const AUTHORING: AuthoringContext = {
+    packs: [{ id: 'nios-math-level-a', version: '0.1.0', type: 'curriculum' }],
+    curriculumUnit: 'fractions',
+    learner: 'neurotypical',
+    availableActivities: [
+      {
+        id: 'math.number-line',
+        name: 'Number Line',
+        intents: [LearningIntent.Practice, LearningIntent.Compare],
+        subjectTags: ['math', 'fractions'],
+      },
+    ],
+    concepts: [],
+    objectives: [
+      {
+        id: 'represent-fraction',
+        description: 'Represent.',
+        concepts: [{ pack: 'openedu-fractions', concept: 'fraction' }],
+        requiresIntents: [LearningIntent.Practice],
+      },
+    ],
+    budget: { maxChars: 20000, usedChars: 0, truncated: [] },
+    provenance: [],
+  };
+
+  function spec(widgetId: string): string {
+    return JSON.stringify({
+      format: 'openedu-course-spec',
+      version: 1,
+      generatedAt: '2026-10-08T00:00:00.000Z',
+      metadata: { title: 'Fractions', description: 'D', generated: false },
+      lessons: [
+        {
+          id: 'represent',
+          title: 'Represent',
+          objectives: ['Represent.'],
+          coreIdea: 'Parts of a whole.',
+          activities: [
+            {
+              step: 'independent_practice',
+              order: 1,
+              type: 'widget',
+              description: 'Practise representing.',
+              widgetId,
+              widgetConfig: {},
+            },
+          ],
+        },
+      ],
+    });
+  }
+
+  function compileMock() {
+    return vi.fn().mockImplementation(async (_specPath: string, options: { output: string }) => {
+      await mkdir(join(options.output, 'nodes'), { recursive: true });
+      await writeFile(
+        join(options.output, 'package.json'),
+        JSON.stringify({ id: 'fractions', title: 'Fractions', version: '1.0.0', author: 'T' }),
+        'utf-8',
+      );
+      await writeFile(join(options.output, 'nodes/represent.md'), '# Represent\n', 'utf-8');
+      return { success: true, diagnostics: [] };
+    });
+  }
+
+  async function makeDraft(packageDir: string, widgetId: string, authoring?: AuthoringContext) {
+    return generateCourseDraft({
+      source: {
+        kind: 'notes',
+        notes: NOTES,
+        completeText: vi.fn().mockResolvedValue(spec(widgetId)),
+      },
+      packageDir,
+      compile: compileMock(),
+      authoring,
+    });
+  }
+
+  it('rejects a draft that references an unavailable widget and keeps the draft', async () => {
+    const packageDir = await makePackageDir();
+    try {
+      const draft = await makeDraft(packageDir, 'ghost.widget', AUTHORING);
+      const result = await commitCourseDraft({ draftId: draft.draftId, packageDir });
+      expect(result.success).toBe(false);
+      expect(result.code).toBe('invalid-blueprint');
+      expect(existsSync(join(packageDir, 'package.json'))).toBe(false);
+      expect(getDraftEntry(draft.draftId)).toBeDefined();
+    } finally {
+      await rm(packageDir, { recursive: true, force: true });
+    }
+  });
+
+  it('returns spec-invalid when the draft spec can no longer be read', async () => {
+    const packageDir = await makePackageDir();
+    try {
+      const draft = await makeDraft(packageDir, 'math.number-line', AUTHORING);
+      const entry = getDraftEntry(draft.draftId)!;
+      await rm(join(entry.tempDir, 'course-spec.json'), { force: true });
+      const result = await commitCourseDraft({ draftId: draft.draftId, packageDir });
+      expect(result.success).toBe(false);
+      expect(result.code).toBe('spec-invalid');
+      expect(existsSync(join(packageDir, 'package.json'))).toBe(false);
+      expect(getDraftEntry(draft.draftId)).toBeDefined();
+    } finally {
+      await rm(packageDir, { recursive: true, force: true });
+    }
+  });
+
+  it('commits a valid authoring draft and writes provenance.json', async () => {
+    const packageDir = await makePackageDir();
+    try {
+      const draft = await makeDraft(packageDir, 'math.number-line', AUTHORING);
+      const result = await commitCourseDraft({ draftId: draft.draftId, packageDir });
+      expect(result.success).toBe(true);
+      expect(result.capabilityGaps).toEqual([]);
+      const record = JSON.parse(readFileSync(join(packageDir, 'provenance.json'), 'utf-8'));
+      expect(record.contextFingerprint).toMatch(/^sha256:/);
+      expect(record.nodes[0].path).toBe('nodes/represent.md');
+    } finally {
+      await rm(packageDir, { recursive: true, force: true });
+    }
+  });
+
+  it('removes a stale provenance.json on the force path', async () => {
+    const packageDir = await makePackageDir();
+    try {
+      await mkdir(join(packageDir, 'nodes'), { recursive: true });
+      await writeFile(join(packageDir, 'nodes/old.md'), '# Old\n', 'utf-8');
+      await writeFile(join(packageDir, 'provenance.json'), '{"stale":true}', 'utf-8');
+      const draft = await makeDraft(packageDir, 'math.number-line');
+      const result = await commitCourseDraft({ draftId: draft.draftId, packageDir, force: true });
+      expect(result.success).toBe(true);
+      expect(existsSync(join(packageDir, 'provenance.json'))).toBe(false);
+    } finally {
+      await rm(packageDir, { recursive: true, force: true });
     }
   });
 });

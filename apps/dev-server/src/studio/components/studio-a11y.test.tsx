@@ -14,6 +14,7 @@ import { HomeView } from './HomeView';
 import { OutlineView } from './OutlineView';
 import { OutlineWorkspace } from './OutlineWorkspace';
 import type { PackageSourcePaneHandle } from './PackageSourcePane';
+import type { OutlineTab } from '../studioSession.js';
 import { CreatorPreview } from '../CreatorPreview';
 import type { StudioApi } from '../studioApi.js';
 import type { LibraryEntry } from '../library/types.js';
@@ -115,7 +116,7 @@ function wrap(ui: React.ReactElement) {
 }
 
 function ControlledWorkspace({ api }: { api: StudioApi }) {
-  const [tab, setTab] = useState<'outline' | 'files'>('outline');
+  const [tab, setTab] = useState<OutlineTab>('outline');
   return (
     <OutlineWorkspace
       api={api}
@@ -124,7 +125,7 @@ function ControlledWorkspace({ api }: { api: StudioApi }) {
       filesDirty={false}
       onDirtyChange={() => {}}
       tab={tab}
-      onTabChange={setTab as (t: 'outline' | 'files') => void}
+      onTabChange={setTab}
       paneRef={{ current: null } as React.RefObject<PackageSourcePaneHandle>}
     />
   );

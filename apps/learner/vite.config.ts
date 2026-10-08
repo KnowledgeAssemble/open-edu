@@ -386,6 +386,7 @@ export default defineConfig(({ mode }) => {
         includeAssets: ['favicon.svg', 'icon-192.png', 'icon-512.png', 'icon-maskable.png'],
         manifest: false,
         workbox: {
+          maximumFileSizeToCacheInBytes: 3 * 1024 * 1024,
           globPatterns: ['**/*.{js,css,html,svg,png,woff,woff2}'],
           navigateFallback: '/index.html',
           navigateFallbackDenylist: [/^\/api\//],
@@ -430,6 +431,35 @@ export default defineConfig(({ mode }) => {
       eduDataPlugin(),
       widgetRegistryPlugin(),
     ].filter((plugin): plugin is Plugin => plugin !== undefined),
+    build: {
+      chunkSizeWarningLimit: 1024,
+      rollupOptions: {
+        output: {
+          manualChunks: (id) => {
+            if (id.includes('virtual:edu-data')) return 'edu-data';
+            if (
+              id.includes('/node_modules/react/') ||
+              id.includes('/node_modules/react-dom/') ||
+              id.includes('/node_modules/react-router/') ||
+              id.includes('/node_modules/react-router-dom/') ||
+              id.includes('/node_modules/scheduler/')
+            )
+              return 'vendor-react';
+            if (id.includes('/node_modules/@ai-sdk/') || id.includes('/node_modules/ai/'))
+              return 'ai-sdk';
+            if (id.includes('/node_modules/@radix-ui/')) return 'vendor-radix';
+            if (
+              id.includes('/node_modules/rxjs/') ||
+              id.includes('/node_modules/zod/') ||
+              id.includes('/node_modules/minisearch/') ||
+              id.includes('/node_modules/lucide-react/')
+            )
+              return 'vendor-lib';
+            return undefined;
+          },
+        },
+      },
+    },
     resolve: {
       alias: [
         { find: /^fs\/promises$/, replacement: resolve(__dirname, 'src/stubs/fs-promises.ts') },

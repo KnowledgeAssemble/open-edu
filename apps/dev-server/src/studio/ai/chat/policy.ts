@@ -49,6 +49,9 @@ export function extractSuggestedNextSteps(input: ExtractNextStepsInput): string[
   return steps.slice(0, MAX_SUGGESTED_NEXT_STEPS);
 }
 
+const COMPACT_MAX_PACKS = 20;
+const COMPACT_MAX_OBJECTIVE_IDS = 50;
+
 export function buildSystemPrompt(ctx: StudioContextSnapshot): string {
   const { view, course, activity, lastCourseDraftQuality } = ctx;
 
@@ -110,6 +113,27 @@ QUALITY RUBRIC:
 - The learning path should flow logically from simple to complex.
 
 Respond concisely and provide actionable suggestions. When you generate drafts, present them and ask the user if they want to apply them.`;
+
+  if (ctx.authoring) {
+    const a = ctx.authoring;
+    const shownPacks = a.packs.slice(0, COMPACT_MAX_PACKS);
+    const packsLine = `${shownPacks.map((p) => `${p.type}/${p.id}@${p.version}`).join(', ')}${
+      a.packs.length > COMPACT_MAX_PACKS ? ` …(+${a.packs.length - COMPACT_MAX_PACKS} more)` : ''
+    }`;
+    const shownIds = a.objectives.slice(0, COMPACT_MAX_OBJECTIVE_IDS);
+    const idsLine = `${shownIds.map((o) => o.id).join(', ')}${
+      a.objectives.length > COMPACT_MAX_OBJECTIVE_IDS
+        ? ` …(+${a.objectives.length - COMPACT_MAX_OBJECTIVE_IDS} more)`
+        : ''
+    }`;
+    prompt += `\n\nAUTHORING CONTEXT (compact):
+Packs: ${packsLine || '(none)'}
+Curriculum unit: ${a.curriculumUnit ?? '(none)'}
+Learner: ${a.learner ?? '(none)'} | Locale: ${a.locale ?? 'en'}
+Objectives: ${a.objectives.length} | Concepts: ${a.concepts.length} | Available activities: ${a.availableActivities.length}
+Objective ids: ${idsLine || '(none)'}
+`;
+  }
 
   return prompt;
 }

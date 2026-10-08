@@ -80,6 +80,7 @@ describe('domain-guidance package', () => {
         'audience',
         'accessibility',
         'lastUpdated',
+        'language',
         'generated',
       ]),
     );
@@ -94,6 +95,7 @@ describe('domain-guidance package', () => {
     expect(promptView).toContain('Use measurable objectives');
     expect(promptView).toContain('lastUpdated');
     expect(promptView).toContain('enum(beginner | intermediate | advanced)');
+    expect(promptView).toContain('metadata.language');
   });
 
   it('profiles accessors return valid profile definitions', () => {
