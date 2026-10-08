@@ -608,6 +608,9 @@ importers:
       '@open-edu/oep-distribution':
         specifier: workspace:^
         version: link:../oep-distribution
+      '@open-edu/packs':
+        specifier: workspace:*
+        version: link:../packs
       '@open-edu/schemas':
         specifier: workspace:^
         version: link:../schemas

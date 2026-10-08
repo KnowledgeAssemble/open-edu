@@ -17,6 +17,7 @@ import { buildOepBundle } from './commands/oep-build-bundle.js';
 import { i18nExtract } from './commands/i18n-extract.js';
 import { i18nValidate } from './commands/i18n-validate.js';
 import { i18nMissing } from './commands/i18n-missing.js';
+import { validatePack } from './commands/pack.js';
 import { CLI_VERSION } from './index.js';
 import { formatJsonResult } from './utils/json-output.js';
 import type { CliResult } from './utils/json-output.js';
@@ -59,6 +60,17 @@ program
   .action(async (packageDir: string) => {
     const json = program.optsWithGlobals().json;
     const result = await devPackage(packageDir, { json });
+    handleResult(result, json);
+  });
+
+program
+  .command('pack')
+  .description('Validate and inspect OpenEdu packs.')
+  .command('validate <dir>')
+  .description('Validate a pack directory (manifest, concepts, curriculum, prerequisites).')
+  .action(async (dir: string) => {
+    const json = program.optsWithGlobals().json;
+    const result = await validatePack(dir, { json });
     handleResult(result, json);
   });
 
