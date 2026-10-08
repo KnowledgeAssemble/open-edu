@@ -71,7 +71,10 @@ export function resolveAuthoringContext(
     const dependency = packs.get(id);
     if (!dependency) {
       diagnostics.push(
-        errDiag('PACK_DEPENDENCY_MISSING', `pack "${id}" required by "${scope.curriculum}" not found`),
+        errDiag(
+          'PACK_DEPENDENCY_MISSING',
+          `pack "${id}" required by "${scope.curriculum}" not found`,
+        ),
       );
       continue;
     }
@@ -81,9 +84,7 @@ export function resolveAuthoringContext(
 
   // 3. Resolve the unit (explicit or first).
   const curriculum = curriculumPack.curriculum;
-  const unit = scope.unit
-    ? curriculum.units.find((u) => u.id === scope.unit)
-    : curriculum.units[0];
+  const unit = scope.unit ? curriculum.units.find((u) => u.id === scope.unit) : curriculum.units[0];
   if (scope.unit && !unit) {
     diagnostics.push(errDiag('PACK_REFERENCE_MISSING', `unit "${scope.unit}" not found`));
   }
@@ -92,10 +93,7 @@ export function resolveAuthoringContext(
   const contextConcepts: AuthoringContext['concepts'] = [];
   const resolvedConcepts = new Map<string, Concept>();
   if (unit) {
-    const refs: ConceptRef[] = [
-      ...unit.concepts,
-      ...unit.objectives.flatMap((o) => o.concepts),
-    ];
+    const refs: ConceptRef[] = [...unit.concepts, ...unit.objectives.flatMap((o) => o.concepts)];
     for (const ref of refs) {
       const key = refKey(ref);
       if (resolvedConcepts.has(key)) continue;
@@ -158,11 +156,7 @@ export function resolveAuthoringContext(
   for (const objective of contextObjectives) {
     if (objective.concepts.length === 0) {
       diagnostics.push(
-        errDiag(
-          'OBJECTIVE_NO_CONCEPTS',
-          `objective "${objective.id}" has no concepts`,
-          'warning',
-        ),
+        errDiag('OBJECTIVE_NO_CONCEPTS', `objective "${objective.id}" has no concepts`, 'warning'),
       );
     }
     const matches = candidates.find((c) => c.id === objective.id)?.candidates.length ?? 0;

@@ -557,8 +557,8 @@ describe('BrowserStudioApi', () => {
     expect(typeof api.setAuthoringSelection).toBe('function');
     expect(await api.listPacks()).toEqual([]);
     expect(await api.getPackDetail('nope', '0.0.0')).toBeNull();
-    await expect(
-      api.setAuthoringSelection({ curriculum: 'nope' }),
-    ).rejects.toMatchObject({ code: 'PACK_REFERENCE_MISSING' });
+    await expect(api.setAuthoringSelection({ curriculum: 'nope' })).rejects.toMatchObject({
+      code: 'PACK_REFERENCE_MISSING',
+    });
   });
 });

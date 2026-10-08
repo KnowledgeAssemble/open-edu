@@ -94,9 +94,7 @@ describe('loadPackDirectory', () => {
     writeManifest(dir, { type: 'knowledge', derivedFrom: 'document' });
     writeFileSync(
       join(dir, 'concepts.json'),
-      JSON.stringify([
-        { id: 'a', title: 'A', summary: 'A.', domainTags: ['math'] },
-      ]),
+      JSON.stringify([{ id: 'a', title: 'A', summary: 'A.', domainTags: ['math'] }]),
     );
     expectDiagnostic(() => loadPackDirectory(dir), 'KNOWLEDGE_SOURCE_MISSING');
   });

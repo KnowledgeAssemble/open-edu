@@ -25,9 +25,9 @@ describe('PackManifestSchema', () => {
   });
 
   it('rejects a non-kebab-case id', () => {
-    expect(PackManifestSchema.safeParse({ ...validManifest, id: 'OpenEdu.Fractions' }).success).toBe(
-      false,
-    );
+    expect(
+      PackManifestSchema.safeParse({ ...validManifest, id: 'OpenEdu.Fractions' }).success,
+    ).toBe(false);
   });
 
   it('rejects a non-semver version', () => {

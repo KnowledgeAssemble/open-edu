@@ -16,7 +16,11 @@ const concepts: Record<string, Concept> = {
 const byRef = (pack: string, concept: string): Concept | undefined =>
   concepts[`${pack}/${concept}`];
 
-const activity = (id: string, intents: LearningIntent[], subjectTags: string[]): AvailableActivity => ({
+const activity = (
+  id: string,
+  intents: LearningIntent[],
+  subjectTags: string[],
+): AvailableActivity => ({
   id,
   name: id,
   intents,

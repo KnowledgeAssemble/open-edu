@@ -1506,7 +1506,13 @@ export default defineConfig(({ mode }) => {
     // package module still needs a resolution so DevApp can always import it;
     // browser mode always uses the local BrowserStudioProvider instead.
     plugins: isBrowserMode
-      ? [react(), widgetRegistryPlugin(), virtualPackagePlugin(), eduPacksLoader(), localStudioAiPlugin()]
+      ? [
+          react(),
+          widgetRegistryPlugin(),
+          virtualPackagePlugin(),
+          eduPacksLoader(),
+          localStudioAiPlugin(),
+        ]
       : [react(), widgetRegistryPlugin(), eduPackageLoader(), eduPacksLoader()],
     resolve: isBrowserMode
       ? {
