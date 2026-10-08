@@ -81,7 +81,7 @@ Translates events into reward receipts, including badge delivery and card progre
 
 ### `@open-edu/widgets`
 
-Provides the widget registry and built-in widgets used by content nodes and runtime renderers. The registry supports alias resolution, domain namespacing, structured search, metadata validation, and catalog generation for LLM prompts. Recent changes moved the canonical widget metadata into `packages/widgets/src/widget-catalog-source.ts` and added the SVG explorer widget family, while `@open-edu/core` now reads the generated catalog data at runtime. The `WidgetResolver` handles policy-aware resolution of native, sandboxed, and trusted-remote widgets, with an IndexedDB-backed artifact cache and deterministic fallback transforms.
+Provides the widget registry and built-in widgets used by content nodes and runtime renderers. The registry supports alias resolution, domain namespacing, structured search, metadata validation, and catalog generation for LLM prompts. Recent changes moved the canonical widget metadata onto the built-in `WidgetDefinitionV2` definitions, collected by `packages/widgets/src/builtin-roster.ts` and mapped to catalog entries by `packages/widgets/src/catalog-gen.ts`, and added the SVG explorer widget family, while `@open-edu/core` now reads the generated catalog data at runtime. The `WidgetResolver` handles policy-aware resolution of native, sandboxed, and trusted-remote widgets, with an IndexedDB-backed artifact cache and deterministic fallback transforms.
 
 ### `@open-edu/widget-sdk`
 
@@ -209,7 +209,7 @@ The repo is organized to keep learning content portable and the runtime platform
 - routing and mastery: `packages/workflow`
 - rendering and theme behavior: `packages/runtime`
 - visual structure and reusable UI: `packages/design-system`
-- widget ID resolution and catalog generation: `packages/widgets/src/domains.ts`, `packages/widgets/src/widget-catalog-source.ts`, `packages/widgets/scripts/generate-catalog.ts`, plus SVG explorer components under `packages/widgets/src/svg-explorer`
+- widget ID resolution and catalog generation: `packages/widgets/src/domains.ts`, `packages/widgets/src/builtin-roster.ts` (roster), `packages/widgets/src/catalog-gen.ts` (entry mapping), `packages/widgets/scripts/generate-catalog.ts`, plus SVG explorer components under `packages/widgets/src/svg-explorer`
 - IndexedDB persistence: `packages/storage` (6 stores: courses, progress, badges, cards, search-indexes, preferences)
 - PWA infrastructure (install, update, connectivity): `packages/pwa-core`
 - service worker and caching config: `apps/learner/vite.config.ts`

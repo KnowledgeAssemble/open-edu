@@ -177,7 +177,7 @@ The skill ships with 15 evaluation scenarios (`evals/evals.json`) covering porta
 
 ## Widget catalog and ID resolution
 
-Widget-based exercises depend on the registry and catalog pipeline. The canonical widget metadata is defined in `packages/widgets/src/widget-catalog-source.ts`, resolved through `packages/widgets/src/domains.ts`, and consumed by `packages/core/src/widget-catalog.ts` when the CLI builds prompt/catalog output. That separation keeps author-facing widget IDs stable while allowing legacy `open-edu.*` IDs to be migrated automatically. The SVG explorer widget family also lives under `packages/widgets/src/svg-explorer/` and extends the same catalog pathway for interactive content.
+Widget-based exercises depend on the registry and catalog pipeline. The canonical widget metadata is defined on the built-in `WidgetDefinitionV2` definitions, collected by `packages/widgets/src/builtin-roster.ts` and mapped to catalog entries by `packages/widgets/src/catalog-gen.ts`, resolved through `packages/widgets/src/domains.ts`, and consumed by `packages/core/src/widget-catalog.ts` when the CLI builds prompt/catalog output. That separation keeps author-facing widget IDs stable while allowing legacy `open-edu.*` IDs to be migrated automatically. The SVG explorer widget family also lives under `packages/widgets/src/svg-explorer/` and extends the same catalog pathway for interactive content.
 
 ### Community widgets
 

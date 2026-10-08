@@ -23,7 +23,7 @@ From the repository root:
 - `pnpm test:e2e` — run Playwright end-to-end tests
 - `pnpm --filter @open-edu/learner dev` — start the learner app
 - `pnpm --filter @open-edu/cli build && node packages/cli/dist/cli.js ...` — use the CLI after building it
-- `pnpm --filter @open-edu/widgets generate:catalog` — regenerate the widget catalog JSON from the canonical source in `packages/widgets/src/widget-catalog-source.ts`
+- `pnpm --filter @open-edu/widgets generate:catalog` — regenerate the widget catalog JSON from the canonical widget roster in `packages/widgets/src/builtin-roster.ts` (mapped by `packages/widgets/src/catalog-gen.ts`)
 - `pnpm --filter @open-edu/cli build && node packages/cli/dist/cli.js dev ./examples/hello-world` — start the OpenEdu Course Creator Studio (single unified authoring shell)
 - `pnpm --filter @open-edu/dev-server test` — run the Course Creator Studio package tests (Studio UI, library, AI, flow logic)
 - `pnpm --filter @open-edu/domain-guidance generate` — regenerate the authoring-skill reference files from canonical data; must produce no diff in CI
@@ -85,7 +85,7 @@ This matters because runtime and dev-server styling are intentionally coupled th
 - Preserve accessibility: especially in runtime and learner-app surfaces.
 - Preserve progress persistence and local-storage behavior when changing learner flows.
 - Be careful with bundle navigation, because module-level navigation can bypass some normal exit warnings.
-- When touching widget catalogs, update the canonical source in `packages/widgets/src/widget-catalog-source.ts` and regenerate the derived JSON rather than editing the JSON by hand.
+- When touching widget catalogs, update the canonical widget definitions / roster (`packages/widgets/src/builtin-roster.ts`) and regenerate the derived JSON rather than editing the JSON by hand.
 - Community widget protocol changes must update conformance fixtures in `packages/widget-sdk/src/fixtures/` and pass the full E2E suite in `tests/e2e/community-widget.spec.ts`.
 - When adding new user-facing strings to runtime or learner components, use `t('namespace.key')` via `useTranslation()` from `@open-edu/i18n` and add the English translation to the appropriate locale file in `packages/i18n/locales/en/`.
 
