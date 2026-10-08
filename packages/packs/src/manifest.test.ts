@@ -50,7 +50,7 @@ describe('PackManifestSchema', () => {
   });
 
   it('defaults the language to en when absent', () => {
-    const { language, ...withoutLanguage } = validManifest;
+    const { language: _language, ...withoutLanguage } = validManifest;
     const result = PackManifestSchema.safeParse(withoutLanguage);
     expect(result.success).toBe(true);
     if (result.success) expect(result.data.language).toBe('en');

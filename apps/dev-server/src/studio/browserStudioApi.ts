@@ -729,13 +729,26 @@ export function createBrowserStudioApi(options: BrowserStudioApiOptions = {}): S
     getPreviewPackage,
     getStorageStatus,
     getAiStatus: () => aiClient.getStatus(),
-    generateFromNotes: (notes: string, _force?: boolean, options?: { authoring?: AuthoringContext; locale?: string }) =>
-      generateAndPersistDraft({ notes, ...options }),
-    uploadSpec: (spec: string, specExt: '.json' | '.md', _force?: boolean, options?: { authoring?: AuthoringContext; locale?: string }) =>
-      generateAndPersistDraft({ spec, specExt, ...options }),
-    generateCourseDraft: (notes: string, options?: { authoring?: AuthoringContext; locale?: string }) => generateAndPersistDraft({ notes, ...options }),
-    uploadSpecDraft: (spec: string, specExt: '.json' | '.md', options?: { authoring?: AuthoringContext; locale?: string }) =>
-      generateAndPersistDraft({ spec, specExt, ...options }),
+    generateFromNotes: (
+      notes: string,
+      _force?: boolean,
+      options?: { authoring?: AuthoringContext; locale?: string },
+    ) => generateAndPersistDraft({ notes, ...options }),
+    uploadSpec: (
+      spec: string,
+      specExt: '.json' | '.md',
+      _force?: boolean,
+      options?: { authoring?: AuthoringContext; locale?: string },
+    ) => generateAndPersistDraft({ spec, specExt, ...options }),
+    generateCourseDraft: (
+      notes: string,
+      options?: { authoring?: AuthoringContext; locale?: string },
+    ) => generateAndPersistDraft({ notes, ...options }),
+    uploadSpecDraft: (
+      spec: string,
+      specExt: '.json' | '.md',
+      options?: { authoring?: AuthoringContext; locale?: string },
+    ) => generateAndPersistDraft({ spec, specExt, ...options }),
     commitCourseDraft: (draftId: string, force?: boolean) => commitLocalDraft(draftId, force),
     discardCourseDraft: async (draftId: string) => {
       await aiClient.discardDraft(draftId);
