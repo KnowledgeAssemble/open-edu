@@ -1,0 +1,12 @@
+{
+  "format": "openedu-pack",
+  "formatVersion": 1,
+  "type": "knowledge",
+  "id": "openedu-fractions",
+  "version": "0.1.0",
+  "name": "OpenEdu Fractions",
+  "description": "Fraction concepts for early mathematics.",
+  "author": "OpenEdu",
+  "language": "en",
+  "requires": []
+}

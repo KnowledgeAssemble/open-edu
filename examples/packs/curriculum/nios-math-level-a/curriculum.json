@@ -1,0 +1,51 @@
+{
+  "id": "nios-math-level-a",
+  "title": "NIOS Mathematics Level A",
+  "subject": "mathematics",
+  "level": "A",
+  "units": [
+    {
+      "id": "fractions",
+      "title": "Fractions",
+      "concepts": [
+        { "pack": "openedu-fractions", "concept": "fraction" },
+        { "pack": "openedu-fractions", "concept": "numerator" },
+        { "pack": "openedu-fractions", "concept": "denominator" }
+      ],
+      "objectives": [
+        {
+          "id": "represent-fraction",
+          "description": "Represent three-quarters as a shaded area and as a number line position.",
+          "bloomLevel": "apply",
+          "concepts": [{ "pack": "openedu-fractions", "concept": "fraction" }],
+          "requiresIntents": ["practice", "compare"]
+        },
+        {
+          "id": "name-parts",
+          "description": "Name the numerator and denominator of a given fraction.",
+          "bloomLevel": "understand",
+          "concepts": [
+            { "pack": "openedu-fractions", "concept": "numerator" },
+            { "pack": "openedu-fractions", "concept": "denominator" }
+          ],
+          "requiresIntents": ["recall"]
+        }
+      ],
+      "estimatedMinutes": 20
+    },
+    {
+      "id": "measurement",
+      "title": "Measurement",
+      "objectives": [
+        {
+          "id": "measure-length",
+          "description": "Measure length to the nearest centimeter.",
+          "bloomLevel": "apply",
+          "concepts": [],
+          "requiresIntents": ["practice"]
+        }
+      ],
+      "estimatedMinutes": 15
+    }
+  ]
+}
