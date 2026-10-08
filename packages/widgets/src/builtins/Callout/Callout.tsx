@@ -296,6 +296,60 @@ function CalloutComponent(props: {
 }
 
 const CalloutWidget: WidgetDefinitionV2 = {
+  guide: {
+    oneLiner: 'Highlight key information with a styled callout card.',
+    whatItDoes:
+      'The Callout widget displays important information in a visually distinct card. You can choose from different styles — tip, info, warning, or success — and add an optional icon. It is a passive display widget, not interactive.',
+    whenToUse: [
+      'Highlighting key takeaways or important notes',
+      'Displaying fun facts or "Did you know?" boxes',
+      'Showing safety warnings or reminders',
+      'Adding emphasis to critical information',
+    ],
+    setupSteps: [
+      'Add an Exercise node to your lesson',
+      'Set the widget to "core.callout"',
+      'Choose a type: tip, info, warning, or success',
+      'Write a title and the content text',
+      'Optionally add an emoji icon',
+    ],
+    configFields: [
+      {
+        name: 'type',
+        type: 'string',
+        required: true,
+        description: 'The callout style: "tip", "info", "warning", or "success".',
+      },
+      {
+        name: 'title',
+        type: 'string',
+        required: false,
+        description: 'A heading for the callout card.',
+      },
+      {
+        name: 'content',
+        type: 'string',
+        required: true,
+        description: 'The main text content of the callout.',
+      },
+      {
+        name: 'icon',
+        type: 'string',
+        required: false,
+        description: 'An emoji icon to display with the callout, e.g. "💡" for tips.',
+      },
+    ],
+    exampleJson:
+      '{\n  "type": "exercise",\n  "title": "Did you know?",\n  "widget": "core.callout",\n  "config": {\n    "type": "tip",\n    "title": "Did you know?",\n    "content": "Plants make their own food using sunlight, water, and carbon dioxide through a process called photosynthesis.",\n    "icon": "🌿"\n  }\n}',
+    tips: [
+      'Keep content concise — 1-3 sentences is ideal',
+      'Use the right type for your message: tip for helpful hints, warning for important cautions',
+      'Emoji icons add visual appeal but are optional',
+      'Callouts work well between other activities to break up the lesson flow',
+    ],
+    sidebarPosition: 10,
+    relatedWidgets: [],
+  },
   id: 'core.callout',
   version: '1.0.0',
   name: 'Callout',

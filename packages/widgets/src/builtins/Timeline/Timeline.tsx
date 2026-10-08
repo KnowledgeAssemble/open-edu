@@ -731,6 +731,86 @@ function TimelineComponent(props: {
 }
 
 const TimelineWidget: WidgetDefinitionV2 = {
+  guide: {
+    oneLiner: 'Display events in chronological order on an interactive timeline.',
+    whatItDoes:
+      'The Timeline widget arranges events along a visual timeline. Students can observe events in order or interactively arrange them. It supports horizontal, vertical, and compact layouts with optional dates, images, and descriptions.',
+    whenToUse: [
+      'Teaching historical sequences and chronology',
+      'Showing life cycles and growth stages',
+      'Displaying project milestones or steps',
+      'Visualizing process timelines in science',
+    ],
+    setupSteps: [
+      'Add an Exercise node to your lesson',
+      'Set the widget to "core.timeline"',
+      'Define your events — each needs an id and title',
+      'Optionally add dates, descriptions, icons, and images',
+      'Choose a layout: horizontal, vertical, or compact',
+    ],
+    configFields: [
+      {
+        name: 'events',
+        type: 'array of objects',
+        required: true,
+        description:
+          'Timeline events. Each has id (string), title (string), and optional date (string), icon (string), description (string), image (string).',
+      },
+      {
+        name: 'title',
+        type: 'string',
+        required: false,
+        description: 'An overall title for the timeline.',
+      },
+      {
+        name: 'layout',
+        type: 'string',
+        required: false,
+        description: '"horizontal", "vertical" (default), or "compact".',
+      },
+      {
+        name: 'showDates',
+        type: 'boolean',
+        required: false,
+        description: 'Show dates on the timeline. Defaults to true.',
+      },
+      {
+        name: 'showImages',
+        type: 'boolean',
+        required: false,
+        description: 'Show images on the timeline. Defaults to false.',
+      },
+      {
+        name: 'interactive',
+        type: 'boolean',
+        required: false,
+        description: 'When false, shows events for observation only. Defaults to false.',
+      },
+    ],
+    exampleJson:
+      '{\n  "type": "exercise",\n  "title": "The Water Cycle",\n  "widget": "core.timeline",\n  "config": {\n    "title": "The Water Cycle",\n    "events": [\n      { "id": "evap", "title": "Evaporation", "icon": "☀️", "description": "Water heats up and rises as vapor" },\n      { "id": "cond", "title": "Condensation", "icon": "☁️", "description": "Water vapor cools and forms clouds" },\n      { "id": "rain", "title": "Rain", "icon": "🌧️", "description": "Water falls as precipitation" },\n      { "id": "collect", "title": "Collection", "icon": "🌊", "description": "Water collects in oceans and lakes" }\n    ],\n    "layout": "vertical",\n    "showDates": false,\n    "showImages": false,\n    "interactive": false\n  }\n}',
+    tips: [
+      'Use clear, descriptive event titles',
+      'Add emoji icons to make events visually distinct',
+      'Keep descriptions short — 1 sentence or less',
+      'For interactive mode, make sure the correct order is unambiguous',
+    ],
+    sidebarPosition: 13,
+    relatedWidgets: [
+      {
+        id: 'core.sequencing',
+        name: 'Sequencing',
+        domain: 'core',
+        slug: 'sequencing',
+      },
+      {
+        id: 'science.process-diagram',
+        name: 'Process Diagram',
+        domain: 'science',
+        slug: 'process-diagram',
+      },
+    ],
+  },
   id: 'core.timeline',
   version: '1.0.0',
   schema: timelineSchema,

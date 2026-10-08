@@ -49,8 +49,10 @@ export interface WidgetDefinitionV2 extends WidgetDefinition {
   status: 'stable' | 'experimental' | 'deprecated';
   deprecated?: boolean;
   replacement?: string;
+  guide?: WidgetGuideData;
 }
 
+import type { WidgetGuideData } from '@open-edu/schemas';
 import type { RemoteWidgetManifest } from '@open-edu/schemas';
 
 export type { RemoteWidgetManifest };

@@ -764,6 +764,86 @@ function MatchingComponent(props: {
 }
 
 const MatchingWidget: WidgetDefinitionV2 = {
+  guide: {
+    oneLiner: 'Match pairs of items by dragging or selecting.',
+    whatItDoes:
+      'The Matching widget shows two columns of items. Students connect each item from the left column to its corresponding match in the right column. It supports keyboard navigation, touch, and screen readers.',
+    whenToUse: [
+      'Teaching vocabulary and definitions',
+      'Matching causes to effects',
+      'Pairing items with their categories',
+      'Connecting concepts to examples',
+    ],
+    setupSteps: [
+      'Add an Exercise node to your lesson',
+      'Set the widget to "core.matching"',
+      'Define your pairs in the config — each pair has an itemA and itemB',
+      'Add an optional description to guide students',
+      'Optionally add hints to help students who get stuck',
+    ],
+    configFields: [
+      {
+        name: 'pairs',
+        type: 'array of objects',
+        required: true,
+        description: 'The matching pairs. Each object has an itemA (string) and itemB (string).',
+      },
+      {
+        name: 'pairs[].itemA',
+        type: 'string',
+        required: true,
+        description: 'The left-side item text.',
+      },
+      {
+        name: 'pairs[].itemB',
+        type: 'string',
+        required: true,
+        description: 'The right-side item text.',
+      },
+      {
+        name: 'description',
+        type: 'string',
+        required: false,
+        description: 'Instructions shown above the matching activity.',
+      },
+      {
+        name: 'hints',
+        type: 'array of strings',
+        required: false,
+        description: 'Progressive hints shown when students need help.',
+      },
+      {
+        name: 'interactive',
+        type: 'boolean',
+        required: false,
+        description:
+          'When false, shows the activity in observe mode with correct matches pre-connected. Defaults to false.',
+      },
+    ],
+    exampleJson:
+      '{\n  "type": "exercise",\n  "title": "Fruit Color Matching",\n  "widget": "core.matching",\n  "config": {\n    "description": "Match each fruit to its color.",\n    "pairs": [\n      { "itemA": "Apple", "itemB": "Red" },\n      { "itemA": "Banana", "itemB": "Yellow" },\n      { "itemA": "Orange", "itemB": "Orange" },\n      { "itemA": "Grape", "itemB": "Purple" }\n    ],\n    "interactive": true\n  }\n}',
+    tips: [
+      'Keep itemA and itemB labels short (2-4 words)',
+      'Use 3-6 pairs for younger students, up to 10 for older ones',
+      'Make sure each pair has a clear, unambiguous connection',
+      'Add emoji to item labels for visual reinforcement',
+    ],
+    sidebarPosition: 2,
+    relatedWidgets: [
+      {
+        id: 'core.drag-drop',
+        name: 'Drag & Drop',
+        domain: 'core',
+        slug: 'drag-drop',
+      },
+      {
+        id: 'language.flashcard',
+        name: 'Flashcard',
+        domain: 'language',
+        slug: 'flashcard',
+      },
+    ],
+  },
   id: 'core.matching',
   name: 'Matching',
   description: 'Match pairs of items by dragging or selecting',

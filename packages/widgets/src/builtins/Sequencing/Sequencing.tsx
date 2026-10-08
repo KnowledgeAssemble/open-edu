@@ -454,6 +454,81 @@ function SequencingComponent(props: {
 }
 
 const SequencingWidget: WidgetDefinitionV2 = {
+  guide: {
+    oneLiner: 'Arrange items in the correct order by dragging or selecting.',
+    whatItDoes:
+      'The Sequencing widget presents a scrambled list of items that students must arrange in the correct order. They drag items into position or use keyboard shortcuts. Common uses include ordering story events, life cycle stages, math steps, or historical events.',
+    whenToUse: [
+      'Teaching chronological order',
+      'Story sequencing activities',
+      'Step-by-step process understanding',
+      'Life cycle and growth ordering',
+    ],
+    setupSteps: [
+      'Add an Exercise node to your lesson',
+      'Set the widget to "core.sequencing"',
+      'Define your items — each needs an id, label, and optional emoji',
+      'Set correctOrder — an array of item ids in the right order',
+      'Optionally add hints to help students',
+    ],
+    configFields: [
+      {
+        name: 'items',
+        type: 'array of objects',
+        required: true,
+        description:
+          'The items to sequence. Each has id (string), label (string), and optional emoji (string).',
+      },
+      {
+        name: 'correctOrder',
+        type: 'array of strings',
+        required: true,
+        description:
+          'The correct sequence of item ids, e.g. ["seed", "sprout", "plant", "flower"].',
+      },
+      {
+        name: 'description',
+        type: 'string',
+        required: false,
+        description: 'Instructions shown above the activity.',
+      },
+      {
+        name: 'hints',
+        type: 'array of strings',
+        required: false,
+        description: 'Progressive hints for students who need help.',
+      },
+      {
+        name: 'interactive',
+        type: 'boolean',
+        required: false,
+        description: 'When false, shows items in correct order. Defaults to false.',
+      },
+    ],
+    exampleJson:
+      '{\n  "type": "exercise",\n  "title": "Life Cycle Sequencing",\n  "widget": "core.sequencing",\n  "config": {\n    "description": "Put the life cycle steps in the correct order.",\n    "items": [\n      { "id": "seed", "label": "Seed", "emoji": "🌱" },\n      { "id": "sprout", "label": "Sprout", "emoji": "🌿" },\n      { "id": "plant", "label": "Plant", "emoji": "🌻" },\n      { "id": "flower", "label": "Flower", "emoji": "🌸" }\n    ],\n    "correctOrder": ["seed", "sprout", "plant", "flower"],\n    "interactive": true\n  }\n}',
+    tips: [
+      'Ensure there is a clear, unambiguous correct order',
+      'Avoid steps that could legitimately be swapped',
+      'Keep total items between 3-8 for manageable complexity',
+      'Add emoji icons to items for visual recognition',
+    ],
+    sidebarPosition: 5,
+    relatedWidgets: [
+      {
+        id: 'core.drag-drop',
+        name: 'Drag & Drop',
+        domain: 'core',
+        slug: 'drag-drop',
+      },
+      {
+        id: 'core.timeline',
+        name: 'Timeline',
+        domain: 'core',
+        slug: 'timeline',
+      },
+    ],
+  },
   id: 'core.sequencing',
   name: 'Sequencing',
   description: 'Arrange items in the correct order',

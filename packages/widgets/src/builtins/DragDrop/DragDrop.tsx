@@ -692,6 +692,86 @@ function DragDropComponent(props: {
 }
 
 const DragDropWidget: WidgetDefinitionV2 = {
+  guide: {
+    oneLiner: 'Drag and drop items into the correct categories or zones.',
+    whatItDoes:
+      'The Drag & Drop widget lets students sort items into target zones by dragging them with mouse, touch, or keyboard. Each item belongs in one target zone based on the expected positions you define. It works on touch screens, with a mouse, or via keyboard shortcuts.',
+    whenToUse: [
+      'Sorting items into categories',
+      'Classifying animals, objects, or concepts',
+      'Grouping by shared attributes',
+      'Hands-on sorting activities',
+    ],
+    setupSteps: [
+      'Add an Exercise node to your lesson',
+      'Set the widget to "core.drag-drop"',
+      'Define your items — each needs an id, label, and optional emoji',
+      'Define your target zones — each needs an id and label',
+      'Set expectedPositions to map each item id to its correct target id',
+    ],
+    configFields: [
+      {
+        name: 'items',
+        type: 'array of objects',
+        required: true,
+        description:
+          'The draggable items. Each has id (string), label (string), and optional emoji (string).',
+      },
+      {
+        name: 'targets',
+        type: 'array of objects',
+        required: true,
+        description: 'The drop zones. Each has id (string) and label (string).',
+      },
+      {
+        name: 'expectedPositions',
+        type: 'object',
+        required: true,
+        description: 'Maps item ids to target ids. e.g. `{"fish": "ocean", "bird": "sky"}`.',
+      },
+      {
+        name: 'description',
+        type: 'string',
+        required: false,
+        description: 'Instructions shown above the activity.',
+      },
+      {
+        name: 'hints',
+        type: 'array of strings',
+        required: false,
+        description: 'Progressive hints for students who need help.',
+      },
+      {
+        name: 'interactive',
+        type: 'boolean',
+        required: false,
+        description: 'When false, shows items pre-placed in correct zones. Defaults to false.',
+      },
+    ],
+    exampleJson:
+      '{\n  "type": "exercise",\n  "title": "Habitat Sort",\n  "widget": "core.drag-drop",\n  "config": {\n    "description": "Sort each animal into the correct habitat.",\n    "items": [\n      { "id": "fish", "label": "Fish", "emoji": "🐟" },\n      { "id": "bird", "label": "Bird", "emoji": "🐦" },\n      { "id": "whale", "label": "Whale", "emoji": "🐋" },\n      { "id": "eagle", "label": "Eagle", "emoji": "🦅" }\n    ],\n    "targets": [\n      { "id": "sky", "label": "Sky" },\n      { "id": "ocean", "label": "Ocean" }\n    ],\n    "expectedPositions": {\n      "fish": "ocean",\n      "bird": "sky",\n      "whale": "ocean",\n      "eagle": "sky"\n    },\n    "interactive": true\n  }\n}',
+    tips: [
+      'Use 3-6 items with 2-4 target zones for manageable complexity',
+      'Make item labels unambiguous so placement is clear',
+      'Ensure target zone labels have distinct meanings',
+      'Add emoji to items for visual learners and non-readers',
+    ],
+    sidebarPosition: 4,
+    relatedWidgets: [
+      {
+        id: 'core.matching',
+        name: 'Matching',
+        domain: 'core',
+        slug: 'matching',
+      },
+      {
+        id: 'core.sequencing',
+        name: 'Sequencing',
+        domain: 'core',
+        slug: 'sequencing',
+      },
+    ],
+  },
   id: 'core.drag-drop',
   name: 'Drag & Drop',
   description: 'Drag items to correct locations or categories',

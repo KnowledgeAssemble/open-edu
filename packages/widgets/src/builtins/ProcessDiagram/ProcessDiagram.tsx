@@ -392,6 +392,87 @@ function ProcessDiagramComponent(props: {
 }
 
 const ProcessDiagramWidget: WidgetDefinitionV2 = {
+  guide: {
+    oneLiner: 'Explore step-by-step scientific processes with connected diagrams.',
+    whatItDoes:
+      'The Process Diagram widget shows a connected diagram of a scientific process — like the water cycle, food chain, or rock cycle. Nodes represent steps, and connections show the flow. It supports cycle, linear, and custom layouts with step-by-step reveal.',
+    whenToUse: [
+      'Teaching the water cycle or rock cycle',
+      'Explaining food chains and food webs',
+      'Showing cause-and-effect processes',
+      'Visualizing life cycles with stages',
+    ],
+    setupSteps: [
+      'Add an Exercise node to your lesson',
+      'Set the widget to "science.process-diagram"',
+      'Define process nodes — each has an id and title',
+      'Define connections between nodes with optional labels',
+      'Choose a layout: cycle, linear, or tree',
+    ],
+    configFields: [
+      {
+        name: 'nodes',
+        type: 'array of objects',
+        required: true,
+        description:
+          'Process steps. Each has id (string), title (string), and optional description (string) and icon (string).',
+      },
+      {
+        name: 'connections',
+        type: 'array of objects',
+        required: true,
+        description:
+          'Connections between nodes. Each has from (node id), to (node id), and optional label (string) and type ("arrow", "loop", "dashed").',
+      },
+      {
+        name: 'layout',
+        type: 'string',
+        required: false,
+        description: 'Layout style: "cycle", "linear", "tree", or "flow". Defaults to "cycle".',
+      },
+      {
+        name: 'title',
+        type: 'string',
+        required: false,
+        description: 'An overall title for the diagram.',
+      },
+      {
+        name: 'stepByStep',
+        type: 'boolean',
+        required: false,
+        description: 'Reveal nodes one at a time. Defaults to false.',
+      },
+      {
+        name: 'interactive',
+        type: 'boolean',
+        required: false,
+        description: 'When false, shows the complete diagram. Defaults to false.',
+      },
+    ],
+    exampleJson:
+      '{\n  "type": "exercise",\n  "title": "The Water Cycle",\n  "widget": "science.process-diagram",\n  "config": {\n    "nodes": [\n      { "id": "evaporation", "title": "Evaporation", "description": "Sun heats water, turning it into vapor", "icon": "☀️" },\n      { "id": "condensation", "title": "Condensation", "description": "Water vapor cools and forms clouds", "icon": "☁️" },\n      { "id": "precipitation", "title": "Precipitation", "description": "Water falls as rain, snow, or hail", "icon": "🌧️" },\n      { "id": "collection", "title": "Collection", "description": "Water gathers in oceans and lakes", "icon": "🌊" }\n    ],\n    "connections": [\n      { "from": "evaporation", "to": "condensation", "label": "vapor rises" },\n      { "from": "condensation", "to": "precipitation", "label": "clouds form" },\n      { "from": "precipitation", "to": "collection", "label": "water falls" },\n      { "from": "collection", "to": "evaporation", "type": "loop", "label": "cycle repeats" }\n    ],\n    "layout": "cycle",\n    "title": "The Water Cycle",\n    "stepByStep": true,\n    "interactive": false\n  }\n}',
+    tips: [
+      'Use clear step labels that students can read easily',
+      'Show arrows to indicate the direction of the process',
+      'Add brief descriptions for each step',
+      'Cycle layout works best for repeating processes',
+    ],
+    sidebarPosition: 3,
+    relatedWidgets: [
+      {
+        id: 'core.sequencing',
+        name: 'Sequencing',
+        domain: 'core',
+        slug: 'sequencing',
+      },
+      {
+        id: 'core.timeline',
+        name: 'Timeline',
+        domain: 'core',
+        slug: 'timeline',
+      },
+    ],
+  },
   id: 'science.process-diagram',
   name: 'Process Diagram',
   description: 'Visual explanation of systems and processes with nodes and connections',

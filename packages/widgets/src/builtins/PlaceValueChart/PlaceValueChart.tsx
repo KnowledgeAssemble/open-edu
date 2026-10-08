@@ -428,6 +428,79 @@ function PlaceValueChartComponent(props: {
 }
 
 const PlaceValueChartWidget: WidgetDefinitionV2 = {
+  guide: {
+    oneLiner: 'Build and explore numbers using an interactive place value chart.',
+    whatItDoes:
+      'The Place Value Chart widget helps students understand how digits represent different values based on their position. Students drag digits into columns (ones, tens, hundreds, etc.) to build numbers. It supports the Indian number system with lakh and crore places.',
+    whenToUse: [
+      'Teaching place value concepts',
+      'Building multi-digit numbers',
+      'Understanding expanded form',
+      'Comparing numbers using place value',
+    ],
+    setupSteps: [
+      'Add an Exercise node to your lesson',
+      'Set the widget to "math.place-value-chart"',
+      'Set the target number students should build',
+      'Provide the digits for students to drag',
+      'Choose the max place value level',
+    ],
+    configFields: [
+      {
+        name: 'targetNumber',
+        type: 'number',
+        required: true,
+        description: 'The number students should build on the chart.',
+      },
+      {
+        name: 'draggableDigits',
+        type: 'array of numbers',
+        required: true,
+        description: 'The digits students can use, e.g. [5, 4, 3] for the number 543.',
+      },
+      {
+        name: 'maxPlaces',
+        type: 'string',
+        required: false,
+        description: 'Highest place value shown, e.g. "hundred", "thousand", "lakh".',
+      },
+      {
+        name: 'description',
+        type: 'string',
+        required: false,
+        description: 'Instructions for the student.',
+      },
+      {
+        name: 'showLabels',
+        type: 'boolean',
+        required: false,
+        description: 'Show place value labels. Defaults to true.',
+      },
+      {
+        name: 'interactive',
+        type: 'boolean',
+        required: false,
+        description: 'When false, shows the completed chart. Defaults to false.',
+      },
+    ],
+    exampleJson:
+      '{\n  "type": "exercise",\n  "title": "Place Value Practice",\n  "widget": "math.place-value-chart",\n  "config": {\n    "description": "Build the number 543 by placing digits in the correct columns.",\n    "maxPlaces": "hundred",\n    "targetNumber": 543,\n    "draggableDigits": [5, 4, 3],\n    "showLabels": true,\n    "interactive": true\n  }\n}',
+    tips: [
+      'Use numbers up to 999 for early learners',
+      'Include visual separators between columns for clarity',
+      'Explain that zero acts as a placeholder',
+      'Start with 2-digit numbers before introducing larger ones',
+    ],
+    sidebarPosition: 2,
+    relatedWidgets: [
+      {
+        id: 'math.number-line',
+        name: 'Number Line',
+        domain: 'math',
+        slug: 'number-line',
+      },
+    ],
+  },
   id: 'math.place-value-chart',
   name: 'Place Value Chart',
   description: 'Understand place value with interactive chart manipulation',

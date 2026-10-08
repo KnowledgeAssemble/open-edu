@@ -582,6 +582,85 @@ function ClockTimeComponent(props: {
 }
 
 const ClockTimeWidget: WidgetDefinitionV2 = {
+  guide: {
+    oneLiner: 'Read and set time on an interactive analog clock with digital display.',
+    whatItDoes:
+      'The Clock Time widget shows an analog clock face. Students can read the current time, set the hands to a specific time, or see both analog and digital time together. It supports hour, half-hour, and minute-level precision.',
+    whenToUse: [
+      'Teaching how to read an analog clock',
+      'Practicing time to the hour and half-hour',
+      'Converting between analog and digital time',
+      'Understanding AM and PM',
+    ],
+    setupSteps: [
+      'Add an Exercise node to your lesson',
+      'Set the widget to "math.clock-time"',
+      'Set the starting time (hour and minute)',
+      'Choose set mode for interactive practice or display mode',
+      'Optionally set a target time for students to match',
+    ],
+    configFields: [
+      {
+        name: 'hour',
+        type: 'number',
+        required: true,
+        description: 'The starting hour (1-12).',
+      },
+      {
+        name: 'minute',
+        type: 'number',
+        required: true,
+        description: 'The starting minute (0-59).',
+      },
+      {
+        name: 'mode',
+        type: 'string',
+        required: false,
+        description: '"set" for interactive time-setting, "display" for reading only.',
+      },
+      {
+        name: 'showDigital',
+        type: 'boolean',
+        required: false,
+        description: 'Show the digital time alongside the analog clock. Defaults to true.',
+      },
+      {
+        name: 'targetTime',
+        type: 'object',
+        required: false,
+        description: 'Target time for students to match. Has hour (number) and minute (number).',
+      },
+      {
+        name: 'description',
+        type: 'string',
+        required: false,
+        description: 'Instructions for the student.',
+      },
+      {
+        name: 'interactive',
+        type: 'boolean',
+        required: false,
+        description: 'When false, shows the clock in display mode. Defaults to false.',
+      },
+    ],
+    exampleJson:
+      '{\n  "type": "exercise",\n  "title": "Set the Clock",\n  "widget": "math.clock-time",\n  "config": {\n    "description": "Set the clock to show 7:30.",\n    "hour": 3,\n    "minute": 0,\n    "mode": "set",\n    "showDigital": true,\n    "targetTime": { "hour": 7, "minute": 30 },\n    "interactive": true\n  }\n}',
+    tips: [
+      'Start with hour-only times (e.g. 3:00) before adding minutes',
+      'Use clear, large clock faces for young learners',
+      'Show both analog and digital representations together',
+      'Explain the difference between the hour and minute hands',
+    ],
+    sidebarPosition: 4,
+    relatedWidgets: [
+      {
+        id: 'math.measurement-scale',
+        name: 'Measurement Scale',
+        domain: 'math',
+        slug: 'measurement-scale',
+      },
+    ],
+  },
   id: 'math.clock-time',
   name: 'Clock Time',
   description: 'Read and set time on analog and digital clocks',

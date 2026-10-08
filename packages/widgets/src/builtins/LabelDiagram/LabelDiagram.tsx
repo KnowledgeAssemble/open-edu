@@ -753,6 +753,80 @@ function LabelDiagramComponent(props: {
 }
 
 const LabelDiagramWidget: WidgetDefinitionV2 = {
+  guide: {
+    oneLiner: 'Label parts of a scientific diagram by dragging labels to the correct spots.',
+    whatItDoes:
+      'The Label Diagram widget shows a scientific diagram with draggable labels. Students drag each label from a word bank to the correct position on the diagram. Common uses include labeling plant parts, human anatomy, or machine components.',
+    whenToUse: [
+      'Teaching anatomy and biology diagrams',
+      'Labeling parts of a machine or system',
+      'Science vocabulary reinforcement',
+      'Geography and map labeling',
+    ],
+    setupSteps: [
+      'Add an Exercise node to your lesson',
+      'Set the widget to "science.label-diagram"',
+      'Provide a clear diagram image with alt text',
+      'Define each label with id, text, x/y target position, and optional hint',
+      'Set interactive to true for drag-and-label mode',
+    ],
+    configFields: [
+      {
+        name: 'image',
+        type: 'string',
+        required: true,
+        description: 'Path to the diagram image file.',
+      },
+      {
+        name: 'altText',
+        type: 'string',
+        required: true,
+        description: 'Description of the diagram for screen readers.',
+      },
+      {
+        name: 'labels',
+        type: 'array of objects',
+        required: true,
+        description:
+          'Labels to drag. Each has id (string), text (string), target with x/y (percent), and optional hint (string).',
+      },
+      {
+        name: 'hints',
+        type: 'array of strings',
+        required: false,
+        description: 'Progressive hints for students who need help.',
+      },
+      {
+        name: 'interactive',
+        type: 'boolean',
+        required: false,
+        description: 'When false, shows labels in position. Defaults to false.',
+      },
+    ],
+    exampleJson:
+      '{\n  "type": "exercise",\n  "title": "Plant Anatomy Labeling",\n  "widget": "science.label-diagram",\n  "config": {\n    "image": "assets/images/plant-anatomy.png",\n    "altText": "Diagram of a plant with parts to label",\n    "labels": [\n      { "id": "roots", "text": "Roots", "target": { "x": 50, "y": 90 }, "hint": "Below the soil" },\n      { "id": "stem", "text": "Stem", "target": { "x": 50, "y": 60 }, "hint": "Supports the plant" },\n      { "id": "leaves", "text": "Leaves", "target": { "x": 30, "y": 40 }, "hint": "Green and flat" },\n      { "id": "flower", "text": "Flower", "target": { "x": 50, "y": 20 }, "hint": "Colorful top" }\n    ],\n    "interactive": true,\n    "hints": ["Roots are found underground", "The stem connects roots to leaves"]\n  }\n}',
+    tips: [
+      'Use clear, high-contrast diagrams with obvious label areas',
+      'Provide 4-8 labels for manageable complexity',
+      'Add hints to each label for students who get stuck',
+      'Target x/y positions should use percentage values (0-100)',
+    ],
+    sidebarPosition: 1,
+    relatedWidgets: [
+      {
+        id: 'science.image-label',
+        name: 'Image Label',
+        domain: 'science',
+        slug: 'image-label',
+      },
+      {
+        id: 'core.hotspot',
+        name: 'Hotspot',
+        domain: 'core',
+        slug: 'hotspot',
+      },
+    ],
+  },
   id: 'science.label-diagram',
   version: '1.0.0',
   schema: labelDiagramSchema,

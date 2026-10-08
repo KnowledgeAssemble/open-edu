@@ -327,6 +327,80 @@ function VisualCountingComponent(props: {
 }
 
 const VisualCountingWidget: WidgetDefinitionV2 = {
+  guide: {
+    oneLiner: 'Display visual objects for students to count and identify quantities.',
+    whatItDoes:
+      'The Visual Counting widget shows a grid of visual objects (like emoji) and asks students to count them. Students type or select the correct number. It helps early learners build number sense through visual grouping.',
+    whenToUse: [
+      'Teaching counting and quantities to early learners',
+      'Building number recognition skills',
+      'Visual math practice for pre-readers',
+      'Reinforcing one-to-one correspondence',
+    ],
+    setupSteps: [
+      'Add an Exercise node to your lesson',
+      'Set the widget to "core.visual-counting"',
+      'Choose an emoji or character for the items',
+      'Set the count — how many items to show',
+      'Add a description like "Count the stars!"',
+    ],
+    configFields: [
+      {
+        name: 'items',
+        type: 'array of strings',
+        required: true,
+        description:
+          'Emoji or characters to display as countable items. Usually a single item repeated.',
+      },
+      {
+        name: 'count',
+        type: 'number',
+        required: true,
+        description: 'How many items to show (1-12 recommended).',
+      },
+      {
+        name: 'text',
+        type: 'string',
+        required: false,
+        description: 'Text shown after the count, e.g. "stars" displays as "5 stars".',
+      },
+      {
+        name: 'description',
+        type: 'string',
+        required: false,
+        description: 'Instructions shown above the counting grid.',
+      },
+      {
+        name: 'interactive',
+        type: 'boolean',
+        required: false,
+        description: 'When false, shows the correct count. Defaults to false.',
+      },
+    ],
+    exampleJson:
+      '{\n  "type": "exercise",\n  "title": "Count the Stars",\n  "widget": "core.visual-counting",\n  "config": {\n    "description": "How many stars do you see?",\n    "items": ["⭐"],\n    "count": 5,\n    "text": "stars",\n    "interactive": true\n  }\n}',
+    tips: [
+      'Use visually distinct emoji that are easy to count',
+      'Limit counts to 1-12 for young learners',
+      'Space items clearly in the grid — avoid crowding',
+      'Start with small counts and gradually increase',
+    ],
+    sidebarPosition: 3,
+    relatedWidgets: [
+      {
+        id: 'math.number-line',
+        name: 'Number Line',
+        domain: 'math',
+        slug: 'number-line',
+      },
+      {
+        id: 'math.grid-area',
+        name: 'Grid Area',
+        domain: 'math',
+        slug: 'grid-area',
+      },
+    ],
+  },
   id: 'core.visual-counting',
   name: 'Visual Counting',
   description: 'Count visual objects and identify quantities',

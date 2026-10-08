@@ -424,6 +424,113 @@ function GridAreaComponent(props: {
 }
 
 const GridAreaWidget: WidgetDefinitionV2 = {
+  guide: {
+    oneLiner: 'Calculate area by counting and highlighting squares on a grid.',
+    whatItDoes:
+      'The Grid Area widget shows a rectangular grid where students count or highlight squares to understand area. Students can click individual cells, see the total count, and compare areas of different shapes.',
+    whenToUse: [
+      'Introducing the concept of area',
+      'Teaching that area = rows × columns',
+      'Comparing areas of different shapes',
+      'Distinguishing area from perimeter',
+    ],
+    setupSteps: [
+      'Add an Exercise node to your lesson',
+      'Set the widget to "math.grid-area"',
+      'Set the number of rows and columns',
+      'Choose area mode for square counting',
+      'Set maxHighlights to limit how many cells can be selected',
+    ],
+    configFields: [
+      {
+        name: 'rows',
+        type: 'number',
+        required: true,
+        description: 'Number of rows in the grid (keep under 10).',
+      },
+      {
+        name: 'cols',
+        type: 'number',
+        required: true,
+        description: 'Number of columns in the grid (keep under 10).',
+      },
+      {
+        name: 'mode',
+        type: 'string',
+        required: false,
+        description: 'Activity mode. "area" is the default for counting squares.',
+      },
+      {
+        name: 'maxHighlights',
+        type: 'number',
+        required: false,
+        description: 'Maximum number of cells a student can highlight.',
+      },
+      {
+        name: 'highlighted',
+        type: 'array',
+        required: false,
+        description:
+          'Pre-shaded cells for observe mode display (array of {row, col}). Not used for interactive grading unless no target fields are set.',
+      },
+      {
+        name: 'targetHighlights',
+        type: 'array',
+        required: false,
+        description:
+          'Exact cells the learner must shade in interactive mode (array of {row, col}). Graded by set equality.',
+      },
+      {
+        name: 'targetCount',
+        type: 'number',
+        required: false,
+        description:
+          'Simpler grading: learner must shade exactly this many cells. Used when targetHighlights is not set.',
+      },
+      {
+        name: 'showQuestionArea',
+        type: 'boolean',
+        required: false,
+        description:
+          'When true with targetHighlights, shows a read-only reference grid beside the interactive grid. Defaults to false.',
+      },
+      {
+        name: 'description',
+        type: 'string',
+        required: false,
+        description: 'Instructions for the student.',
+      },
+      {
+        name: 'showCount',
+        type: 'boolean',
+        required: false,
+        description: 'Show a running count of highlighted cells. Defaults to true.',
+      },
+      {
+        name: 'interactive',
+        type: 'boolean',
+        required: false,
+        description: 'When false, shows a pre-filled grid. Defaults to false.',
+      },
+    ],
+    exampleJson:
+      '{\n  "type": "exercise",\n  "title": "Grid Area Practice",\n  "widget": "math.grid-area",\n  "config": {\n    "description": "Highlight 6 cells to match the area shown.",\n    "rows": 5,\n    "cols": 5,\n    "mode": "area",\n    "targetCount": 6,\n    "targetHighlights": [\n      { "row": 0, "col": 0 },\n      { "row": 0, "col": 1 },\n      { "row": 0, "col": 2 },\n      { "row": 1, "col": 0 },\n      { "row": 1, "col": 1 },\n      { "row": 1, "col": 2 }\n    ],\n    "showQuestionArea": true,\n    "maxHighlights": 25,\n    "showCount": true,\n    "interactive": true\n  }\n}',
+    tips: [
+      'Keep grids under 10×10 for visual clarity',
+      'Use maxHighlights to limit selections when targeting a specific area',
+      'Explain that each square is one square unit',
+      'Show both the rows × columns formula and the counting method',
+    ],
+    sidebarPosition: 3,
+    relatedWidgets: [
+      {
+        id: 'math.fraction-visual',
+        name: 'Fraction Visual',
+        domain: 'math',
+        slug: 'fraction-visual',
+      },
+    ],
+  },
   id: 'math.grid-area',
   name: 'Grid Area',
   description: 'Calculate and visualize area using grid models',

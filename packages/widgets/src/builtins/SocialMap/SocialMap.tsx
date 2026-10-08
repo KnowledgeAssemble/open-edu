@@ -362,6 +362,122 @@ function SocialMapComponent(props: {
 }
 
 const SocialMapWidget: WidgetDefinitionV2 = {
+  guide: {
+    oneLiner: 'Explore geographic and social concepts on an interactive map.',
+    whatItDoes:
+      'The Social Map widget shows an interactive map with regions, markers, and a legend. Students can explore regions, read descriptions, and find specific locations. It supports zooming, labels, and region highlighting. Optionally, an SVG file can be used as the map background via svgSrc for accurate region boundaries.',
+    whenToUse: [
+      'Teaching geography and map reading',
+      'Exploring continents and countries',
+      'Social studies and history map activities',
+      'Community and neighborhood mapping',
+    ],
+    setupSteps: [
+      'Add an Exercise node to your lesson',
+      'Set the widget to "social.map"',
+      'Define map regions with id, name, color, and description',
+      'Optionally add markers for specific locations',
+      'Add a legend to explain region colors',
+      'Optionally set svgSrc to an SVG map file for accurate region shapes',
+    ],
+    configFields: [
+      {
+        name: 'regions',
+        type: 'array of objects',
+        required: true,
+        description:
+          'Map regions. Each has id (string), name (string), and optional color (CSS variable or hex), description (string), tooltip (string), image (string), and path (SVG path data string).',
+      },
+      {
+        name: 'regions[].tooltip',
+        type: 'string',
+        required: false,
+        description: 'Tooltip text shown when hovering over the region.',
+      },
+      {
+        name: 'regions[].image',
+        type: 'string',
+        required: false,
+        description:
+          'Image URL for the region. Accepted by the schema but not currently rendered in the UI.',
+      },
+      {
+        name: 'regions[].path',
+        type: 'string',
+        required: false,
+        description:
+          'SVG path d attribute for the region shape. Used when no svgSrc background is set.',
+      },
+      {
+        name: 'svgSrc',
+        type: 'string',
+        required: false,
+        description:
+          "URL to an SVG file used as the map background. When set, region shapes come from the SVG file and each region's own path field is ignored.",
+      },
+      {
+        name: 'title',
+        type: 'string',
+        required: false,
+        description: 'A title shown above the map.',
+      },
+      {
+        name: 'labels',
+        type: 'boolean',
+        required: false,
+        description: 'Show region name labels. Defaults to true.',
+      },
+      {
+        name: 'zoom',
+        type: 'boolean',
+        required: false,
+        description: 'Allow zooming in and out. Defaults to false.',
+      },
+      {
+        name: 'legend',
+        type: 'array of objects',
+        required: false,
+        description: 'Legend entries. Each has color (string) and label (string).',
+      },
+      {
+        name: 'markers',
+        type: 'array of objects',
+        required: false,
+        description:
+          'Point markers. Each has id (string), label (string), x (number), y (number), and optional icon (string).',
+      },
+      {
+        name: 'targetRegion',
+        type: 'string',
+        required: false,
+        description: 'ID of a region to highlight for quiz mode.',
+      },
+      {
+        name: 'interactive',
+        type: 'boolean',
+        required: false,
+        description: 'When false, shows the map for exploration. Defaults to false.',
+      },
+    ],
+    exampleJson:
+      '{\n  "type": "exercise",\n  "title": "World Continents",\n  "widget": "social.map",\n  "config": {\n    "regions": [\n      { "id": "north", "name": "North America", "description": "Third largest continent by area", "color": "var(--oe-color-primary)" },\n      { "id": "europe", "name": "Europe", "description": "Sixth largest continent", "color": "var(--oe-color-warning)" },\n      { "id": "africa", "name": "Africa", "description": "Second largest continent by area", "color": "var(--oe-color-error)" },\n      { "id": "asia", "name": "Asia", "description": "Largest and most populous continent", "color": "var(--oe-color-accent)" }\n    ],\n    "legend": [\n      { "color": "var(--oe-color-primary)", "label": "North America" },\n      { "color": "var(--oe-color-warning)", "label": "Europe" },\n      { "color": "var(--oe-color-error)", "label": "Africa" },\n      { "color": "var(--oe-color-accent)", "label": "Asia" }\n    ],\n    "title": "World Continents",\n    "labels": true,\n    "zoom": true,\n    "interactive": false,\n    "targetRegion": "asia"\n  }\n}',
+    tips: [
+      'Use clear, labeled maps for readability',
+      'Include a legend when using multiple colors',
+      'Keep region descriptions brief and informative',
+      'Start with simple geographic features before complex ones',
+      'Use svgSrc with an SVG map file for accurate region boundaries',
+    ],
+    sidebarPosition: 1,
+    relatedWidgets: [
+      {
+        id: 'core.hotspot',
+        name: 'Hotspot',
+        domain: 'core',
+        slug: 'hotspot',
+      },
+    ],
+  },
   id: 'social.map',
   name: 'Interactive Map',
   description: 'Interactive educational maps for geography and history',
