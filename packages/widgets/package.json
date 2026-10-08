@@ -24,6 +24,10 @@
     "./guide": {
       "types": "./dist/guide-markdown.d.ts",
       "import": "./dist/guide-markdown.js"
+    },
+    "./intents": {
+      "types": "./dist/metadata/learning-intents.d.ts",
+      "import": "./dist/metadata/learning-intents.js"
     }
   },
   "files": [
