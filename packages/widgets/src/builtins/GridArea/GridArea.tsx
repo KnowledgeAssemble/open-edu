@@ -471,14 +471,14 @@ const GridAreaWidget: WidgetDefinitionV2 = {
         type: 'array',
         required: false,
         description:
-          'Pre-shaded cells for observe mode display (array of {row, col}). Not used for interactive grading unless no target fields are set.',
+          'Pre-shaded cells for observe mode display (array of `{row, col}`). Not used for interactive grading unless no target fields are set.',
       },
       {
         name: 'targetHighlights',
         type: 'array',
         required: false,
         description:
-          'Exact cells the learner must shade in interactive mode (array of {row, col}). Graded by set equality.',
+          'Exact cells the learner must shade in interactive mode (array of `{row, col}`). Graded by set equality.',
       },
       {
         name: 'targetCount',
