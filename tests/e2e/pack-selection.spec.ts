@@ -26,9 +26,10 @@ test.describe('Pack selection (Phase 1)', () => {
     await page.getByRole('button', { name: 'Create Learning Experience' }).click();
 
     // The assistant opens, prefilled with a pack-grounded course prompt mentioning the unit.
-    await expect(page.getByDisplayValue(/selected curriculum unit: Fractions/)).toBeVisible({
-      timeout: 15000,
-    });
+    await expect(page.getByRole('textbox', { name: /Ask anything about your course/ })).toHaveValue(
+      /selected curriculum unit: Fractions/,
+      { timeout: 15000 },
+    );
 
     // Reach the outline (create a template course), then open the Packs tab.
     await page.getByRole('button', { name: 'Lesson + quiz' }).click();

@@ -8,6 +8,9 @@ import {
   writeOutlineTab,
   readFilesPath,
   writeFilesPath,
+  readStoredPackAuthoring,
+  writeStoredPackAuthoring,
+  type StoredPackAuthoring,
 } from './studioSession';
 
 describe('studioSession', () => {
@@ -62,5 +65,47 @@ describe('studioSession', () => {
     expect(readFilesPath()).toBe('nodes/lesson.md');
     writeFilesPath(null);
     expect(readFilesPath()).toBeNull();
+  });
+
+  it('returns null when no pack authoring is stored', () => {
+    expect(readStoredPackAuthoring()).toBeNull();
+  });
+
+  it('persists and restores the pack authoring selection', () => {
+    const stored: StoredPackAuthoring = {
+      courseKey: 'browser://lesson-quiz::lesson-quiz',
+      pending: false,
+      context: {
+        packs: [],
+        availableActivities: [],
+        concepts: [
+          { ref: { pack: 'openedu-fractions', concept: 'fraction' }, summary: 'a fraction' },
+        ],
+        objectives: [],
+        budget: { maxChars: 1000, usedChars: 0, truncated: [] },
+        provenance: [{ pack: 'openedu-fractions', version: '0.1.0', documents: [] }],
+      },
+      warnings: [],
+    };
+    writeStoredPackAuthoring(stored);
+    expect(readStoredPackAuthoring()).toEqual(stored);
+  });
+
+  it('clears the pack authoring selection', () => {
+    writeStoredPackAuthoring({
+      courseKey: null,
+      pending: true,
+      context: {
+        packs: [],
+        availableActivities: [],
+        concepts: [],
+        objectives: [],
+        budget: { maxChars: 1000, usedChars: 0, truncated: [] },
+        provenance: [],
+      },
+      warnings: [],
+    });
+    writeStoredPackAuthoring(null);
+    expect(readStoredPackAuthoring()).toBeNull();
   });
 });
