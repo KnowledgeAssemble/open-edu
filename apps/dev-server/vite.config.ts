@@ -1463,13 +1463,16 @@ function eduPacksLoader(): Plugin {
       if (id === RESOLVED_PACKS_VIRTUAL_ID) {
         try {
           const packs = refresh();
-          for (const file of [
-            'manifest.json',
-            'concepts.json',
-            'curriculum.json',
-            'sources.json',
-          ]) {
-            for (const pack of packs) this.addWatchFile(join(pack.dir, file));
+          for (const pack of packs) {
+            for (const file of [
+              'manifest.json',
+              'concepts.json',
+              'curriculum.json',
+              'sources.json',
+            ]) {
+              const fp = join(pack.dir, file);
+              if (existsSync(fp)) this.addWatchFile(fp);
+            }
           }
           const sanitized = packs.map((pack) => ({
             ...pack,
