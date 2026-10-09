@@ -1,6 +1,6 @@
 {
   "name": "@open-edu/packs",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "type": "module",
   "description": "OpenEdu Pack System: knowledge, curriculum, and authoring-context schemas and resolution.",
   "license": "MIT",
