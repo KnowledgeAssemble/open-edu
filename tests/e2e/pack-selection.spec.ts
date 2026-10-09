@@ -26,10 +26,20 @@ test.describe('Pack selection (Phase 1)', () => {
     await page.getByRole('button', { name: 'Create Learning Experience' }).click();
 
     // The assistant opens, prefilled with a pack-grounded course prompt mentioning the unit.
-    await expect(page.getByRole('textbox', { name: /Ask anything about your course/ })).toHaveValue(
-      /selected curriculum unit: Fractions/,
-      { timeout: 15000 },
-    );
+    const composer = page.getByRole('textbox', { name: /Ask anything about your course/ });
+    try {
+      await expect(composer).toHaveValue(/selected curriculum unit: Fractions/, {
+        timeout: 15000,
+      });
+    } catch (err) {
+      const railCount = await page.getByRole('button', { name: 'Open Author Assistant' }).count();
+      const errorBanner = await page.locator('[role="alert"]').allTextContents();
+      const bodyText = await page.locator('body').innerText();
+      console.log('DIAG rail-assistant-count=' + railCount);
+      console.log('DIAG alerts=' + JSON.stringify(errorBanner));
+      console.log('DIAG body-excerpt=' + bodyText.slice(0, 1500).replace(/\n/g, ' | '));
+      throw err;
+    }
 
     // Reach the outline (create a template course), then open the Packs tab.
     await page.getByRole('button', { name: 'Lesson + quiz' }).click();
