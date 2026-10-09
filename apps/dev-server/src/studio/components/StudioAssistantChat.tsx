@@ -380,6 +380,7 @@ export function StudioAssistantChat() {
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder={t('studio.assistant.placeholder')}
+            aria-label={t('studio.assistant.placeholder')}
             className="border-outline-variant bg-surface-container focus:ring-primary text-on-surface w-full resize-none rounded-md border p-2 pr-20 text-sm focus:outline-none focus:ring-1"
             rows={3}
             disabled={busy || !aiAvailable}
