@@ -5,6 +5,7 @@ import type {
   CardDefinitions,
   PackageManifest,
   BundleManifest,
+  ReproductionRecord,
 } from '@open-edu/schemas';
 
 export interface LoadedNode {
@@ -25,6 +26,7 @@ export interface LoadedPackage {
   workflow: Workflow | null;
   rewards: Rewards | null;
   cards: CardDefinitions | null;
+  provenance?: ReproductionRecord;
   nodes: LoadedNode[];
   assetPaths: string[];
   assetMap?: Map<string, ArrayBuffer>;

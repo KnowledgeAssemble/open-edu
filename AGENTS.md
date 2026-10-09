@@ -57,6 +57,8 @@ pnpm --filter @open-edu/cli build && node packages/cli/dist/cli.js compile cours
 # The curriculum pipeline lives in the standalone open-edu-pipeline repo:
 #   cd ../open-edu-pipeline && pnpm curriculum:generate --pdf ./textbook.pdf --level B --subject math
 pnpm --filter @open-edu/registry test  # Run registry package tests
+pnpm --filter @open-edu/packs test     # Run pack system tests (loader, authoring context, blueprint validation)
+pnpm --filter @open-edu/cli build && node packages/cli/dist/cli.js pack validate ./examples/packs/knowledge/openedu-fractions  # Validate a pack directory (manifest, concepts/curriculum, prerequisites)
 pnpm --filter @open-edu/widget-sdk test  # Run widget-sdk tests (framework-agnostic protocol)
 pnpm --filter @open-edu/widgets generate:catalog  # Regenerate widget-catalog-data.json from canonical source
 pnpm --filter @open-edu/cli build && node packages/cli/dist/cli.js i18n:extract ./my-lesson ./locales  # Extract translatable strings
@@ -69,6 +71,8 @@ pnpm --filter @open-edu/cli build && node packages/cli/dist/cli.js oep:build ./m
 pnpm --filter @open-edu/dev-server exec tailwindcss -c tailwind.config.js -i src/index.css -o src/tailwind.css
 # Start the Course Creator Studio (single unified authoring shell)
 pnpm --filter @open-edu/cli build && node packages/cli/dist/cli.js dev ./examples/hello-world
+# Start the Studio with the example pack fixtures (curriculum pack selection + AI grounding)
+OPEN_EDU_PACKS_DIR=examples/packs node packages/cli/dist/cli.js dev ./examples/hello-world
 # Run the dev-server package tests (Studio UI + library/ai/flow logic)
 pnpm --filter @open-edu/dev-server test
 # Regenerate the authoring-skill reference files from @open-edu/domain-guidance
@@ -103,6 +107,7 @@ open-edu/
 │   ├── i18n/                # Internationalization — locale types, translation engine, React I18nProvider, namespaces, formatters, LanguageSwitcher
 │   ├── interactive-runtime/ # OpenEdu bridge + React mounts for @knowledgeassemble interactive engines
 │   ├── oep-distribution/    # .oep archive writer/reader, install coordinator, catalog loader, ZIP security, version compare
+│   ├── packs/               # Pack system — knowledge/curriculum pack schemas, loader (@open-edu/packs/loader), authoring context, blueprint validation
 │   ├── companion/           # AI companion contracts — chat schema + converters, tools, skills, tasks, permissions
 │   ├── domain-guidance/     # Authoring domain knowledge — learner profiles + quality rubric; generates skill references
 │   ├── logger/              # Structured isomorphic logging engine
@@ -116,12 +121,13 @@ open-edu/
 │   ├── intro-javascript/
 │   ├── level-b-math/        # Multi-module bundle example (3 modules)
 │   ├── living-vs-nonliving/
+│   ├── packs/               # Pack fixtures (knowledge: openedu-fractions, curriculum: nios-math-level-a) — load with OPEN_EDU_PACKS_DIR=examples/packs
 │   ├── remote-widget-demo/
 │   ├── skill-graph/
 │   ├── widget-practice/
 │   └── widget-showcase/
-├── tests/e2e/               # Playwright integration tests (9 spec files)
-├── docs/                    # Architecture docs (VISION, ARCHITECTURE, FRAMEWORK_SPEC)
+├── tests/e2e/               # Playwright integration tests (16 spec files)
+├── docs/                    # Architecture docs (VISION, ARCHITECTURE, FRAMEWORK_SPEC, OPENEDU-PACK-SYSTEM)
 └── PLAN.md                  # Implementation plan with epic/story breakdown
 ```
 
@@ -173,6 +179,7 @@ Error [ERR_MODULE_NOT_FOUND]: Cannot find module '.../dist/types' imported from 
 
 - `@open-edu/core/widget-catalog-data` — subpath export for JSON catalog data
 - `@open-edu/widgets/catalog` — subpath export for `loadStaticCatalog` (breaks the import chain from `vite.config.ts` → `itemGenerate.ts` → `curatedCatalog.ts` → full `@open-edu/widgets` tree)
+- `@open-edu/packs/loader` — subpath export for `loadPacksDir` / `loadPackDirectory` (used by `apps/dev-server/vite.config.ts` to bundle pack fixtures into the Studio)
 
 **How to diagnose:** If you see `ERR_MODULE_NOT_FOUND` for a `.js` file importing another `.js` file without extension, trace the import chain from `vite.config.ts` to find which workspace package is being pulled in. Then create a subpath export for just the function(s) needed.
 
@@ -202,6 +209,7 @@ All packages use the `@open-edu/` scope:
 - `@open-edu/companion`, `@open-edu/domain-guidance`
 - `@open-edu/logger`, `@open-edu/storage`, `@open-edu/pwa-core`
 - `@open-edu/oep-distribution`
+- `@open-edu/packs`
 - `@open-edu/registry`
 
 Examples use `@open-edu/example-` prefix.

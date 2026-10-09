@@ -38,6 +38,7 @@ export default defineConfig({
         ...process.env,
         OPEN_EDU_WIDGET_REGISTRY: widgetRegistryDir,
         OPEN_EDU_WIDGET_REGISTRY_ID: 'localdev',
+        OPEN_EDU_PACKS_DIR: 'examples/packs',
       },
     },
   ],

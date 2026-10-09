@@ -256,6 +256,75 @@ function FlashcardComponent(props: {
 }
 
 const FlashcardWidget: WidgetDefinitionV2 = {
+  guide: {
+    oneLiner: 'Study terms and concepts with interactive flip-card flashcards.',
+    whatItDoes:
+      'The Flashcard widget shows cards with a front and back — tap to flip and reveal the answer. Students can rate their confidence (easy/medium/hard), shuffle the deck, and track their progress. It supports flip, multiple-choice, and spaced repetition modes.',
+    whenToUse: [
+      'Vocabulary and spelling practice',
+      'Memorizing key terms and definitions',
+      'Language learning',
+      'Quick revision before assessments',
+    ],
+    setupSteps: [
+      'Add an Exercise node to your lesson',
+      'Set the widget to "language.flashcard"',
+      'Create your cards — each needs a front and back',
+      'Optionally add hints, categories, and difficulty levels',
+      'Choose a study mode: flip, multiple, or spaced',
+    ],
+    configFields: [
+      {
+        name: 'cards',
+        type: 'array of objects',
+        required: true,
+        description:
+          'Flashcards. Each has front (string), back (string), and optional hint (string), category (string), difficulty ("easy"/"medium"/"hard"), image (string), and audio (string).',
+      },
+      {
+        name: 'mode',
+        type: 'string',
+        required: false,
+        description:
+          'Study mode: "flip" (default), "multiple" for multiple-choice, or "spaced" for spaced repetition.',
+      },
+      {
+        name: 'shuffle',
+        type: 'boolean',
+        required: false,
+        description: 'Randomize card order. Defaults to false.',
+      },
+      {
+        name: 'interactive',
+        type: 'boolean',
+        required: false,
+        description: 'When false, shows cards in view-only mode. Defaults to false.',
+      },
+    ],
+    exampleJson:
+      '{\n  "type": "exercise",\n  "title": "Spanish Vocabulary",\n  "widget": "language.flashcard",\n  "config": {\n    "cards": [\n      { "front": "Hola", "back": "Hello", "hint": "Common greeting", "category": "Greetings" },\n      { "front": "Gracias", "back": "Thank you", "category": "Politeness" },\n      { "front": "Adios", "back": "Goodbye", "category": "Greetings" },\n      { "front": "Por favor", "back": "Please", "category": "Politeness" }\n    ],\n    "mode": "flip",\n    "shuffle": true,\n    "interactive": true\n  }\n}',
+    tips: [
+      'Keep front text short — one word or phrase',
+      'Use detailed back text for definitions and context',
+      'Add categories to help students organize their study',
+      'Group related cards together (e.g., all greetings, all food words)',
+    ],
+    sidebarPosition: 1,
+    relatedWidgets: [
+      {
+        id: 'core.matching',
+        name: 'Matching',
+        domain: 'core',
+        slug: 'matching',
+      },
+      {
+        id: 'core.fill-blank',
+        name: 'Fill in the Blank',
+        domain: 'core',
+        slug: 'fill-blank',
+      },
+    ],
+  },
   id: 'language.flashcard',
   name: 'Flashcard',
   description: 'Vocabulary and memory practice with flip cards',

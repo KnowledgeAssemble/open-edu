@@ -1,11 +1,13 @@
+import type { AuthoringContext, PackDiagnostic } from '@open-edu/packs';
 import type { StudioView } from './types.js';
 
 const VIEW_KEY = 'openedu.studio.view';
 const PATH_KEY = 'openedu.studio.selectedPath';
 const OUTLINE_TAB_KEY = 'openedu.studio.outlineTab';
 const FILES_PATH_KEY = 'openedu.studio.filesPath';
+const PACK_AUTHORING_KEY = 'openedu.studio.packAuthoring';
 
-export type OutlineTab = 'outline' | 'files';
+export type OutlineTab = 'outline' | 'files' | 'packs';
 
 const VALID_VIEWS: StudioView[] = [
   'home',
@@ -54,7 +56,7 @@ export function writeSelectedPath(path: string | null): void {
   }
 }
 
-const VALID_OUTLINE_TABS: OutlineTab[] = ['outline', 'files'];
+const VALID_OUTLINE_TABS: OutlineTab[] = ['outline', 'files', 'packs'];
 
 export function readOutlineTab(): OutlineTab {
   try {
@@ -90,6 +92,34 @@ export function writeFilesPath(path: string | null): void {
       return;
     }
     sessionStorage.setItem(FILES_PATH_KEY, path);
+  } catch {
+    // storage unavailable
+  }
+}
+
+export interface StoredPackAuthoring {
+  courseKey: string | null;
+  pending: boolean;
+  context: AuthoringContext;
+  warnings: PackDiagnostic[];
+}
+
+export function readStoredPackAuthoring(): StoredPackAuthoring | null {
+  try {
+    const raw = sessionStorage.getItem(PACK_AUTHORING_KEY);
+    return raw ? (JSON.parse(raw) as StoredPackAuthoring) : null;
+  } catch {
+    return null;
+  }
+}
+
+export function writeStoredPackAuthoring(value: StoredPackAuthoring | null): void {
+  try {
+    if (value === null) {
+      sessionStorage.removeItem(PACK_AUTHORING_KEY);
+      return;
+    }
+    sessionStorage.setItem(PACK_AUTHORING_KEY, JSON.stringify(value));
   } catch {
     // storage unavailable
   }

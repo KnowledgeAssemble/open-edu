@@ -194,6 +194,79 @@ function ProcessExplainerComponent(props: {
 }
 
 const ProcessExplainerWidget: WidgetDefinitionV2 = {
+  guide: {
+    oneLiner: 'Walk through a process one step at a time with clear explanations.',
+    whatItDoes:
+      'The Process Explainer widget presents a process as a numbered list of steps. In step-by-step mode, each step is revealed progressively, keeping focus on one idea at a time. Optional dotLottie or SVG animations can be attached via config.animation.',
+    whenToUse: [
+      'Teaching multi-stage processes step by step',
+      'Explaining how a system works',
+      'Guiding learners through a procedure',
+    ],
+    setupSteps: [
+      'Add an Exercise node to your lesson',
+      'Set the widget to "core.process-explainer"',
+      'Define your steps — each needs an id and title',
+      'Optionally add descriptions, icons, and media per step',
+      'Optionally attach an animation config for dotLottie/SVG effects',
+    ],
+    configFields: [
+      {
+        name: 'title',
+        type: 'string',
+        required: false,
+        description: 'An overall title for the explainer.',
+      },
+      {
+        name: 'steps',
+        type: 'array of objects',
+        required: true,
+        description:
+          'Explainer steps. Each has id (string) and title (string), with optional description (string), icon (string), and media (string).',
+      },
+      {
+        name: 'stepByStep',
+        type: 'boolean',
+        required: false,
+        description: 'Reveal steps one at a time. Defaults to true.',
+      },
+      {
+        name: 'interactive',
+        type: 'boolean',
+        required: false,
+        description: 'When false, shows steps for observation only. Defaults to false.',
+      },
+      {
+        name: 'animation',
+        type: 'object',
+        required: false,
+        description:
+          'Optional OAS animation config (backend lottie/svg, src, trigger, reducedMotion, effects).',
+      },
+    ],
+    exampleJson:
+      '{\n  "type": "exercise",\n  "title": "Water Cycle",\n  "widget": "core.process-explainer",\n  "config": {\n    "title": "The Water Cycle",\n    "stepByStep": true,\n    "interactive": true,\n    "steps": [\n      { "id": "evap", "title": "Evaporation", "description": "Sun heats water into vapor" },\n      { "id": "cond", "title": "Condensation", "description": "Vapor cools into clouds" },\n      { "id": "rain", "title": "Precipitation", "description": "Water falls as rain or snow" },\n      { "id": "collect", "title": "Collection", "description": "Water gathers in oceans and lakes" }\n    ]\n  }\n}',
+    tips: [
+      'Use 3-8 steps for clarity',
+      'Keep step descriptions to 1-2 sentences',
+      'Use stepByStep mode to reduce cognitive load',
+    ],
+    sidebarPosition: 14,
+    relatedWidgets: [
+      {
+        id: 'science.process-diagram',
+        name: 'Process Diagram',
+        domain: 'science',
+        slug: 'process-diagram',
+      },
+      {
+        id: 'core.timeline',
+        name: 'Timeline',
+        domain: 'core',
+        slug: 'timeline',
+      },
+    ],
+  },
   id: 'core.process-explainer',
   name: 'Process Explainer',
   description: 'Step-by-step explanation of a process with progressive reveal',

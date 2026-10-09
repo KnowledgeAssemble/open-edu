@@ -466,6 +466,85 @@ function FractionVisualComponent(props: {
 }
 
 const FractionVisualWidget: WidgetDefinitionV2 = {
+  guide: {
+    oneLiner: 'Visualize and interact with fractions using circle or bar models.',
+    whatItDoes:
+      'The Fraction Visual widget shows fractions as shaded parts of a circle or bar. Students can see the relationship between numerator and denominator, compare fractions visually, and practice shading the correct portion.',
+    whenToUse: [
+      'Introducing fractions to early learners',
+      'Visualizing equivalent fractions',
+      'Comparing fraction sizes',
+      'Building intuitive understanding of numerator and denominator',
+    ],
+    setupSteps: [
+      'Add an Exercise node to your lesson',
+      'Set the widget to "math.fraction-visual"',
+      'Set the numerator and denominator',
+      'Choose circle or bar mode',
+      'Set interactive to true if students should shade the fraction themselves',
+    ],
+    configFields: [
+      {
+        name: 'numerator',
+        type: 'number',
+        required: true,
+        description: 'The top number in the fraction (parts shaded).',
+      },
+      {
+        name: 'denominator',
+        type: 'number',
+        required: true,
+        description: 'The bottom number in the fraction (total parts). Keep to 12 or less.',
+      },
+      {
+        name: 'mode',
+        type: 'string',
+        required: false,
+        description: '"circle" (default) or "bar" representation.',
+      },
+      {
+        name: 'description',
+        type: 'string',
+        required: false,
+        description: 'Instructions for the student.',
+      },
+      {
+        name: 'showLabel',
+        type: 'boolean',
+        required: false,
+        description: 'Show the fraction label as text. Defaults to false.',
+      },
+      {
+        name: 'interactive',
+        type: 'boolean',
+        required: false,
+        description: 'When true, students shade the fraction themselves. Defaults to false.',
+      },
+    ],
+    exampleJson:
+      '{\n  "type": "exercise",\n  "title": "Fraction Shading",\n  "widget": "math.fraction-visual",\n  "config": {\n    "description": "Shade 3/4 of the circle.",\n    "numerator": 3,\n    "denominator": 4,\n    "mode": "circle",\n    "showLabel": true,\n    "interactive": true\n  }\n}',
+    tips: [
+      'Limit denominator to 12 or less for clear visualization',
+      'Use circle mode for fractions under 1 whole',
+      'Use bar mode for comparing multiple fractions',
+      'Always show the fraction label for reinforcement',
+    ],
+    sidebarPosition: 1,
+    relatedWidgets: [
+      {
+        id: 'math.number-line',
+        name: 'Number Line',
+        domain: 'math',
+        slug: 'number-line',
+      },
+      {
+        id: 'math.grid-area',
+        name: 'Grid Area',
+        domain: 'math',
+        slug: 'grid-area',
+      },
+    ],
+  },
   id: 'math.fraction-visual',
   name: 'Fraction Visual',
   description: 'Visualize and manipulate fractions with interactive models',

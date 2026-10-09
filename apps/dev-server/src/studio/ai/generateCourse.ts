@@ -3,11 +3,16 @@ import { mkdtemp, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { compile as compileFromCourseCompiler } from '@open-edu/course-compiler';
+import { parseCourseSpec, parseCourseSpecJSON } from '@open-edu/course-compiler';
 import { loadPackage } from '@open-edu/core';
+import { getProfile } from '@open-edu/domain-guidance';
+import { validateBlueprint } from '@open-edu/packs';
+import { buildProvenance, factsFromModel } from './provenance.js';
 import { mapDiagnosticsToQuality } from './qualityMap.js';
 import { detectActivityKind, titleFromMarkdown, titleFromQuizJson } from '../outlineModel.js';
 import type { AiGenerateErrorCode, CourseDraftResult } from './types.js';
 import { resolveCourseSpec, type CourseSpecSource } from './generateCoursePackage.js';
+import type { AuthoringContext } from '@open-edu/packs';
 
 const DRAFT_TTL_MS = 30 * 60 * 1000;
 
@@ -17,13 +22,18 @@ export interface GenerateCourseOptions {
   source: CourseDraftSource;
   packageDir: string;
   compile?: typeof compileFromCourseCompiler;
+  authoring?: AuthoringContext;
+  locale?: string;
+  finalize?: boolean;
 }
 
 interface DraftEntry {
   tempDir: string;
   outputDir: string;
+  specPath: string;
   title?: string;
   createdAt: number;
+  authoring?: AuthoringContext;
 }
 
 const activeDrafts = new Map<string, DraftEntry>();
@@ -189,11 +199,41 @@ export async function generateCourseDraft(
   const quality = mapDiagnosticsToQuality(result.diagnostics, outlinePreview);
   const firstError = result.diagnostics.find((diagnostic) => diagnostic.severity === 'error');
 
+  let capabilityGaps: string[] | undefined;
+  if (result.success && options.finalize && options.authoring) {
+    const specText = readFileSync(specPath, 'utf-8');
+    const model = specPath.endsWith('.json')
+      ? parseCourseSpecJSON(specText).model
+      : parseCourseSpec(specText).model;
+    if (!model) {
+      await rm(tempDir, { recursive: true, force: true }).catch(() => {});
+      return errorResult('spec-invalid', 'course spec failed to parse');
+    }
+    const facts = factsFromModel(model);
+    facts.expectedAudience = options.authoring.learner
+      ? getProfile(options.authoring.learner)?.audience
+      : undefined;
+    const { violations } = validateBlueprint(options.authoring, facts);
+    if (violations.length > 0) {
+      await rm(tempDir, { recursive: true, force: true }).catch(() => {});
+      return errorResult('invalid-blueprint', violations[0]!.message);
+    }
+    const provenance = buildProvenance(options.authoring, model, new Date().toISOString());
+    capabilityGaps = provenance.capabilityGaps;
+    await writeFile(
+      join(outputDir, 'provenance.json'),
+      JSON.stringify(provenance.record, null, 2),
+      'utf-8',
+    );
+  }
+
   const draftId = generateDraftId();
   activeDrafts.set(draftId, {
     tempDir,
     outputDir,
+    specPath,
     createdAt: Date.now(),
+    ...(options.authoring ? { authoring: options.authoring } : {}),
   });
 
   if (!result.success) {
@@ -227,5 +267,6 @@ export async function generateCourseDraft(
     outlinePreview,
     title,
     draftId,
+    ...(capabilityGaps ? { capabilityGaps } : {}),
   };
 }

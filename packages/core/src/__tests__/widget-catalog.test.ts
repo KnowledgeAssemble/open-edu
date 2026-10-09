@@ -1,5 +1,9 @@
 import { describe, it, expect } from 'vitest';
-import { generateWidgetCatalog, type WidgetCatalogInput } from '../widget-catalog';
+import {
+  generateWidgetCatalog,
+  getDefaultWidgetCatalog,
+  type WidgetCatalogInput,
+} from '../widget-catalog';
 
 const SAMPLE_CATALOG: WidgetCatalogInput = {
   widgets: [
@@ -200,5 +204,10 @@ describe('generateWidgetCatalog', () => {
     expect(catalog).toContain('Analytics:');
     expect(catalog).toContain('attempts');
     expect(catalog).toContain('hints');
+  });
+
+  it('excludes the retired deprecated practice entry from the default catalog', () => {
+    const catalog = getDefaultWidgetCatalog();
+    expect(catalog).not.toContain('open-edu.multiple-choice-practice');
   });
 });

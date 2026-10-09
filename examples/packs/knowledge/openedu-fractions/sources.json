@@ -1,0 +1,15 @@
+{
+  "nios-math-ch1": {
+    "title": "NIOS Mathematics Chapter 1",
+    "publisher": "NIOS",
+    "year": 2023,
+    "url": "https://nios.ac.in/math-ch1",
+    "license": "CC-BY"
+  },
+  "nios-math-ch2": {
+    "title": "NIOS Mathematics Chapter 2",
+    "publisher": "NIOS",
+    "year": 2023,
+    "license": "CC-BY"
+  }
+}

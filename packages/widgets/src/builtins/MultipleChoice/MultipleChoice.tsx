@@ -551,6 +551,87 @@ function MultipleChoiceComponent(props: {
 }
 
 const MultipleChoiceWidget: WidgetDefinitionV2 = {
+  guide: {
+    oneLiner: 'Ask questions and let students pick from a list of answers.',
+    whatItDoes:
+      'The Multiple Choice widget presents a question with several answer options. Students select their answer and get immediate feedback. It supports both single-question and multi-question modes with a progress indicator.',
+    whenToUse: [
+      'Checking knowledge after a lesson',
+      'Quick formative assessments',
+      'Practice quizzes with multiple questions',
+      'Pre-assessment before starting a topic',
+    ],
+    setupSteps: [
+      'Add an Exercise node to your lesson',
+      'Set the widget to "core.multiple-choice"',
+      'Create your questions — each needs a question text, options array, and correctIndex',
+      'Set interactive to true so students can answer',
+      'Optionally add explanations for each question',
+    ],
+    configFields: [
+      {
+        name: 'questions',
+        type: 'array of objects',
+        required: true,
+        description:
+          'List of questions. Each has question (string), options (string array), correctIndex (number), and optional explanation (string).',
+      },
+      {
+        name: 'questions[].question',
+        type: 'string',
+        required: true,
+        description: 'The question text shown to the student.',
+      },
+      {
+        name: 'questions[].options',
+        type: 'array of strings',
+        required: true,
+        description: 'The answer choices. Must have at least 2 options.',
+      },
+      {
+        name: 'questions[].correctIndex',
+        type: 'number',
+        required: true,
+        description: 'The index (starting from 0) of the correct option.',
+      },
+      {
+        name: 'questions[].explanation',
+        type: 'string',
+        required: false,
+        description: 'Shown after the student answers, explaining why the answer is correct.',
+      },
+      {
+        name: 'interactive',
+        type: 'boolean',
+        required: false,
+        description:
+          'When false, shows correct answers without requiring student input. Defaults to false.',
+      },
+    ],
+    exampleJson:
+      '{\n  "type": "exercise",\n  "title": "Solar System Quiz",\n  "widget": "core.multiple-choice",\n  "config": {\n    "questions": [\n      {\n        "question": "What is the largest planet in our solar system?",\n        "options": ["Earth", "Mars", "Jupiter", "Saturn"],\n        "correctIndex": 2\n      },\n      {\n        "question": "How many continents are there on Earth?",\n        "options": ["5", "6", "7", "8"],\n        "correctIndex": 2\n      },\n      {\n        "question": "What gas do plants absorb from the air?",\n        "options": ["Oxygen", "Carbon dioxide", "Nitrogen", "Hydrogen"],\n        "correctIndex": 1,\n        "explanation": "Plants use carbon dioxide during photosynthesis to make their food."\n      }\n    ],\n    "interactive": true\n  }\n}',
+    tips: [
+      'Keep questions short and focused on one concept',
+      'Write plausible but clearly incorrect distractors',
+      'Include 3-5 questions per exercise for younger students',
+      'Add explanations to reinforce learning after each answer',
+    ],
+    sidebarPosition: 1,
+    relatedWidgets: [
+      {
+        id: 'core.fill-blank',
+        name: 'Fill in the Blank',
+        domain: 'core',
+        slug: 'fill-blank',
+      },
+      {
+        id: 'core.story-question',
+        name: 'Story Question',
+        domain: 'core',
+        slug: 'story-question',
+      },
+    ],
+  },
   id: 'core.multiple-choice',
   name: 'Multiple Choice',
   description: 'Select the correct answer from a list of options',

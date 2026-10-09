@@ -1,4 +1,4 @@
-import type { WidgetCatalogEntry } from './widget-catalog-source.js';
+import type { WidgetCatalogEntry } from '@open-edu/schemas';
 
 export function renderWidgetGuideMarkdown(entry: WidgetCatalogEntry): string {
   const g = entry.guide;

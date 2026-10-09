@@ -450,6 +450,86 @@ function StoryQuestionComponent(props: {
 }
 
 const StoryQuestionWidget: WidgetDefinitionV2 = {
+  guide: {
+    oneLiner: 'Present a story or passage followed by comprehension questions.',
+    whatItDoes:
+      'The Story Question widget shows a short story or reading passage, followed by multiple-choice comprehension questions. Students read the passage and answer questions about key details, inferences, and main ideas.',
+    whenToUse: [
+      'Reading comprehension practice',
+      'Assessing understanding of a passage',
+      'Making inferences from text',
+      'Identifying main ideas and supporting details',
+    ],
+    setupSteps: [
+      'Add an Exercise node to your lesson',
+      'Set the widget to "core.story-question"',
+      'Write your scenario — a short story or passage',
+      'Create 2-4 comprehension questions with options and correctIndex',
+      'Set interactive to true',
+    ],
+    configFields: [
+      {
+        name: 'scenario',
+        type: 'string',
+        required: true,
+        description: 'The story or reading passage text. Keep under 150 words for best results.',
+      },
+      {
+        name: 'questions',
+        type: 'array of objects',
+        required: true,
+        description:
+          'List of questions. Each has question (string), options (string array), and correctIndex (number).',
+      },
+      {
+        name: 'questions[].question',
+        type: 'string',
+        required: true,
+        description: 'A comprehension question about the story.',
+      },
+      {
+        name: 'questions[].options',
+        type: 'array of strings',
+        required: true,
+        description: 'Answer choices. Must have at least 2.',
+      },
+      {
+        name: 'questions[].correctIndex',
+        type: 'number',
+        required: true,
+        description: 'The index (starting from 0) of the correct option.',
+      },
+      {
+        name: 'interactive',
+        type: 'boolean',
+        required: false,
+        description: 'When false, shows answers without requiring input. Defaults to false.',
+      },
+    ],
+    exampleJson:
+      '{\n  "type": "exercise",\n  "title": "Maya\'s Sunflower",\n  "widget": "core.story-question",\n  "config": {\n    "scenario": "Maya planted a sunflower seed in a small pot. She placed it by the window and watered it every morning. After one week, a tiny green sprout appeared. Maya was excited! She continued watering it and gave it plant food. After two months, the sunflower grew taller than Maya. It had a big yellow flower on top that followed the sun across the sky.",\n    "questions": [\n      {\n        "question": "Where did Maya place the pot?",\n        "options": ["In the garden", "By the window", "On the roof", "In the closet"],\n        "correctIndex": 1\n      },\n      {\n        "question": "How often did Maya water the seed?",\n        "options": ["Every morning", "Once a week", "Every day after school", "Only on weekends"],\n        "correctIndex": 0\n      }\n    ],\n    "interactive": true\n  }\n}',
+    tips: [
+      'Keep stories under 150 words for focused comprehension',
+      'Include a clear beginning, middle, and end',
+      'Make distractors plausible but clearly contradicted by the text',
+      'Use 2-4 questions per story for younger students',
+    ],
+    sidebarPosition: 7,
+    relatedWidgets: [
+      {
+        id: 'core.multiple-choice',
+        name: 'Multiple Choice',
+        domain: 'core',
+        slug: 'multiple-choice',
+      },
+      {
+        id: 'core.fill-blank',
+        name: 'Fill in the Blank',
+        domain: 'core',
+        slug: 'fill-blank',
+      },
+    ],
+  },
   id: 'core.story-question',
   name: 'Story Question',
   description: 'Reading comprehension with story-based questions',

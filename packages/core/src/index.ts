@@ -30,6 +30,8 @@ export { loadManifest, parseManifest } from './manifest.js';
 export { loadWorkflow, parseWorkflow } from './workflow.js';
 export { loadRewards, parseRewards } from './rewards.js';
 export { loadCards, parseCards } from './cards.js';
+export { parseProvenance } from './provenance.js';
+export type { ReproductionRecord } from '@open-edu/schemas';
 export { loadNodes } from './nodes-fs.js';
 export { loadNodesFromSource, parseNodeContent } from './nodes.js';
 export {

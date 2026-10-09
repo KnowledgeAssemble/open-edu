@@ -8,37 +8,8 @@ import type {
 } from './types';
 import { WidgetRegistrationError } from './types';
 import { WIDGET_ALIAS_MAP } from './domains';
-import {
-  multipleChoicePractice,
-  visualCounting,
-  multipleChoice,
-  matching,
-  dragDrop,
-  sequencing,
-  fillBlank,
-  storyQuestion,
-  realWorld,
-  fractionVisual,
-  placeValueChart,
-  gridArea,
-  chartReader,
-  clockTime,
-  measurementScale,
-  callout,
-  imageCompare,
-  hotspot,
-  timeline,
-  labelDiagram,
-  imageLabel,
-  audioPlayer,
-  videoPlayer,
-  flashcard,
-  processDiagram,
-  numberLine,
-  socialMap,
-  processExplainer,
-  timer,
-} from './builtins';
+import { BUILTIN_WIDGETS } from './builtin-roster';
+import { matchesIntentTagFilters } from './search-filter';
 
 export function createWidgetRegistry(): WidgetRegistry {
   const widgets = new Map<string, WidgetDefinition>();
@@ -105,7 +76,15 @@ export function createWidgetRegistry(): WidgetRegistry {
 
         if (filters.domain && v2.domain !== filters.domain) return false;
 
-        if (filters.intent && !v2.learningIntents?.includes(filters.intent)) return false;
+        const intents = filters.intents ?? (filters.intent ? [filters.intent] : undefined);
+        if (
+          !matchesIntentTagFilters(
+            { intents: v2.learningIntents, subjectTags: v2.ai?.subjectTags },
+            { intents, subjectTags: filters.subjectTags },
+          )
+        ) {
+          return false;
+        }
 
         if (filters.difficulty && v2.ai?.difficulty !== filters.difficulty) return false;
 
@@ -142,38 +121,6 @@ export function createWidgetRegistry(): WidgetRegistry {
     },
   };
 }
-
-const BUILTIN_WIDGETS: WidgetDefinition[] = [
-  multipleChoicePractice,
-  visualCounting,
-  multipleChoice,
-  matching,
-  dragDrop,
-  sequencing,
-  fillBlank,
-  storyQuestion,
-  realWorld,
-  fractionVisual,
-  placeValueChart,
-  gridArea,
-  chartReader,
-  clockTime,
-  measurementScale,
-  callout,
-  imageCompare,
-  hotspot,
-  timeline,
-  labelDiagram,
-  imageLabel,
-  audioPlayer,
-  videoPlayer,
-  flashcard,
-  processDiagram,
-  numberLine,
-  socialMap,
-  processExplainer,
-  timer,
-];
 
 export function registerAllBuiltins(registry: WidgetRegistry): void {
   for (const widget of BUILTIN_WIDGETS) {

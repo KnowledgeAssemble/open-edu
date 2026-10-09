@@ -634,6 +634,85 @@ function ImageCompareComponent(props: {
 }
 
 const ImageCompareWidget: WidgetDefinitionV2 = {
+  guide: {
+    oneLiner: 'Compare two images side by side with an interactive slider.',
+    whatItDoes:
+      'The Image Compare widget places two images side by side (or overlapped with a draggable slider) so students can compare differences and similarities. It supports a slider mode for before/after comparisons and a side-by-side mode.',
+    whenToUse: [
+      'Comparing healthy vs diseased plants or organisms',
+      'Before and after science experiments',
+      'Visual differences and similarities activities',
+      'Art comparison and analysis',
+    ],
+    setupSteps: [
+      'Add an Exercise node to your lesson',
+      'Set the widget to "core.image-compare"',
+      'Provide paths to your left and right images',
+      'Add labels and alt text for each image',
+      'Choose slider or side-by-side mode',
+    ],
+    configFields: [
+      {
+        name: 'leftImage',
+        type: 'string',
+        required: true,
+        description: 'Path to the left (or top) image file.',
+      },
+      {
+        name: 'rightImage',
+        type: 'string',
+        required: true,
+        description: 'Path to the right (or bottom) image file.',
+      },
+      {
+        name: 'leftLabel',
+        type: 'string',
+        required: false,
+        description: 'Label shown under the left image.',
+      },
+      {
+        name: 'rightLabel',
+        type: 'string',
+        required: false,
+        description: 'Label shown under the right image.',
+      },
+      {
+        name: 'mode',
+        type: 'string',
+        required: false,
+        description: '"slider" for draggable overlay or "side-by-side". Defaults to "slider".',
+      },
+      {
+        name: 'altText',
+        type: 'object',
+        required: false,
+        description: 'Accessibility descriptions: `{ left: string, right: string }`.',
+      },
+      {
+        name: 'caption',
+        type: 'string',
+        required: false,
+        description: 'Caption text shown below both images.',
+      },
+    ],
+    exampleJson:
+      '{\n  "type": "exercise",\n  "title": "Leaf Comparison",\n  "widget": "core.image-compare",\n  "config": {\n    "leftImage": "assets/images/healthy-leaf.png",\n    "rightImage": "assets/images/diseased-leaf.png",\n    "leftLabel": "Healthy Leaf",\n    "rightLabel": "Diseased Leaf",\n    "mode": "slider",\n    "altText": {\n      "left": "A healthy green leaf",\n      "right": "A diseased leaf with brown spots"\n    },\n    "caption": "Compare a healthy leaf with a diseased one"\n  }\n}',
+    tips: [
+      'Use clear, high-contrast images for best comparison results',
+      'Always provide alt text for accessibility',
+      'The slider mode works best for before/after comparisons',
+      'Image files should be placed in your lesson package directory',
+    ],
+    sidebarPosition: 11,
+    relatedWidgets: [
+      {
+        id: 'core.hotspot',
+        name: 'Hotspot',
+        domain: 'core',
+        slug: 'hotspot',
+      },
+    ],
+  },
   id: 'core.image-compare',
   version: '1.0.0',
   schema: imageCompareSchema,

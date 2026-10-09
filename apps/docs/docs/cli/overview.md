@@ -25,6 +25,17 @@ edu validate ./my-package
 edu validate --verify-integrity ./my-package
 ```
 
+### Pack Validate
+
+Validate a pack directory (manifest, concepts, curriculum, prerequisites):
+
+```bash
+edu pack validate ./examples/packs/knowledge/openedu-fractions
+edu pack validate ./examples/packs/curriculum/nios-math-level-a
+```
+
+Reports structured diagnostics (`CODE: message`) on failure — for example `PACK_MANIFEST_MISSING` or `CURRICULUM_PREREQ_UNKNOWN`. Packs are the curriculum/knowledge inputs that ground Studio AI drafts; see [Packs](../packs.md).
+
 ### Build
 
 Build a package for distribution with manifest metadata:

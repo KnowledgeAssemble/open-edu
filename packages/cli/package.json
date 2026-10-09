@@ -33,6 +33,7 @@
     "@open-edu/dev-server": "workspace:*",
     "@open-edu/logger": "workspace:*",
     "@open-edu/oep-distribution": "workspace:^",
+    "@open-edu/packs": "workspace:*",
     "@open-edu/schemas": "workspace:^",
     "@open-edu/telemetry": "workspace:*",
     "commander": "^12.0.0",

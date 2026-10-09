@@ -1,20 +1,25 @@
 #!/usr/bin/env node
 /**
- * Generates per-widget documentation pages from the guide field in
- * widget-catalog-source.ts. Writes markdown to apps/docs/docs/widget-library/.
+ * Generates per-widget documentation pages from the guide field on the built-in
+ * widget roster (builtin-roster.ts → catalog-gen.ts). Writes markdown to
+ * apps/docs/docs/widget-library/.
  *
  * Run: pnpm --filter @open-edu/widgets generate:widget-docs
  */
 import { existsSync, mkdirSync, readdirSync, unlinkSync, writeFileSync } from 'node:fs';
 import { resolve, dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import prettier from 'prettier';
 import { renderWidgetGuideMarkdown } from '../src/guide-markdown.ts';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-const { WIDGET_CATALOG_ENTRIES } = await import('../src/widget-catalog-source.ts');
+const { BUILTIN_WIDGETS } = await import('../src/builtin-roster.ts');
+const { toWidgetCatalogEntries } = await import('../src/catalog-gen.ts');
 
-const entriesWithGuide = WIDGET_CATALOG_ENTRIES.filter((e) => !e.deprecated && e.guide);
+const entriesWithGuide = toWidgetCatalogEntries(BUILTIN_WIDGETS).filter(
+  (e) => !e.deprecated && e.guide,
+);
 
 const outputBaseDir = resolve(__dirname, '../../../apps/docs/docs/widget-library');
 
@@ -37,7 +42,8 @@ for (const entry of entriesWithGuide) {
   const md = `---\nsidebar_position: ${g.sidebarPosition}\n---\n\n` + body;
   const filename = entry.id.split('.').slice(1).join('-') + '.md';
   const filePath = join(outputBaseDir, entry.domain!, filename);
-  writeFileSync(filePath, md, 'utf-8');
+  const formatted = await prettier.format(md, { parser: 'markdown', printWidth: 100 });
+  writeFileSync(filePath, formatted, 'utf-8');
 }
 
 console.log(`Generated ${entriesWithGuide.length} widget doc pages → ${outputBaseDir}`);

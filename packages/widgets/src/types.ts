@@ -49,8 +49,10 @@ export interface WidgetDefinitionV2 extends WidgetDefinition {
   status: 'stable' | 'experimental' | 'deprecated';
   deprecated?: boolean;
   replacement?: string;
+  guide?: WidgetGuideData;
 }
 
+import type { WidgetGuideData } from '@open-edu/schemas';
 import type { RemoteWidgetManifest } from '@open-edu/schemas';
 
 export type { RemoteWidgetManifest };
@@ -64,7 +66,12 @@ export interface RemoteWidgetRegistration {
 export interface WidgetSearchFilters {
   query?: string;
   domain?: string;
+  /** @deprecated use `intents` (all-of). Treated as `intents: [intent]`. */
   intent?: LearningIntent;
+  /** All-of: a widget must declare every listed intent. */
+  intents?: LearningIntent[];
+  /** Any-of: a widget must declare at least one of the listed subjectTags. */
+  subjectTags?: string[];
   difficulty?: DifficultyLevel;
   status?: WidgetDefinitionV2['status'];
   capability?: keyof WidgetCapabilities;

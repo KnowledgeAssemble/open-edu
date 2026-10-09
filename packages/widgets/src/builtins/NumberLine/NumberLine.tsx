@@ -244,6 +244,110 @@ function NumberLineComponent(props: {
 }
 
 const NumberLineWidget: WidgetDefinitionV2 = {
+  guide: {
+    oneLiner: 'Explore numbers, fractions, and operations on an interactive number line.',
+    whatItDoes:
+      'The Number Line widget displays an interactive number line where students can place values, compare positions, and explore number relationships. It supports integers, decimals, and fractions with customizable ranges and markers.',
+    whenToUse: [
+      'Teaching number sense and counting',
+      'Visualizing addition and subtraction',
+      'Comparing numbers and fractions',
+      'Understanding negative numbers',
+    ],
+    setupSteps: [
+      'Add an Exercise node to your lesson',
+      'Set the widget to "math.number-line"',
+      'Set the min and max values for the line',
+      'Set the step size between marks',
+      'Optionally add a target value or markers',
+    ],
+    configFields: [
+      {
+        name: 'min',
+        type: 'number',
+        required: true,
+        description: 'The lowest number on the line.',
+      },
+      {
+        name: 'max',
+        type: 'number',
+        required: true,
+        description: 'The highest number on the line.',
+      },
+      {
+        name: 'step',
+        type: 'number',
+        required: true,
+        description: 'The spacing between marks. Use 1 for integers.',
+      },
+      {
+        name: 'target',
+        type: 'number',
+        required: false,
+        description: 'A specific value students should locate on the line.',
+      },
+      {
+        name: 'mode',
+        type: 'string',
+        required: false,
+        description: '"integers" (default) or "decimals" for fractional values.',
+      },
+      {
+        name: 'markers',
+        type: 'array of objects',
+        required: false,
+        description:
+          'Highlighted markers. Each has value (number), label (string), and optional color (CSS variable).',
+      },
+      {
+        name: 'showLabels',
+        type: 'boolean',
+        required: false,
+        description: 'Show number labels on the line. Defaults to true.',
+      },
+      {
+        name: 'showGrid',
+        type: 'boolean',
+        required: false,
+        description: 'Show vertical grid lines at marks. Defaults to false.',
+      },
+      {
+        name: 'tolerance',
+        type: 'number',
+        required: false,
+        description: 'How close the student needs to be to the target. Defaults to 0.5.',
+      },
+      {
+        name: 'interactive',
+        type: 'boolean',
+        required: false,
+        description: 'When false, shows a static number line. Defaults to false.',
+      },
+    ],
+    exampleJson:
+      '{\n  "type": "exercise",\n  "title": "Number Line Explorer",\n  "widget": "math.number-line",\n  "config": {\n    "min": -10,\n    "max": 10,\n    "step": 1,\n    "target": 3.5,\n    "markers": [\n      { "value": -5, "label": "-5" },\n      { "value": 0, "label": "0" },\n      { "value": 7, "label": "7" }\n    ],\n    "showLabels": true,\n    "showGrid": true,\n    "mode": "decimals",\n    "tolerance": 0.5,\n    "interactive": false\n  }\n}',
+    tips: [
+      'Start with positive integers only for early learners',
+      'Add markers to highlight important reference points',
+      'Use decimals mode only after students master integers',
+      'Clear tick marks help students count between labeled numbers',
+    ],
+    sidebarPosition: 6,
+    relatedWidgets: [
+      {
+        id: 'math.fraction-visual',
+        name: 'Fraction Visual',
+        domain: 'math',
+        slug: 'fraction-visual',
+      },
+      {
+        id: 'math.place-value-chart',
+        name: 'Place Value Chart',
+        domain: 'math',
+        slug: 'place-value-chart',
+      },
+    ],
+  },
   id: 'math.number-line',
   name: 'Number Line',
   description: 'Visual number reasoning with interactive number line',

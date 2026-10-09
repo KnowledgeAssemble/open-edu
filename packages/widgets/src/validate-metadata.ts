@@ -66,6 +66,13 @@ export function validateWidgetMetadata(widget: WidgetDefinitionV2): MetadataVali
 
   if (
     widget.status === 'stable' &&
+    (!widget.capabilities || Object.keys(widget.capabilities).length === 0)
+  ) {
+    warnings.push('Stable widgets should declare capabilities');
+  }
+
+  if (
+    widget.status === 'stable' &&
     widget.capabilities &&
     !widget.capabilities.supportsObserveMode
   ) {

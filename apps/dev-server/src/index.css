@@ -121,3 +121,7 @@ body,
     transition: none;
   }
 }
+
+.open-edu-interactive {
+  @apply h-full w-full;
+}

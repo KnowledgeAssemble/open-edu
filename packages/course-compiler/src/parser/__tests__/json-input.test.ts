@@ -254,3 +254,38 @@ describe('parseCourseSpecJSON', () => {
     expect(lesson.quiz!.questions).toHaveLength(1);
   });
 });
+
+describe('parseCourseSpecJSON metadata.language', () => {
+  function specWithLanguage(language?: string) {
+    return JSON.stringify({
+      format: 'openedu-course-spec',
+      version: 1,
+      generatedAt: '2026-10-08T00:00:00.000Z',
+      metadata: {
+        title: 'Test',
+        description: 'Test course',
+        generated: true,
+        ...(language ? { language } : {}),
+      },
+      lessons: [
+        {
+          id: 'lesson-101',
+          title: 'Test Lesson',
+          objectives: ['Learn'],
+          coreIdea: 'Core idea',
+          activities: [],
+        },
+      ],
+    });
+  }
+
+  it('propagates an explicit metadata.language', () => {
+    const { model } = parseCourseSpecJSON(specWithLanguage('hi'));
+    expect(model?.metadata.language).toBe('hi');
+  });
+
+  it('defaults metadata.language to en when absent', () => {
+    const { model } = parseCourseSpecJSON(specWithLanguage());
+    expect(model?.metadata.language).toBe('en');
+  });
+});

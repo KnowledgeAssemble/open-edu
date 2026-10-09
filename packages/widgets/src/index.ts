@@ -1,11 +1,10 @@
 export const WIDGETS_VERSION = '0.2.0';
 
-export { WIDGET_CATALOG_ENTRIES } from './widget-catalog-source.js';
 export type {
   WidgetCatalogEntry,
   WidgetGuideData,
   WidgetGuideConfigField,
-} from './widget-catalog-source.js';
+} from '@open-edu/schemas';
 
 export { renderWidgetGuideMarkdown } from './guide-markdown.js';
 
@@ -100,12 +99,13 @@ export {
 export { validateWidgetMetadata } from './validate-metadata.js';
 export type { MetadataValidationResult } from './validate-metadata.js';
 
+export { LearningIntent } from './metadata/learning-intents.js';
 export {
-  LearningIntent,
+  BUILTIN_WIDGETS,
   WIDGET_LEARNING_INTENTS,
   getLearningIntentsForWidget,
   getWidgetsByLearningIntent,
-} from './metadata/learning-intents.js';
+} from './builtin-roster.js';
 
 export { assertPersistableState } from './state-migration.js';
 

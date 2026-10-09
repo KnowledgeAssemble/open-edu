@@ -238,6 +238,67 @@ function RealWorldComponent(props: {
 }
 
 const RealWorldWidget: WidgetDefinitionV2 = {
+  guide: {
+    oneLiner: 'Apply learning to real-world scenarios with open-ended reflection.',
+    whatItDoes:
+      'The Real World widget presents a practical scenario and asks students to apply what they learned. Students write their answer and explanation in a text area. It is designed for open-ended thinking rather than right/wrong answers.',
+    whenToUse: [
+      'Applying math concepts to everyday situations',
+      'Connecting science to real-world examples',
+      'Reflective writing after a lesson',
+      'Problem-solving with real-life context',
+    ],
+    setupSteps: [
+      'Add an Exercise node to your lesson',
+      'Set the widget to "core.real-world"',
+      'Write a relatable, age-appropriate scenario',
+      'Add a task description — what should the student do?',
+      'Optionally provide an expected answer for comparison',
+    ],
+    configFields: [
+      {
+        name: 'scenario',
+        type: 'string',
+        required: true,
+        description: 'A real-world situation the student should think about.',
+      },
+      {
+        name: 'taskDescription',
+        type: 'string',
+        required: false,
+        description: 'Specific instructions for what the student should do or answer.',
+      },
+      {
+        name: 'description',
+        type: 'string',
+        required: false,
+        description: 'Additional context or instructions.',
+      },
+      {
+        name: 'interactive',
+        type: 'boolean',
+        required: false,
+        description: 'When false, shows the scenario in read-only mode. Defaults to false.',
+      },
+    ],
+    exampleJson:
+      '{\n  "type": "exercise",\n  "title": "Baking Cookies",\n  "widget": "core.real-world",\n  "config": {\n    "scenario": "You are helping to bake cookies for a school event. The recipe calls for 2 cups of flour, 1 cup of sugar, and 1 teaspoon of vanilla. You need to triple the recipe to make enough for everyone.",\n    "taskDescription": "How many cups of flour will you need in total? Write your answer and explain your thinking.",\n    "interactive": true\n  }\n}',
+    tips: [
+      'Use relatable, age-appropriate everyday scenarios',
+      'Keep the scenario brief and concrete',
+      'Encourage students to explain their reasoning, not just give an answer',
+      'This widget works well at the end of a lesson for application',
+    ],
+    sidebarPosition: 8,
+    relatedWidgets: [
+      {
+        id: 'core.story-question',
+        name: 'Story Question',
+        domain: 'core',
+        slug: 'story-question',
+      },
+    ],
+  },
   id: 'core.real-world',
   name: 'Real World',
   description: 'Apply learning to real-world scenarios and contexts',

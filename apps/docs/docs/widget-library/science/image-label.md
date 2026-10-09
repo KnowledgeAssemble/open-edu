@@ -4,7 +4,7 @@ sidebar_position: 2
 
 # Image Label
 
-**Widget ID:** `science.image-label` | **Domain:** science | **Status:** experimental
+**Widget ID:** `science.image-label` | **Domain:** science | **Status:** stable
 
 > Tap regions of an image to identify and learn about them.
 

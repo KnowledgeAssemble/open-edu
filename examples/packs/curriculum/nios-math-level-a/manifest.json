@@ -1,0 +1,12 @@
+{
+  "format": "openedu-pack",
+  "formatVersion": 1,
+  "type": "curriculum",
+  "id": "nios-math-level-a",
+  "version": "0.1.0",
+  "name": "NIOS Mathematics Level A",
+  "description": "Foundational mathematics units.",
+  "author": "OpenEdu",
+  "language": "en",
+  "requires": ["openedu-fractions"]
+}

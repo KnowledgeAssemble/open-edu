@@ -393,6 +393,85 @@ function PictographChart({
 }
 
 const ChartReaderWidget: WidgetDefinitionV2 = {
+  guide: {
+    oneLiner: 'Display bar charts and graphs for students to read and interpret.',
+    whatItDoes:
+      'The Chart Reader widget shows a bar chart or pictograph that students read to answer questions. It displays clear, color-coded data visualizations with labels and values. Students interpret the chart and answer what they see.',
+    whenToUse: [
+      'Teaching data interpretation and graph reading',
+      'Comparing quantities visually',
+      'Introducing bar charts and pictographs',
+      'Math lessons on data handling',
+    ],
+    setupSteps: [
+      'Add an Exercise node to your lesson',
+      'Set the widget to "core.chart-reader"',
+      'Provide your data as label-value pairs',
+      'Choose a chart type: bar or pictograph',
+      'Add a description or question about the chart',
+    ],
+    configFields: [
+      {
+        name: 'data',
+        type: 'array of objects',
+        required: true,
+        description: 'Chart data. Each entry has label (string) and value (number).',
+      },
+      {
+        name: 'type',
+        type: 'string',
+        required: false,
+        description: 'Chart type: "bar" (default) or a pictograph variant.',
+      },
+      {
+        name: 'title',
+        type: 'string',
+        required: false,
+        description: 'A title displayed above the chart.',
+      },
+      {
+        name: 'description',
+        type: 'string',
+        required: false,
+        description: 'Question or instructions about the chart.',
+      },
+      {
+        name: 'showValues',
+        type: 'boolean',
+        required: false,
+        description: 'Show numeric values on the chart bars. Defaults to true.',
+      },
+      {
+        name: 'correctLabel',
+        type: 'string',
+        required: false,
+        description: 'The label of the correct answer for quiz mode.',
+      },
+      {
+        name: 'interactive',
+        type: 'boolean',
+        required: false,
+        description: 'When false, shows the chart for observation only. Defaults to false.',
+      },
+    ],
+    exampleJson:
+      '{\n  "type": "exercise",\n  "title": "Favorite Sports",\n  "widget": "core.chart-reader",\n  "config": {\n    "description": "Which sport is the most popular based on the chart?",\n    "type": "bar",\n    "data": [\n      { "label": "Cricket", "value": 12 },\n      { "label": "Football", "value": 8 },\n      { "label": "Hockey", "value": 5 }\n    ],\n    "title": "Favorite Sports",\n    "showValues": true,\n    "correctLabel": "Cricket",\n    "interactive": true\n  }\n}',
+    tips: [
+      'Use 3-6 data items with clearly distinguishable values',
+      'Keep labels short and readable',
+      'Use values that are easy to compare visually',
+      'Add a title to give context to the chart',
+    ],
+    sidebarPosition: 9,
+    relatedWidgets: [
+      {
+        id: 'math.grid-area',
+        name: 'Grid Area',
+        domain: 'math',
+        slug: 'grid-area',
+      },
+    ],
+  },
   id: 'core.chart-reader',
   name: 'Chart Reader',
   description: 'Read and interpret charts, graphs, and data visualizations',

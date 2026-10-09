@@ -39,6 +39,7 @@
     "@open-edu/llm-config": "workspace:^",
     "@open-edu/logger": "workspace:*",
     "@open-edu/oep-distribution": "workspace:^",
+    "@open-edu/packs": "workspace:*",
     "@open-edu/rewards": "workspace:*",
     "@open-edu/runtime": "workspace:*",
     "@open-edu/schemas": "workspace:*",

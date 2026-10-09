@@ -1,4 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest';
+import widgetCatalogData from '@open-edu/core/widget-catalog-data';
+import { renderWidgetGuideMarkdown } from '@open-edu/widgets/guide';
 import {
   listCuratedWidgets,
   getCuratedWidget,
@@ -42,6 +44,14 @@ describe('curatedCatalog', () => {
     const markdown = getCuratedWidget('core.multiple-choice')?.guideMarkdown ?? '';
     expect(markdown.length).toBeGreaterThan(0);
     expect(markdown).toContain('Multiple Choice');
+  });
+
+  it('renders guideMarkdown through the shared @open-edu/widgets/guide renderer', () => {
+    const entry = widgetCatalogData.find((w) => w.id === 'core.multiple-choice');
+    expect(entry).toBeDefined();
+    expect(getCuratedWidget('core.multiple-choice')?.guideMarkdown).toBe(
+      renderWidgetGuideMarkdown(entry!),
+    );
   });
 
   it('marks built-in widgets as source builtin, native trustTier, version 0.1.0', () => {

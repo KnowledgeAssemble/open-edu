@@ -481,6 +481,87 @@ function HotspotComponent(props: {
 }
 
 const HotspotWidget: WidgetDefinitionV2 = {
+  guide: {
+    oneLiner: 'Tap or click specific regions of an image to answer questions.',
+    whatItDoes:
+      'The Hotspot widget overlays clickable regions on an image. Students tap the correct area to answer a question — like "Find Maharashtra on this map." It supports single-select and multi-select modes with visual feedback for correct and incorrect taps.',
+    whenToUse: [
+      'Identifying locations on maps',
+      'Pointing out parts of a diagram or image',
+      'Geography and anatomy exercises',
+      'Interactive image exploration',
+    ],
+    setupSteps: [
+      'Add an Exercise node to your lesson',
+      'Set the widget to "core.hotspot"',
+      'Provide an image path and alt text',
+      'Define hotspot regions — each needs id, x/y position (0-100), radius, and label',
+      'Mark the correct hotspot with correct: true',
+    ],
+    configFields: [
+      {
+        name: 'image',
+        type: 'string',
+        required: true,
+        description: 'Path to the image file.',
+      },
+      {
+        name: 'altText',
+        type: 'string',
+        required: true,
+        description: 'Description of the image for screen readers.',
+      },
+      {
+        name: 'hotspots',
+        type: 'array of objects',
+        required: true,
+        description:
+          'Clickable regions. Each has id (string), x (number 0-100), y (number 0-100), radius (number, default 5), label (string), correct (boolean), and optional description (string).',
+      },
+      {
+        name: 'mode',
+        type: 'string',
+        required: false,
+        description:
+          '"single" for one correct hotspot (default) or "multiple" for selecting several.',
+      },
+      {
+        name: 'hints',
+        type: 'array of strings',
+        required: false,
+        description: 'Progressive hints to help students find the right region.',
+      },
+      {
+        name: 'interactive',
+        type: 'boolean',
+        required: false,
+        description: 'When false, highlights hotspots for observation. Defaults to false.',
+      },
+    ],
+    exampleJson:
+      '{\n  "type": "exercise",\n  "title": "Identify Maharashtra",\n  "widget": "core.hotspot",\n  "config": {\n    "image": "assets/images/india-map.png",\n    "altText": "Map of India with states highlighted",\n    "hotspots": [\n      { "id": "mh", "x": 45, "y": 55, "radius": 8, "label": "Maharashtra", "correct": true, "description": "Capital: Mumbai" },\n      { "id": "ka", "x": 42, "y": 65, "radius": 8, "label": "Karnataka", "correct": false },\n      { "id": "dl", "x": 48, "y": 30, "radius": 8, "label": "Delhi", "correct": false }\n    ],\n    "mode": "single",\n    "interactive": true,\n    "hints": ["Look for the western coastal state"]\n  }\n}',
+    tips: [
+      'Define clear, non-overlapping hotspot regions',
+      'Use x/y values between 0-100 for responsive positioning',
+      'Provide descriptive labels and alt text for each region',
+      'Add hints for students who struggle to find the right area',
+    ],
+    sidebarPosition: 12,
+    relatedWidgets: [
+      {
+        id: 'science.image-label',
+        name: 'Image Label',
+        domain: 'science',
+        slug: 'image-label',
+      },
+      {
+        id: 'science.label-diagram',
+        name: 'Label Diagram',
+        domain: 'science',
+        slug: 'label-diagram',
+      },
+    ],
+  },
   id: 'core.hotspot',
   version: '1.0.0',
   schema: hotspotSchema,

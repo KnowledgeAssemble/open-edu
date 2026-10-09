@@ -84,6 +84,11 @@ Version: 1; Format: `openedu-course-spec`
       "required": false
     },
     {
+      "name": "language",
+      "type": "string",
+      "required": false
+    },
+    {
       "name": "generated",
       "type": "boolean",
       "required": true
@@ -212,6 +217,7 @@ Version: 1; Format: `openedu-course-spec`
 - Exactly one activity per lesson with "type": "quiz"; its questions are multiple-choice with exactly 4 options each.
 - Use measurable objectives, never "understand", "know", or "learn".
 - Widget ids must be chosen from the AVAILABLE WIDGETS table in this prompt (canonical catalog ids); never "open-edu.\*".
+- "metadata.language" must be one of the supported locales ("en", "hi", "or"); use the locale requested by the author, defaulting to "en".
 - All required fields above must be present and non-empty.
 
 ## Authored Prompt View
@@ -223,7 +229,7 @@ Output ONLY a single JSON object that conforms EXACTLY to the derived course-spe
 
 Top-level keys: "format", "version", "generatedAt", "metadata", "lessons"
 
-metadata: { title: string (required), description: string (required), author: string (optional), version: string (optional), keywords: string[] (optional), targetAudience: string (optional), audience: string (optional), accessibility: string[] (optional), difficulty: enum(beginner | intermediate | advanced) (optional), estimatedHours: number (optional), lastUpdated: string (optional), generated: boolean (required) }
+metadata: { title: string (required), description: string (required), author: string (optional), version: string (optional), keywords: string[] (optional), targetAudience: string (optional), audience: string (optional), accessibility: string[] (optional), difficulty: enum(beginner | intermediate | advanced) (optional), estimatedHours: number (optional), lastUpdated: string (optional), language: string (optional), generated: boolean (required) }
 lesson: { id: string (required), title: string (required), objectives: string[] (required), coreIdea: string (required), examples: string[] (optional), misconceptions: string[] (optional), estimatedMinutes: number (optional), activities: object[] (required) }
 activity: { step: enum(observe | guided_practice | independent_practice | mastery_check | positive_completion) (required), order: number (required), type: enum(reading | exercise | quiz | reflection | widget) (required), description: string (required), instructions: string (optional), examples: string[] (optional), questions: object[] (optional), widgetId: string (optional), widgetConfig: record (optional) }
 question: { question: string (required), options: string[] (required), correctIndex: number (required) }
@@ -275,5 +281,6 @@ RULES:
 - Exactly one activity per lesson with "type": "quiz"; its questions are multiple-choice with exactly 4 options each.
 - Use measurable objectives, never "understand", "know", or "learn".
 - Widget ids must be chosen from the AVAILABLE WIDGETS table in this prompt (canonical catalog ids); never "open-edu.*".
+- "metadata.language" must be one of the supported locales ("en", "hi", "or"); use the locale requested by the author, defaulting to "en".
 - All required fields above must be present and non-empty.
 ```

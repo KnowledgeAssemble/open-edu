@@ -4,7 +4,7 @@ sidebar_position: 12
 
 # Hotspot
 
-**Widget ID:** `core.hotspot` | **Domain:** core | **Status:** experimental
+**Widget ID:** `core.hotspot` | **Domain:** core | **Status:** stable
 
 > Tap or click specific regions of an image to answer questions.
 

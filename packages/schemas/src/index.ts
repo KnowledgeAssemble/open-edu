@@ -78,6 +78,17 @@ export type { RemoteWidgetManifest } from './widget-manifest.js';
 export { WidgetReferenceSchema } from './widget-reference.js';
 export type { WidgetReference } from './widget-reference.js';
 
+export { WIDGET_ALIAS_MAP } from './widget-alias.js';
+
+export type {
+  WidgetCatalogEntry,
+  WidgetGuideData,
+  WidgetGuideConfigField,
+} from './widget-catalog.js';
+
+export { ReproductionNodeSchema, ReproductionRecordSchema } from './provenance.js';
+export type { ReproductionRecord } from './provenance.js';
+
 export {
   WidgetManifestSchema,
   WidgetCapabilitySchema,

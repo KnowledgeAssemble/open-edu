@@ -4,7 +4,7 @@ sidebar_position: 11
 
 # Image Compare
 
-**Widget ID:** `core.image-compare` | **Domain:** core | **Status:** experimental
+**Widget ID:** `core.image-compare` | **Domain:** core | **Status:** stable
 
 > Compare two images side by side with an interactive slider.
 

@@ -19,7 +19,13 @@ import type { CourseDraftResult } from './ai/types.js';
 export interface BrowserAiGateway {
   getStatus(): Promise<AiStatus>;
   generateDraft(
-    input: { notes?: string; spec?: string; specExt?: '.json' | '.md' },
+    input: {
+      notes?: string;
+      spec?: string;
+      specExt?: '.json' | '.md';
+      authoring?: unknown;
+      locale?: string;
+    },
     courseId: string,
   ): Promise<CourseDraftResult & { files: StoredStudioFile[] }>;
   listDrafts(courseId: string): Promise<StoredStudioDraft[]>;
@@ -102,6 +108,11 @@ export function createBrowserAiGateway(): BrowserAiGateway {
       const data = (await parseEventlessJson(response)) as CourseDraftResult & {
         files?: GatewayGeneratedFile[];
       };
+      if (data.success === false) {
+        return { ...data, draftId: data.draftId || '', files: [] } as CourseDraftResult & {
+          files: StoredStudioFile[];
+        };
+      }
       const draft = await finalizeDraft(data, courseId);
       return {
         ...data,

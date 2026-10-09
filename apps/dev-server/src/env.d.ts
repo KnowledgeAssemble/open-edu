@@ -4,6 +4,11 @@ declare module 'virtual:open-edu-package' {
   export const bundleData: LoadedBundle | null;
 }
 
+declare module 'virtual:open-edu-packs' {
+  import type { LoadedPack } from '@open-edu/packs';
+  export const packData: LoadedPack[] | null;
+}
+
 declare const OPEN_EDU_STUDIO_ASSISTANT: string | undefined;
 
 interface ImportMetaEnv {

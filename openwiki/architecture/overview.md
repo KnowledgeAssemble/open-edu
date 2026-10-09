@@ -81,7 +81,7 @@ Translates events into reward receipts, including badge delivery and card progre
 
 ### `@open-edu/widgets`
 
-Provides the widget registry and built-in widgets used by content nodes and runtime renderers. The registry supports alias resolution, domain namespacing, structured search, metadata validation, and catalog generation for LLM prompts. Recent changes moved the canonical widget metadata into `packages/widgets/src/widget-catalog-source.ts` and added the SVG explorer widget family, while `@open-edu/core` now reads the generated catalog data at runtime. The `WidgetResolver` handles policy-aware resolution of native, sandboxed, and trusted-remote widgets, with an IndexedDB-backed artifact cache and deterministic fallback transforms.
+Provides the widget registry and built-in widgets used by content nodes and runtime renderers. The registry supports alias resolution, domain namespacing, structured search, metadata validation, and catalog generation for LLM prompts. Recent changes moved the canonical widget metadata onto the built-in `WidgetDefinitionV2` definitions, collected by `packages/widgets/src/builtin-roster.ts` and mapped to catalog entries by `packages/widgets/src/catalog-gen.ts`, and added the SVG explorer widget family, while `@open-edu/core` now reads the generated catalog data at runtime. The `WidgetResolver` handles policy-aware resolution of native, sandboxed, and trusted-remote widgets, with an IndexedDB-backed artifact cache and deterministic fallback transforms.
 
 ### `@open-edu/widget-sdk`
 
@@ -91,11 +91,22 @@ Framework-agnostic protocol SDK for community widgets. Provides message validato
 
 Compiles course-spec Markdown or JSON into validated package structures.
 
+### `@open-edu/packs`
+
+OpenEdu Pack System: declarative knowledge and curriculum **packs** that ground Studio AI drafting without paralleling the package model.
+
+- **Schemas + loader** — `PackManifestSchema`, `ConceptSchema`, `CurriculumSchema`, and `loadPacksDir` / `loadPackDirectory` (filesystem via the `@open-edu/packs/loader` subpath; structured `PackValidationError` diagnostics).
+- **Authoring context** — `AuthoringContextSchema` with hard bounds on every array/field, and `resolveAuthoringContext()` that scopes a curriculum/unit selection into objectives, concepts, activities, and provenance under a character budget (retrieval, not loading).
+- **Blueprint validation** — `validateBlueprint()` checks compiled output: widget IDs must exist in the context (`invalid-blueprint` rejection), and objective intents must be covered by the emitted activities or reported as `capabilityGaps[]`.
+- **Consumers** — `apps/dev-server` (Studio selection UX, AI draft generate/commit, `provenance.json`), `packages/companion` (`CourseDraftResult.capabilityGaps`), `packages/cli` (`edu pack validate`).
+
+See the [Packs domain guide](../domain/packs.md) for the full reference.
+
 ### `@open-edu/dev-server` — OpenEdu Course Creator Studio
 
 The `apps/dev-server` app (package `@open-edu/dev-server`) evolved from the original local Vite preview + inspector + file editor into **OpenEdu Course Creator Studio**, one unified authoring shell over the same on-disk packages (there is **no mode toggle**):
 
-- **Home / Library** — start from a template, AI draft, or recent course; manage a local course library (open, duplicate, rename, archive, import folder); compose **units** (2–5 courses → canonical `bundle.json`).
+- **Home / Library** — start from a template, AI draft, or recent course; manage a local course library (open, duplicate, rename, archive, import folder); compose **units** (2–5 courses → canonical `bundle.json`). The Create Course flow starts with **curriculum pack selection** (curriculum → unit → learner → language) that grounds AI drafts in pack objectives and concepts, with `listPacks` / `getPackDetail` / `setAuthoringSelection` on the `StudioAPI`.
 - **Outline** (default tab) — the course spine: add lessons/quizzes/practice, reorder → linear workflow. **Files** tab — the package file tree with Markdown/JSON editors, manifest/workflow/rewards/cards editors, and asset upload. The Author Assistant stays pinned in the right rail across both tabs.
 - **Preview** — the full learner runtime with a collapsed-by-default **DevTools drawer** (Telemetry / Logs / Rewards / A11y; Bundle only when bundle data is present).
 - **Share** — Ready check → `.oep` export → learner-install instructions / classroom note.
@@ -209,13 +220,14 @@ The repo is organized to keep learning content portable and the runtime platform
 - routing and mastery: `packages/workflow`
 - rendering and theme behavior: `packages/runtime`
 - visual structure and reusable UI: `packages/design-system`
-- widget ID resolution and catalog generation: `packages/widgets/src/domains.ts`, `packages/widgets/src/widget-catalog-source.ts`, `packages/widgets/scripts/generate-catalog.ts`, plus SVG explorer components under `packages/widgets/src/svg-explorer`
+- widget ID resolution and catalog generation: `packages/widgets/src/domains.ts`, `packages/widgets/src/builtin-roster.ts` (roster), `packages/widgets/src/catalog-gen.ts` (entry mapping), `packages/widgets/scripts/generate-catalog.ts`, plus SVG explorer components under `packages/widgets/src/svg-explorer`
 - IndexedDB persistence: `packages/storage` (6 stores: courses, progress, badges, cards, search-indexes, preferences)
 - PWA infrastructure (install, update, connectivity): `packages/pwa-core`
 - service worker and caching config: `apps/learner/vite.config.ts`
 - internationalization and locale management: `packages/i18n`
 - course distribution (`.oep` build, install, catalog, updates): `packages/oep-distribution`
 - course registry (catalog build, release validation, schema generation): `packages/registry` + the `openedu-library` repo
+- packs (curriculum/knowledge format, authoring context, blueprint validation, capability gaps): `packages/packs/src/` and `apps/dev-server/src/studio/packs/` — see the [Packs domain guide](../domain/packs.md)
 - Pipili AI companion (chat, hints, context mapping): `packages/ai-companion/src/pipili/` and `apps/learner/src/pipili/`
 - Course Creator Studio authoring (unified shell, Outline | Files tabs, StudioAPI, AI drafts + Author Assistant, library/units, share/export): `apps/dev-server/src/studio/` and `apps/dev-server/vite.config.ts`
 - end-user navigation and app composition: `apps/learner`

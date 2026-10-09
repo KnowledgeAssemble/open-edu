@@ -238,6 +238,97 @@ function VideoPlayerComponent(props: {
 }
 
 const VideoPlayerWidget: WidgetDefinitionV2 = {
+  guide: {
+    oneLiner: 'Play video clips with chapters, captions, and transcripts.',
+    whatItDoes:
+      'The Video Player widget plays a video file with full playback controls. Students can watch educational videos with chapter navigation, timed captions, and a transcript panel. It supports fullscreen mode and keyboard shortcuts.',
+    whenToUse: [
+      'Showing educational animations and demonstrations',
+      'Video-based science experiments',
+      'Visual explanations of complex concepts',
+      'Documentary-style content for older students',
+    ],
+    setupSteps: [
+      'Add an Exercise node to your lesson',
+      'Set the widget to "core.video-player"',
+      'Provide the path to your video file',
+      'Optionally add a poster image for the thumbnail',
+      'Add chapters for easy navigation, captions for accessibility',
+    ],
+    configFields: [
+      {
+        name: 'video',
+        type: 'string',
+        required: true,
+        description: 'Path to the video file (MP4 recommended).',
+      },
+      {
+        name: 'title',
+        type: 'string',
+        required: false,
+        description: 'Title shown above the video player.',
+      },
+      {
+        name: 'poster',
+        type: 'string',
+        required: false,
+        description: 'Path to a poster image shown before the video plays.',
+      },
+      {
+        name: 'chapters',
+        type: 'array of objects',
+        required: false,
+        description: 'Video chapters. Each has time (number, seconds) and title (string).',
+      },
+      {
+        name: 'captions',
+        type: 'array of objects',
+        required: false,
+        description: 'Timed captions. Each has start (number), end (number), and text (string).',
+      },
+      {
+        name: 'transcript',
+        type: 'string',
+        required: false,
+        description: 'Full text transcript of the video content.',
+      },
+      {
+        name: 'showTranscript',
+        type: 'boolean',
+        required: false,
+        description: 'Show the transcript panel. Defaults to true.',
+      },
+      {
+        name: 'allowFullscreen',
+        type: 'boolean',
+        required: false,
+        description: 'Allow fullscreen mode. Defaults to true.',
+      },
+      {
+        name: 'interactive',
+        type: 'boolean',
+        required: false,
+        description: 'When false, plays in observe mode. Defaults to false.',
+      },
+    ],
+    exampleJson:
+      '{\n  "type": "exercise",\n  "title": "Photosynthesis Video",\n  "widget": "core.video-player",\n  "config": {\n    "video": "assets/video/photosynthesis.mp4",\n    "title": "Understanding Photosynthesis",\n    "chapters": [\n      { "time": 0, "title": "Introduction" },\n      { "time": 60, "title": "Light Reactions" },\n      { "time": 180, "title": "Calvin Cycle" }\n    ],\n    "showTranscript": true,\n    "interactive": false\n  }\n}',
+    tips: [
+      'Use short, focused clips (1-5 minutes)',
+      'Always add captions for accessibility',
+      'Chapters help students navigate to specific sections',
+      'Video files should be placed in your lesson package directory',
+    ],
+    sidebarPosition: 15,
+    relatedWidgets: [
+      {
+        id: 'core.audio-player',
+        name: 'Audio Player',
+        domain: 'core',
+        slug: 'audio-player',
+      },
+    ],
+  },
   id: 'core.video-player',
   name: 'Video Player',
   description: 'Educational video playback with chapters, captions, and transcript',

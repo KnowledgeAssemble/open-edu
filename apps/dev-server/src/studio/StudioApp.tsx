@@ -49,6 +49,9 @@ import { StudioRightSidebar } from './components/StudioRightSidebar.js';
 
 import { getProfile } from '@open-edu/domain-guidance/profiles';
 import type { LearnerProfile } from './ai/context.js';
+import type { AuthoringContext, PackDiagnostic } from '@open-edu/packs';
+import { nextAuthoringScope, restoreInitialAuthoring } from './authoringScope.js';
+import { readStoredPackAuthoring, writeStoredPackAuthoring } from './studioSession.js';
 
 export function StudioApp({
   loadedPackage,
@@ -83,6 +86,36 @@ export function StudioApp({
   const [filesDirty, setFilesDirty] = useState(false);
   const [pendingNavigate, setPendingNavigate] = useState<StudioView | null>(null);
   const [outlineTab, setOutlineTab] = useState<OutlineTab>(() => readOutlineTab());
+  const courseKey = loadedPackage ? `${loadedPackage.rootDir}::${loadedPackage.manifest.id}` : null;
+  const [initialAuthoring] = useState(() =>
+    restoreInitialAuthoring(readStoredPackAuthoring(), courseKey),
+  );
+  const [authoring, setAuthoring] = useState<AuthoringContext | null>(initialAuthoring.authoring);
+  const [authoringWarnings, setAuthoringWarnings] = useState<PackDiagnostic[]>(
+    initialAuthoring.warnings,
+  );
+  const [capabilityGaps, setCapabilityGaps] = useState<string[]>([]);
+  const prevCourseKeyRef = useRef<string | null>(courseKey);
+  useEffect(() => {
+    const previousCourseKey = prevCourseKeyRef.current;
+    prevCourseKeyRef.current = courseKey;
+    const action = nextAuthoringScope({
+      previousCourseKey,
+      nextCourseKey: courseKey,
+      hasPendingSelection: Boolean(readStoredPackAuthoring()?.pending),
+    });
+    if (action === 'keep') {
+      const stored = readStoredPackAuthoring();
+      if (courseKey !== null && stored?.pending) {
+        writeStoredPackAuthoring({ ...stored, courseKey, pending: false });
+      }
+      return;
+    }
+    setAuthoring(null);
+    setAuthoringWarnings([]);
+    setCapabilityGaps([]);
+    writeStoredPackAuthoring(null);
+  }, [courseKey]);
   const filesPaneRef = useRef<PackageSourcePaneHandle>(null);
 
   const handleTargetLearnerKindChange = useCallback((kind: string) => {
@@ -233,6 +266,11 @@ export function StudioApp({
           courseTitle={loadedPackage?.manifest.title}
           onOpenCurrent={() => handleNavigate('outline')}
           onOpenLibrary={() => handleNavigate('library')}
+          onAuthoring={(context, warnings) => {
+            setAuthoring(context);
+            setAuthoringWarnings(warnings);
+            writeStoredPackAuthoring({ courseKey: null, pending: true, context, warnings });
+          }}
         />
       );
       break;
@@ -254,6 +292,9 @@ export function StudioApp({
             writeOutlineTab(next);
           }}
           paneRef={filesPaneRef}
+          authoring={authoring}
+          authoringWarnings={authoringWarnings}
+          capabilityGaps={capabilityGaps}
         />
       );
       break;
@@ -321,6 +362,7 @@ export function StudioApp({
             setOutlineRevision((rev) => rev + 1);
             handleNavigate('outline');
           }}
+          onCapabilityGaps={setCapabilityGaps}
         >
           <StudioContextBridge
             view={view}
@@ -329,6 +371,7 @@ export function StudioApp({
             aiAvailable={aiAvailable}
             locale="en"
             learner={learner}
+            authoring={authoring}
             api={api}
           />
           <StudioAppInner

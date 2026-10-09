@@ -630,6 +630,103 @@ function MeasurementScaleComponent(props: {
 }
 
 const MeasurementScaleWidget: WidgetDefinitionV2 = {
+  guide: {
+    oneLiner: 'Read and set measurements on interactive rulers, thermometers, and scales.',
+    whatItDoes:
+      'The Measurement Scale widget shows a labeled scale — like a ruler, thermometer, or measuring jug. Students read the current measurement or set it to a target value. It supports various units and scale types.',
+    whenToUse: [
+      'Teaching how to read a ruler or thermometer',
+      'Measuring length, temperature, or volume',
+      'Comparing measurements',
+      'Practicing estimation before precise measurement',
+    ],
+    setupSteps: [
+      'Add an Exercise node to your lesson',
+      'Set the widget to "math.measurement-scale"',
+      'Choose the scale type: ruler, thermometer, or measuring jug',
+      'Set the min, max, and step values',
+      'Set a target value for students to match',
+    ],
+    configFields: [
+      {
+        name: 'type',
+        type: 'string',
+        required: true,
+        description: 'Scale type: "ruler", "thermometer", or "jug".',
+      },
+      {
+        name: 'min',
+        type: 'number',
+        required: true,
+        description: 'Minimum value on the scale.',
+      },
+      {
+        name: 'max',
+        type: 'number',
+        required: true,
+        description: 'Maximum value on the scale.',
+      },
+      {
+        name: 'step',
+        type: 'number',
+        required: true,
+        description: 'The increment between markings. Use 1 for whole numbers.',
+      },
+      {
+        name: 'unit',
+        type: 'string',
+        required: false,
+        description: 'Unit label, e.g. "cm", "°C", "ml".',
+      },
+      {
+        name: 'targetValue',
+        type: 'number',
+        required: false,
+        description: 'The target measurement students should set.',
+      },
+      {
+        name: 'description',
+        type: 'string',
+        required: false,
+        description: 'Instructions for the student.',
+      },
+      {
+        name: 'showReading',
+        type: 'boolean',
+        required: false,
+        description: 'Show the numeric reading. Defaults to true.',
+      },
+      {
+        name: 'showLabels',
+        type: 'boolean',
+        required: false,
+        description: 'Show scale labels. Defaults to true.',
+      },
+      {
+        name: 'interactive',
+        type: 'boolean',
+        required: false,
+        description: 'When false, shows a static measurement. Defaults to false.',
+      },
+    ],
+    exampleJson:
+      '{\n  "type": "exercise",\n  "title": "Thermometer Reading",\n  "widget": "math.measurement-scale",\n  "config": {\n    "description": "Set the thermometer to 25 degrees Celsius.",\n    "type": "thermometer",\n    "min": -10,\n    "max": 50,\n    "step": 1,\n    "unit": "°C",\n    "targetValue": 25,\n    "showReading": true,\n    "showLabels": true,\n    "interactive": true\n  }\n}',
+    tips: [
+      'Use whole-number measurements for early learners',
+      'Include both metric and imperial options when relevant',
+      'Explain where to start measuring from (e.g. the 0 mark, not the 1 mark)',
+      'Show labeled markings clearly for readability',
+    ],
+    sidebarPosition: 5,
+    relatedWidgets: [
+      {
+        id: 'math.clock-time',
+        name: 'Clock Time',
+        domain: 'math',
+        slug: 'clock-time',
+      },
+    ],
+  },
   id: 'math.measurement-scale',
   name: 'Measurement Scale',
   description: 'Measure lengths, weights, and volumes using interactive scales',

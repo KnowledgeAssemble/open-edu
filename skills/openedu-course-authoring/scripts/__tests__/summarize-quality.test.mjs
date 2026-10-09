@@ -608,7 +608,7 @@ describe('summarize-quality (profile-scoped checks)', () => {
       writeSpec(dir, 'autism');
       writeFileSync(join(dir, 'lesson-blueprints.json'), JSON.stringify(makeAutismBlueprint()));
       const catalog = [
-        { id: 'math.fraction-visual', name: 'Fraction Visual', status: 'stable', capabilities: ['Animation'] },
+        { id: 'math.fraction-visual', name: 'Fraction Visual', status: 'stable', capabilities: ['supportsAnimation'] },
       ];
       const result = summarizeQuality(dir, makeValidationResult(), {
         preloadedCatalog: catalog,
@@ -626,7 +626,7 @@ describe('summarize-quality (profile-scoped checks)', () => {
       writeSpec(dir, 'autism');
       writeFileSync(join(dir, 'lesson-blueprints.json'), JSON.stringify(makeAutismBlueprint()));
       const catalog = [
-        { id: 'math.fraction-visual', name: 'Fraction Visual', status: 'stable', capabilities: ['Animation'], accessibility: ['ReducedMotion'] },
+        { id: 'math.fraction-visual', name: 'Fraction Visual', status: 'stable', capabilities: ['supportsAnimation'], accessibility: ['reducedMotion'] },
       ];
       const result = summarizeQuality(dir, makeValidationResult(), {
         preloadedCatalog: catalog,

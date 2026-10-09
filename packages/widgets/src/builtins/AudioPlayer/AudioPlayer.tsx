@@ -245,6 +245,98 @@ function AudioPlayerComponent(props: {
 }
 
 const AudioPlayerWidget: WidgetDefinitionV2 = {
+  guide: {
+    oneLiner: 'Play audio clips with transcripts, captions, and comprehension support.',
+    whatItDoes:
+      'The Audio Player widget plays an audio file with playback controls. Students can listen to spoken content, read along with a transcript, and view timed captions. It supports bookmarks, waveform visualization, and keyboard controls.',
+    whenToUse: [
+      'Language learning with pronunciation examples',
+      'Listening comprehension exercises',
+      'Audio-based instructions for young learners',
+      'Storytelling and read-aloud activities',
+    ],
+    setupSteps: [
+      'Add an Exercise node to your lesson',
+      'Set the widget to "core.audio-player"',
+      'Provide the path to your audio file',
+      'Add a title and optional description',
+      'Optionally provide a transcript and timed captions',
+    ],
+    configFields: [
+      {
+        name: 'audio',
+        type: 'string',
+        required: true,
+        description: 'Path to the audio file (MP3, WAV, etc.).',
+      },
+      {
+        name: 'title',
+        type: 'string',
+        required: false,
+        description: 'Title shown above the audio player.',
+      },
+      {
+        name: 'description',
+        type: 'string',
+        required: false,
+        description: 'Additional context about the audio.',
+      },
+      {
+        name: 'transcript',
+        type: 'string',
+        required: false,
+        description: 'Full text transcript of the audio content.',
+      },
+      {
+        name: 'captions',
+        type: 'array of objects',
+        required: false,
+        description:
+          'Timed captions. Each has start (number, seconds), end (number, seconds), and text (string).',
+      },
+      {
+        name: 'showTranscript',
+        type: 'boolean',
+        required: false,
+        description: 'Show the transcript panel. Defaults to true.',
+      },
+      {
+        name: 'waveform',
+        type: 'boolean',
+        required: false,
+        description: 'Show audio waveform visualization. Defaults to false.',
+      },
+      {
+        name: 'bookmarks',
+        type: 'boolean',
+        required: false,
+        description: 'Allow students to bookmark positions. Defaults to true.',
+      },
+      {
+        name: 'interactive',
+        type: 'boolean',
+        required: false,
+        description: 'When false, plays in observe mode. Defaults to false.',
+      },
+    ],
+    exampleJson:
+      '{\n  "type": "exercise",\n  "title": "Listen to Bird Sounds",\n  "widget": "core.audio-player",\n  "config": {\n    "audio": "assets/audio/birdsong.mp3",\n    "title": "Morning Birdsong",\n    "description": "Listen to the sounds of birds in the morning.",\n    "transcript": "You can hear a variety of bird calls: chirping, whistling, and trilling.",\n    "captions": [\n      { "start": 0, "end": 3, "text": "Chirping sounds begin" },\n      { "start": 3, "end": 6, "text": "Whistling melodies join in" },\n      { "start": 6, "end": 10, "text": "A chorus of bird calls" }\n    ],\n    "showTranscript": true,\n    "bookmarks": true,\n    "interactive": false\n  }\n}',
+    tips: [
+      'Always provide a transcript for accessibility',
+      'Use short audio clips (1-3 minutes) for focused listening',
+      'Timed captions help students follow along',
+      'Audio files should be placed in your lesson package directory',
+    ],
+    sidebarPosition: 14,
+    relatedWidgets: [
+      {
+        id: 'core.video-player',
+        name: 'Video Player',
+        domain: 'core',
+        slug: 'video-player',
+      },
+    ],
+  },
   id: 'core.audio-player',
   name: 'Audio Player',
   description: 'Play educational audio with transcript, captions, and bookmarks',

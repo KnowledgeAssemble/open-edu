@@ -198,8 +198,10 @@ The widget catalog provides structured Markdown descriptions of all available wi
 ### Data Flow
 
 ```
-packages/widgets/src/widget-catalog-source.ts   ← Canonical source (pure data, no React imports)
+packages/widgets/src/builtins/**            ← Canonical per-widget WidgetDefinitionV2 (metadata + guide)
         │
+        ▼  packages/widgets/src/builtin-roster.ts (BUILTIN_WIDGETS)
+        │  packages/widgets/src/catalog-gen.ts (toWidgetCatalogEntries)
         ▼  pnpm --filter @open-edu/widgets generate:catalog
 packages/core/src/widget-catalog-data.json      ← Auto-generated JSON (28 entries)
         │
@@ -212,17 +214,17 @@ edu generate --prompt                           ← Injects catalog into agent p
 
 ### Canonical Source
 
-Widget metadata lives in `packages/widgets/src/widget-catalog-source.ts` as a `WIDGET_CATALOG_ENTRIES` array. This is the single source of truth — pure data with no React or design-system dependencies.
+Widget metadata lives on each `WidgetDefinitionV2` in `packages/widgets/src/builtins/**`. `packages/widgets/src/builtin-roster.ts` collects the built-in roster (`BUILTIN_WIDGETS`), and `packages/widgets/src/catalog-gen.ts` derives the JSON catalog entries. This is the single source of truth — the generated JSON is never hand-edited.
 
 ### Generating the Catalog JSON
 
-After modifying `widget-catalog-source.ts`, regenerate the JSON:
+After modifying a builtin definition or the roster, regenerate the JSON:
 
 ```bash
 pnpm --filter @open-edu/widgets generate:catalog
 ```
 
-This runs `packages/widgets/scripts/generate-catalog.ts`, which imports `WIDGET_CATALOG_ENTRIES` and writes `packages/core/src/widget-catalog-data.json`.
+This runs `packages/widgets/scripts/generate-catalog.ts`, which reads `BUILTIN_WIDGETS` through `toWidgetCatalogEntries` and writes `packages/core/src/widget-catalog-data.json`.
 
 ### Programmatic Usage
 

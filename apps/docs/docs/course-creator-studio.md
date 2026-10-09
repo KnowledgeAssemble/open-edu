@@ -26,6 +26,12 @@ The Studio has a **single shell — there is no mode toggle.** Set `OPEN_EDU_STU
 OPEN_EDU_STUDIO_WORKSPACE=~/courses edu dev ./examples/hello-world
 ```
 
+Packs are read from `OPEN_EDU_PACKS_DIR` (defaults to `packs/`). For the bundled fixtures:
+
+```bash
+OPEN_EDU_PACKS_DIR=examples/packs edu dev ./examples/hello-world
+```
+
 Navigation: **Home · Library · Outline · Preview · Share**.
 
 ## Home / Library
@@ -66,6 +72,17 @@ Preview runs the full learner runtime (`@open-edu/runtime`). **DevTools** live i
 Runs a **Ready check** (title, at least one activity, quiz correct answers, lesson headings, package validity), exports a `.oep` file, and shows copyable "how students open it" instructions plus a classroom note.
 
 > **Bundles:** authoring and previewing multi-module bundles is **not supported** in the Studio today (unsupported empty state). Bundle _preview_ inside the Studio comes with a later story; the learner app remains the bundle surface.
+
+## Curriculum Packs
+
+The Create Course flow starts with **pack selection** — pick a curriculum pack, unit, learner profile, and language, then **Create Learning Experience**. The selection resolves to a bounded **authoring context** (objectives, concepts, required intents, provenance) that grounds the Author Assistant and AI drafts (`listPacks` / `getPackDetail` / `setAuthoringSelection` on the `StudioAPI`).
+
+- **Grounding** — AI drafts trace back to pack objectives and concepts; a read-only pack panel shows the concepts, source documents, and selection diagnostics in scope.
+- **Capability gaps** — if a generated draft cannot cover an objective's required intents with available activities, the gaps are reported after generate/commit instead of being silently dropped.
+- **Validation** — blueprint checks run at draft **and** commit time: unknown widgets reject the draft (`invalid-blueprint`), unreadable specs return `spec-invalid`, and a failed commit never leaves a half-created course behind.
+- **Provenance** — committed courses record `provenance.json` (pack lineage + matched lesson objectives) for reproduction and review.
+
+See [Packs](./packs.md) for the package reference and `docs/OPENEDU-PACK-SYSTEM.md` for the design document. In browser mode, packs are bundled at build time (`OPEN_EDU_PACKS_DIR` → `virtual:open-edu-packs`), so adding a pack requires a rebuild.
 
 ## Author Assistant
 

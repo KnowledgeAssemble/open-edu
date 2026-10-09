@@ -631,6 +631,80 @@ function ImageLabelComponent(props: {
 }
 
 const ImageLabelWidget: WidgetDefinitionV2 = {
+  guide: {
+    oneLiner: 'Tap regions of an image to identify and learn about them.',
+    whatItDoes:
+      'The Image Label widget shows an image with tappable regions. When students tap a region, they see its name and description. It works like an interactive exploration tool — great for planetariums, maps, and detailed diagrams.',
+    whenToUse: [
+      'Interactive exploration of labeled images',
+      'Solar system and astronomy activities',
+      'Museum-style exhibit exploration',
+      'Teaching visual identification skills',
+    ],
+    setupSteps: [
+      'Add an Exercise node to your lesson',
+      'Set the widget to "science.image-label"',
+      'Provide an image with alt text',
+      'Define clickable regions with x/y positions, titles, and descriptions',
+      'Optionally add hints for guided exploration',
+    ],
+    configFields: [
+      {
+        name: 'image',
+        type: 'string',
+        required: true,
+        description: 'Path to the image file.',
+      },
+      {
+        name: 'altText',
+        type: 'string',
+        required: true,
+        description: 'Description of the image for screen readers.',
+      },
+      {
+        name: 'regions',
+        type: 'array of objects',
+        required: true,
+        description:
+          'Clickable regions. Each has id (string), title (string), description (string), x (number), y (number), and optional tooltip (string).',
+      },
+      {
+        name: 'hints',
+        type: 'array of strings',
+        required: false,
+        description: 'Hints to guide exploration.',
+      },
+      {
+        name: 'interactive',
+        type: 'boolean',
+        required: false,
+        description: 'When false, regions can still be tapped for information. Defaults to false.',
+      },
+    ],
+    exampleJson:
+      '{\n  "type": "exercise",\n  "title": "Solar System Explorer",\n  "widget": "science.image-label",\n  "config": {\n    "image": "assets/images/solar-system.png",\n    "altText": "Solar system with clickable planets",\n    "regions": [\n      { "id": "mars", "title": "Mars", "description": "The Red Planet, 4th from the Sun", "x": 45, "y": 30, "tooltip": "Click to learn about Mars" },\n      { "id": "jupiter", "title": "Jupiter", "description": "Largest planet in our solar system", "x": 60, "y": 50, "tooltip": "Click to learn about Jupiter" },\n      { "id": "earth", "title": "Earth", "description": "Our home planet, 3rd from the Sun", "x": 35, "y": 40, "tooltip": "Click to learn about Earth" }\n    ],\n    "interactive": false,\n    "hints": ["Mars is known as the Red Planet", "Jupiter is the largest planet"]\n  }\n}',
+    tips: [
+      'Use images with clearly defined, non-overlapping regions',
+      'Keep region descriptions concise — 1-2 sentences',
+      'Position regions carefully to cover the right part of the image',
+      'Add tooltips to hint at what students will discover',
+    ],
+    sidebarPosition: 2,
+    relatedWidgets: [
+      {
+        id: 'science.label-diagram',
+        name: 'Label Diagram',
+        domain: 'science',
+        slug: 'label-diagram',
+      },
+      {
+        id: 'core.hotspot',
+        name: 'Hotspot',
+        domain: 'core',
+        slug: 'hotspot',
+      },
+    ],
+  },
   id: 'science.image-label',
   version: '0.2.0',
   schema: imageLabelSchema,

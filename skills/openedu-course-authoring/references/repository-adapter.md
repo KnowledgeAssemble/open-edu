@@ -99,7 +99,7 @@ After building, re-run discovery to confirm executable status. Without `dist/cli
 
 ## Catalog Discovery
 
-The widget catalog is generated from `packages/widgets/src/widget-catalog-source.ts` into `packages/core/src/widget-catalog-data.json`. If the JSON file exists, parse it. If not, suggest running:
+The widget catalog is generated from the built-in widget roster `packages/widgets/src/builtin-roster.ts` (`BUILTIN_WIDGETS`, `WIDGET_LEARNING_INTENTS`); each definition is mapped to a catalog entry by `packages/widgets/src/catalog-gen.ts` (`toCatalogEntry`). The generator script `packages/widgets/scripts/generate-catalog.ts` writes `packages/core/src/widget-catalog-data.json`. If the JSON file exists, parse it. If not, suggest running:
 
 ```bash
 pnpm --filter @open-edu/widgets generate:catalog

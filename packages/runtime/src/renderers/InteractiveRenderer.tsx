@@ -211,7 +211,7 @@ export function InteractiveRenderer({
       )}
       {(node.title ?? node.prompt) && (
         <div className="mb-4">
-          {node.title && <h2 className="text-heading-sm text-foreground">{node.title}</h2>}
+          {node.title && <h2 className="text-body-ui font-semibold text-foreground">{node.title}</h2>}
           {node.prompt && <p className="text-body-ui text-muted-foreground mt-1">{node.prompt}</p>}
         </div>
       )}

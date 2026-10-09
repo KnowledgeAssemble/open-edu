@@ -393,6 +393,86 @@ function FillBlankComponent(props: {
 }
 
 const FillBlankWidget: WidgetDefinitionV2 = {
+  guide: {
+    oneLiner: 'Complete sentences by filling in missing words or numbers.',
+    whatItDoes:
+      'The Fill in the Blank widget shows a sentence or paragraph with gaps. Students fill in the blanks by selecting from a dropdown of options or typing their answer. It supports both select mode (choose from options) and type mode (write the answer).',
+    whenToUse: [
+      'Vocabulary practice and word recall',
+      'Cloze reading comprehension exercises',
+      'Math equation completion',
+      'Grammar exercises (verb tenses, prepositions)',
+    ],
+    setupSteps: [
+      'Add an Exercise node to your lesson',
+      'Set the widget to "core.fill-blank"',
+      'Write your template text with ___ where blanks go',
+      'Define each blank with an id, position, and correct answer',
+      'Choose select mode (dropdown) or type mode (free text)',
+    ],
+    configFields: [
+      {
+        name: 'template',
+        type: 'string',
+        required: true,
+        description: 'The text with ___ placeholders for blanks. e.g. "Water ___ from the ground."',
+      },
+      {
+        name: 'blanks',
+        type: 'array of objects',
+        required: true,
+        description:
+          'Each blank definition. Has id (string), position (number), correctAnswer (string or number), and optional options array for select mode.',
+      },
+      {
+        name: 'mode',
+        type: 'string',
+        required: false,
+        description: '"select" for dropdown choices (default) or "type" for free text input.',
+      },
+      {
+        name: 'description',
+        type: 'string',
+        required: false,
+        description: 'Instructions shown above the activity.',
+      },
+      {
+        name: 'hints',
+        type: 'array of strings',
+        required: false,
+        description: 'Progressive hints for students who need help.',
+      },
+      {
+        name: 'interactive',
+        type: 'boolean',
+        required: false,
+        description: 'When false, shows filled blanks. Defaults to false.',
+      },
+    ],
+    exampleJson:
+      '{\n  "type": "exercise",\n  "title": "Water Cycle Sentences",\n  "widget": "core.fill-blank",\n  "config": {\n    "description": "Complete the sentences about the water cycle.",\n    "template": "Water ___ from the ground into the air. It forms ___ in the sky. Then it falls back down as ___.",\n    "blanks": [\n      { "id": "b1", "position": 0, "correctAnswer": "evaporates", "options": ["evaporates", "freezes", "sinks"] },\n      { "id": "b2", "position": 1, "correctAnswer": "clouds", "options": ["rocks", "clouds", "waves"] },\n      { "id": "b3", "position": 2, "correctAnswer": "rain", "options": ["rain", "sand", "wind"] }\n    ],\n    "mode": "select",\n    "interactive": true\n  }\n}',
+    tips: [
+      'Place blanks on key vocabulary or concepts, not filler words',
+      'Provide 3-5 options per blank in select mode',
+      'Make sure the sentence reads correctly when the right answer is filled in',
+      'Use type mode only for older students or simple single-word answers',
+    ],
+    sidebarPosition: 6,
+    relatedWidgets: [
+      {
+        id: 'core.multiple-choice',
+        name: 'Multiple Choice',
+        domain: 'core',
+        slug: 'multiple-choice',
+      },
+      {
+        id: 'core.story-question',
+        name: 'Story Question',
+        domain: 'core',
+        slug: 'story-question',
+      },
+    ],
+  },
   id: 'core.fill-blank',
   name: 'Fill in the Blank',
   description: 'Complete sentences or equations by filling in missing parts',

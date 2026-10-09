@@ -1,9 +1,10 @@
 import type { LoadedPackage, PackageFileSource } from './types.js';
-import type { Workflow, Rewards, CardDefinitions } from '@open-edu/schemas';
+import type { Workflow, Rewards, CardDefinitions, ReproductionRecord } from '@open-edu/schemas';
 import { parseManifest } from './manifest.js';
 import { parseWorkflow } from './workflow.js';
 import { parseRewards } from './rewards.js';
 import { parseCards } from './cards.js';
+import { parseProvenance } from './provenance.js';
 import { loadNodesFromSource } from './nodes.js';
 import { collectAssetsFromSource } from './asset-paths.js';
 import { EntryNodeNotFoundError, ManifestValidationError, WorkflowRouteError } from './errors.js';
@@ -57,10 +58,11 @@ export async function loadPackageFromFiles(
   }
   const manifest = parseManifest(TEXT_DECODER.decode(manifestBytes));
 
-  const [workflow, rewards, cards] = await Promise.all([
+  const [workflow, rewards, cards, provenance] = await Promise.all([
     parseOptional(source, 'workflow.json', parseWorkflow) as Promise<Workflow | null>,
     parseOptional(source, 'rewards.json', parseRewards) as Promise<Rewards | null>,
     parseOptional(source, 'cards.json', parseCards) as Promise<CardDefinitions | null>,
+    parseOptional(source, 'provenance.json', parseProvenance) as Promise<ReproductionRecord | null>,
   ]);
 
   const nodes = loadNodesFromSource(source);
@@ -133,6 +135,7 @@ export async function loadPackageFromFiles(
     workflow,
     rewards,
     cards,
+    provenance: provenance ?? undefined,
     nodes,
     assetPaths,
   };
