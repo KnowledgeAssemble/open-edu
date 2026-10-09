@@ -42,6 +42,7 @@ import {
   importCourseFolder,
 } from './src/studio/library/courseOps.js';
 import { createUnit, buildUnitOep } from './src/studio/library/unitBuilder.js';
+import { listPackWatchFiles } from './src/studio/packs/packWatchFiles.js';
 import type { ActivitySummary } from './src/studio/types.js';
 import {
   createWidgetRegistryMiddleware,
@@ -1463,17 +1464,7 @@ function eduPacksLoader(): Plugin {
       if (id === RESOLVED_PACKS_VIRTUAL_ID) {
         try {
           const packs = refresh();
-          for (const pack of packs) {
-            for (const file of [
-              'manifest.json',
-              'concepts.json',
-              'curriculum.json',
-              'sources.json',
-            ]) {
-              const fp = join(pack.dir, file);
-              if (existsSync(fp)) this.addWatchFile(fp);
-            }
-          }
+          for (const fp of listPackWatchFiles(packs)) this.addWatchFile(fp);
           const sanitized = packs.map((pack) => ({
             ...pack,
             dir: relative(workspaceRoot, pack.dir),
