@@ -1,6 +1,6 @@
 {
   "name": "@open-edu/companion",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "OpenEdu AI Companion contracts (types + Zod schemas)",
   "license": "MIT",
   "type": "module",

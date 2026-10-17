@@ -1,6 +1,6 @@
 {
   "name": "@open-edu/registry",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "GitHub-native course registry tooling for OpenEdu (catalog builder + release validation)",
   "license": "MIT",
   "type": "module",
