@@ -28,7 +28,7 @@
     "clean": "pnpm -r run clean",
     "changeset": "changeset",
     "changeset:version": "changeset version",
-    "release": "pnpm --filter @open-edu/schemas --filter @open-edu/packs --filter @open-edu/logger --filter @open-edu/oep-distribution --filter @open-edu/registry --filter @open-edu/pwa-core --filter @open-edu/storage build && changeset publish",
+    "release": "pnpm --filter @open-edu/schemas --filter @open-edu/packs --filter @open-edu/companion --filter @open-edu/logger --filter @open-edu/oep-distribution --filter @open-edu/registry --filter @open-edu/pwa-core --filter @open-edu/storage build && changeset publish",
     "test:e2e": "playwright test",
     "test:e2e:install": "playwright install chromium",
     "storybook": "pnpm --filter @open-edu/design-system storybook",
