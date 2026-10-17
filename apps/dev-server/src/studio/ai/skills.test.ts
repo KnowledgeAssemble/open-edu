@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest';
 import type { StudioContextSnapshot } from '@open-edu/companion/context';
 import { InMemorySkillRegistry } from './skillRegistry.js';
 import { learnerAdaptationSkill } from './skills/learner-adaptation.js';
+import { objectiveIntentSkill } from './skills/objective-intent.js';
 import { createSkillResolver } from './skills/resolveSkills.js';
 import { LearningIntent } from '@open-edu/widgets/intents';
 
@@ -87,5 +88,9 @@ describe('createSkillResolver', () => {
     expect(resolver.resolve(baseCtx)).not.toContainEqual(
       expect.objectContaining({ id: 'objective-intent' }),
     );
+  });
+
+  it('objective-intent declares item tools', () => {
+    expect(objectiveIntentSkill.tools).toEqual(['generate_course', 'generate_item', 'edit_item']);
   });
 });

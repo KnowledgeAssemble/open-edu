@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import type { CompanionTool, ToolContext } from '@open-edu/companion';
+import type { AuthoringContext } from '@open-edu/packs';
 import { draftActivity, generateCourseDraftTool } from './tools.js';
 import type { ToolCallRequest, GenerateCourseRequest } from './tools.js';
 
@@ -29,6 +30,7 @@ export const editItemInput = z.object({
 interface GenerationToolContext extends ToolContext {
   packageDir?: string;
   completeText?: (prompt: string) => Promise<string>;
+  authoring?: AuthoringContext;
 }
 
 function packageDirFrom(ctx: GenerationToolContext): string {
@@ -50,6 +52,7 @@ export const companionToolCatalog: CompanionTool[] = [
         notes: req.notes,
         packageDir: packageDirFrom(ctx),
         completeText: ctx.completeText,
+        ...(ctx.authoring ? { authoring: ctx.authoring, locale: ctx.authoring.locale } : {}),
       } satisfies GenerateCourseRequest);
       return result.ok
         ? { ok: true as const, value: result.courseDraft }
@@ -71,6 +74,7 @@ export const companionToolCatalog: CompanionTool[] = [
         kind: req.kind,
         description: req.description,
         packageDir: packageDirFrom(ctx),
+        ...(ctx.authoring ? { authoring: ctx.authoring } : {}),
       } satisfies ToolCallRequest);
       return result.ok
         ? { ok: true as const, value: result.items }
@@ -96,6 +100,7 @@ export const companionToolCatalog: CompanionTool[] = [
         currentContent: req.currentContent,
         params: req.params,
         packageDir: packageDirFrom(ctx),
+        ...(ctx.authoring ? { authoring: ctx.authoring } : {}),
       } satisfies ToolCallRequest);
       return result.ok
         ? { ok: true as const, value: result.items }

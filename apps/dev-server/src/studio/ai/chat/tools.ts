@@ -11,6 +11,7 @@ export interface ToolCallRequest {
   intent?: ItemIntent;
   params?: ItemIntentParams;
   packageDir: string;
+  authoring?: AuthoringContext;
 }
 
 export interface GenerateCourseRequest {
@@ -40,6 +41,7 @@ export async function draftActivity(request: ToolCallRequest): Promise<ToolCallR
         kind: request.kind,
         description: request.description || `Create a new ${request.kind}`,
         packageDir: request.packageDir,
+        ...(request.authoring ? { authoring: request.authoring } : {}),
       });
       if (!result.ok) {
         return { ok: false, error: result.error };
@@ -58,6 +60,7 @@ export async function draftActivity(request: ToolCallRequest): Promise<ToolCallR
       currentContent,
       params: request.params,
       packageDir: request.packageDir,
+      ...(request.authoring ? { authoring: request.authoring } : {}),
     });
     if (!result.ok) {
       return { ok: false, error: result.error };
