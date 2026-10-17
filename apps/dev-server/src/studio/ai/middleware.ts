@@ -235,7 +235,7 @@ export function createStudioAiMiddleware(
       // Accept goes through the normal writeFile + saveOutlineOrder path.
       if (pathname === '/api/studio/ai/item/add' && method === 'POST') {
         const body = await parseJsonBody(req);
-        const { kind, description, existingTitles } = assertItemAddBody(body);
+        const { kind, description, existingTitles, authoring } = assertItemAddBody(body);
         if (!packageDir && !existingTitles) {
           res.statusCode = 400;
           res.end(JSON.stringify({ code: 'no-active-package', error: 'No active package' }));
@@ -246,7 +246,13 @@ export function createStudioAiMiddleware(
           res.end(JSON.stringify({ code: 'ai-unavailable', error: 'AI is unavailable' }));
           return;
         }
-        const result = await generateItemAdd({ kind, description, packageDir, existingTitles });
+        const result = await generateItemAdd({
+          kind,
+          description,
+          packageDir,
+          existingTitles,
+          ...(authoring ? { authoring } : {}),
+        });
         res.end(JSON.stringify(result));
         return;
       }
@@ -260,7 +266,8 @@ export function createStudioAiMiddleware(
           return;
         }
         const body = await parseJsonBody(req);
-        const { kind, intent, currentContent, params, existingTitles } = assertItemEditBody(body);
+        const { kind, intent, currentContent, params, existingTitles, authoring } =
+          assertItemEditBody(body);
         if (!packageDir && !existingTitles) {
           res.statusCode = 400;
           res.end(JSON.stringify({ code: 'no-active-package', error: 'No active package' }));
@@ -273,6 +280,7 @@ export function createStudioAiMiddleware(
           params,
           packageDir,
           existingTitles,
+          ...(authoring ? { authoring } : {}),
         });
         res.end(JSON.stringify(result));
         return;

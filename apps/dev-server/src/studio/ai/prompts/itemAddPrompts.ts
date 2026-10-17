@@ -3,7 +3,11 @@ import { renderWidgetCatalogSection } from './buildPrompt.js';
 const OUTPUT_ONLY_JSON =
   'Output ONLY a single JSON object that conforms EXACTLY to this JSON schema (no markdown, no comments, no extra text):';
 
-export function buildLessonAddPrompt(description: string, context: string): string {
+export function buildLessonAddPrompt(
+  description: string,
+  context: string,
+  authoringSection?: string,
+): string {
   return [
     'You are an expert curriculum designer. Draft a single lesson for an OpenEdu course.',
     '',
@@ -21,11 +25,16 @@ export function buildLessonAddPrompt(description: string, context: string): stri
     '- The "markdown" body must start with a "# " heading that matches the title.',
     '- Write a complete, ready-to-learn lesson; keep it focused on the description.',
     '',
+    ...(authoringSection ? [authoringSection, ''] : []),
     context,
   ].join('\n');
 }
 
-export function buildQuizAddPrompt(description: string, context: string): string {
+export function buildQuizAddPrompt(
+  description: string,
+  context: string,
+  authoringSection?: string,
+): string {
   return [
     'You are an expert curriculum designer. Draft a single multiple-choice quiz question for an OpenEdu course.',
     '',
@@ -48,11 +57,16 @@ export function buildQuizAddPrompt(description: string, context: string): string
     '- Exactly 4 options, and exactly one option must have "correct": true.',
     '- The correct option should not be the first option by default — vary it.',
     '',
+    ...(authoringSection ? [authoringSection, ''] : []),
     context,
   ].join('\n');
 }
 
-export function buildPracticeAddPrompt(description: string, context: string): string {
+export function buildPracticeAddPrompt(
+  description: string,
+  context: string,
+  authoringSection?: string,
+): string {
   return [
     'You are an expert curriculum designer. Draft a single practice activity for an OpenEdu course.',
     '',
@@ -73,6 +87,7 @@ export function buildPracticeAddPrompt(description: string, context: string): st
     '',
     renderWidgetCatalogSection(),
     '',
+    ...(authoringSection ? [authoringSection, ''] : []),
     context,
   ].join('\n');
 }

@@ -12,6 +12,8 @@ import {
 } from './itemGenerate';
 import { completeWithLlm, isAiAvailable } from './studioLlm';
 import type { CuratedWidget } from '../widgets/curatedCatalog.js';
+import { LearningIntent } from '@open-edu/widgets/intents';
+import type { AuthoringContext } from '@open-edu/packs';
 
 vi.mock('./studioLlm.js', () => ({
   completeWithLlm: vi.fn(),
@@ -357,6 +359,70 @@ describe('generateItemEdit', () => {
     });
     const prompt = vi.mocked(completeWithLlm).mock.calls[0]![0];
     expect(prompt).toContain('es');
+  });
+});
+
+const authoringFixture: AuthoringContext = {
+  packs: [{ id: 'nios-math-level-a', version: '0.1.0', type: 'curriculum' }],
+  curriculumUnit: 'fractions',
+  availableActivities: [
+    {
+      id: 'core.multiple-choice',
+      name: 'Multiple Choice',
+      intents: [LearningIntent.Practice],
+      subjectTags: [],
+    },
+  ],
+  concepts: [],
+  objectives: [],
+  budget: { maxChars: 20000, usedChars: 0, truncated: [] },
+  provenance: [],
+};
+
+describe('item grounding', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    vi.mocked(isAiAvailable).mockReturnValue(true);
+  });
+
+  it('includes the authoring section in the prompt when authoring is provided', async () => {
+    vi.mocked(completeWithLlm).mockResolvedValue(
+      JSON.stringify({ title: 'T', markdown: '# T\n\nbody' }),
+    );
+    await generateItemAdd({
+      kind: 'lesson',
+      description: 'Explain fractions',
+      packageDir: '/tmp',
+      authoring: authoringFixture,
+    });
+    const prompt = vi.mocked(completeWithLlm).mock.calls[0]![0] as string;
+    expect(prompt).toContain('AUTHORING CONTEXT');
+  });
+
+  it('produces prompts without authoring section when authoring is absent', async () => {
+    vi.mocked(completeWithLlm).mockResolvedValue(
+      JSON.stringify({ title: 'T', markdown: '# T\n\nbody' }),
+    );
+    await generateItemAdd({
+      kind: 'lesson',
+      description: 'Explain fractions',
+      packageDir: '/tmp',
+    });
+    const prompt = vi.mocked(completeWithLlm).mock.calls[0]![0] as string;
+    expect(prompt).not.toContain('AUTHORING CONTEXT');
+  });
+
+  it('rejects a practice widget outside availableActivities', () => {
+    const item = mapToDraftItem('practice', {
+      widget: 'core.multiple-choice',
+      title: 'Bad',
+      config: {},
+    });
+    const err = validateItemDraft(item, {
+      expectedOptionCount: 1,
+      availableActivityIds: new Set(['math.number-line']),
+    });
+    expect(err).toMatch(/not in the selected pack/);
   });
 });
 

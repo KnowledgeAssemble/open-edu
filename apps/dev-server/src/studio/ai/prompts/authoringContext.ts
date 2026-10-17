@@ -38,3 +38,24 @@ export function renderAuthoringContextBlock(ctx: AuthoringContext): string {
       .join('\n') || '- (none)',
   ].join('\n');
 }
+
+export function renderItemAuthoringSection(ctx: AuthoringContext): string {
+  const objectives = ctx.objectives
+    .map((o) => `- ${o.id}: ${o.description} — requiresIntents: [${o.requiresIntents.join(', ')}]`)
+    .join('\n');
+  const activities = ctx.availableActivities
+    .map((a) => `- ${a.id}${a.domain ? ` (${a.domain})` : ''}`)
+    .join('\n');
+  return [
+    'AUTHORING CONTEXT (apply while drafting this item):',
+    `Curriculum unit: ${ctx.curriculumUnit ?? '(none selected)'}`,
+    `Learner profile: ${ctx.learner ?? '(none)'}`,
+    `Locale: ${ctx.locale ?? 'en'}`,
+    '',
+    'Objectives:',
+    objectives || '- (none)',
+    '',
+    'Available activities — practice widgets MUST use ONLY these ids:',
+    activities || '- (none)',
+  ].join('\n');
+}

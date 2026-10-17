@@ -97,6 +97,22 @@ describe('createStudioAiMiddleware (single backend, storage-independent)', () =>
     });
   });
 
+  it('item/add returns 400 for an invalid authoring body field', async () => {
+    const res = makeRes();
+    await runMiddleware(
+      makeReq(
+        { kind: 'lesson', description: 'x', existingTitles: ['A'], authoring: { packs: 'nope' } },
+        '/api/studio/ai/item/add',
+      ),
+      res,
+      '',
+    );
+    expect(res.statusCode).toBe(400);
+    expect(JSON.parse((res.written[0]!.body as string) ?? '{}')).toMatchObject({
+      code: 'invalid-request',
+    });
+  });
+
   it('item/add still rejects when there is neither package nor existingTitles', async () => {
     const res = makeRes();
     await runMiddleware(
