@@ -305,7 +305,7 @@ describe('StudioChatProvider single-endpoint transport', () => {
       return (
         <button
           type="button"
-          onClick={() => void runIntent('lesson', 'simplify', '# Title\n\nBody')}
+          onClick={() => void runIntent('lesson', 'rewrite', '# Title\n\nBody')}
         >
           Run intent
         </button>
@@ -320,7 +320,7 @@ describe('StudioChatProvider single-endpoint transport', () => {
           <EditorBridgeProvider>
             <StudioChatProvider
               courseId="course-x"
-              api={{ generateItemEdit } as StudioApi}
+              api={{ generateItemEdit } as unknown as StudioApi}
               authoring={authoringFixture}
             >
               <ContextSeeder snapshot={snapshot}>
@@ -335,7 +335,7 @@ describe('StudioChatProvider single-endpoint transport', () => {
     await waitFor(() => expect(generateItemEdit).toHaveBeenCalled());
     expect(generateItemEdit).toHaveBeenCalledWith(
       'lesson',
-      'simplify',
+      'rewrite',
       '# Title\n\nBody',
       undefined,
       { authoring: authoringFixture },
