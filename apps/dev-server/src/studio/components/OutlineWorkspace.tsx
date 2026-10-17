@@ -15,7 +15,8 @@ import { PackageSourcePane, type PackageSourcePaneHandle } from './PackageSource
 import { PackBrowserPanel } from './PackBrowserPanel.js';
 import { readFilesPath, writeFilesPath, type OutlineTab } from '../studioSession.js';
 import type { StudioApi } from '../studioApi.js';
-import type { AuthoringContext, PackDiagnostic } from '@open-edu/packs';
+import type { AuthoringContext, ObjectiveCoverage, PackDiagnostic } from '@open-edu/packs';
+import type { AuthoringDrift } from '../packs/authoringRestore.js';
 
 export function OutlineWorkspace({
   api,
@@ -32,6 +33,9 @@ export function OutlineWorkspace({
   authoring = null,
   authoringWarnings = [],
   capabilityGaps = [],
+  authoringDrift = null,
+  restoredFromProvenance = false,
+  coverage = [],
 }: {
   api: StudioApi;
   onEdit: (path: string) => void;
@@ -47,6 +51,9 @@ export function OutlineWorkspace({
   authoring?: AuthoringContext | null;
   authoringWarnings?: PackDiagnostic[];
   capabilityGaps?: string[];
+  authoringDrift?: AuthoringDrift | null;
+  restoredFromProvenance?: boolean;
+  coverage?: ObjectiveCoverage[];
 }) {
   const { t } = useTranslation();
   const [pendingTab, setPendingTab] = useState<OutlineTab | null>(null);
@@ -96,6 +103,7 @@ export function OutlineWorkspace({
         <TabsContent value="outline" className="min-h-0 flex-1 overflow-auto">
           <OutlineView
             api={api}
+            authoring={authoring}
             onEdit={onEdit}
             onError={onError}
             onTitleChange={onTitleChange}
@@ -118,6 +126,9 @@ export function OutlineWorkspace({
             authoring={authoring}
             warnings={authoringWarnings}
             capabilityGaps={capabilityGaps}
+            drift={authoringDrift}
+            restored={restoredFromProvenance}
+            coverage={coverage}
           />
         </TabsContent>
       </Tabs>

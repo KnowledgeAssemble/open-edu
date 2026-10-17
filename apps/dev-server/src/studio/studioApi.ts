@@ -119,12 +119,14 @@ export interface StudioApi {
   generateItemAdd(
     kind: 'lesson' | 'quiz' | 'practice',
     description: string,
+    options?: { authoring?: AuthoringContext },
   ): Promise<AiItemAddResult>;
   generateItemEdit(
     kind: 'lesson' | 'quiz' | 'practice',
     intent: ItemIntent,
     currentContent: string,
     params?: ItemIntentParams,
+    options?: { authoring?: AuthoringContext },
   ): Promise<AiItemEditResult>;
   importCourseFolder(sourcePath: string): Promise<{ success: boolean; entry: LibraryEntry }>;
   createUnit(

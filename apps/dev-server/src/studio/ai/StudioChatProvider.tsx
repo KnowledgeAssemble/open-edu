@@ -19,6 +19,7 @@ import { useStudioAssistant } from './StudioAssistantProvider';
 import { ConversationStore, type StoredChatMessage } from './ConversationStore';
 import type { DraftApplyMode } from './StudioAssistantProvider';
 import type { DraftItem, CourseDraftResult, ItemIntent, ItemIntentParams } from './types';
+import type { AuthoringContext } from '@open-edu/packs';
 import type { StudioApi } from '../studioApi';
 import type { StudioContextSnapshot } from './context';
 
@@ -84,6 +85,7 @@ interface StudioChatProviderProps {
   children: ReactNode;
   courseId?: string;
   api?: StudioApi;
+  authoring?: AuthoringContext | null;
   onOpenPath?: (path: string) => void;
   onError?: (message: string) => void;
   onOutlineChanged?: () => void;
@@ -139,6 +141,7 @@ export function StudioChatProvider(props: StudioChatProviderProps) {
       store={storeRef.current}
       setConversationIdState={handleNewConversationId}
       api={props.api}
+      authoring={props.authoring}
       onOpenPath={props.onOpenPath}
       onError={props.onError}
       onOutlineChanged={props.onOutlineChanged}
@@ -158,6 +161,7 @@ function ChatRuntime({
   store,
   setConversationIdState,
   api,
+  authoring,
   onOpenPath,
   onError,
   onOutlineChanged,
@@ -171,6 +175,7 @@ function ChatRuntime({
   store: ConversationStore;
   setConversationIdState: (id: string) => void;
   api?: StudioApi;
+  authoring?: AuthoringContext | null;
   onOpenPath?: (path: string) => void;
   onError?: (message: string) => void;
   onOutlineChanged?: () => void;
@@ -400,7 +405,13 @@ function ChatRuntime({
     ) => {
       if (!api || clearingRef.current) return;
       try {
-        const result = await api.generateItemEdit(kind, intent, currentContent, params);
+        const result = await api.generateItemEdit(
+          kind,
+          intent,
+          currentContent,
+          params,
+          authoring ? { authoring } : undefined,
+        );
         if (result.ok) {
           const applyMode: DraftApplyMode = result.items.length > 1 ? 'file' : 'buffer';
           const assistantMsg: StoredChatMessage = {
@@ -423,7 +434,7 @@ function ChatRuntime({
         onError?.(t('studio.assistant.intent.error'));
       }
     },
-    [api, chatSetMessages, onError, setPendingDrafts, t],
+    [api, authoring, chatSetMessages, onError, setPendingDrafts, t],
   );
 
   const messages: ChatMessage[] = rawMessages.map(toChatMessage);

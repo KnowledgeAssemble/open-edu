@@ -15,6 +15,7 @@ import {
 import { Sparkles } from 'lucide-react';
 import { useTranslation } from '@open-edu/i18n';
 import { ItemDraftPreview } from './ItemDraftPreview.js';
+import type { AuthoringContext } from '@open-edu/packs';
 import type { StudioApi, StudioApiError } from '../studioApi.js';
 import type { DraftItem } from '../ai/types.js';
 
@@ -25,12 +26,14 @@ const MIN_DESCRIPTION_LENGTH = 20;
 
 export function AiAddDialog({
   api,
+  authoring = null,
   open,
   onOpenChange,
   onAccept,
   onError,
 }: {
   api: StudioApi;
+  authoring?: AuthoringContext | null;
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onAccept: (item: DraftItem) => void;
@@ -73,7 +76,11 @@ export function AiAddDialog({
     setGenerating(true);
     setInlineError(null);
     try {
-      const result = await api.generateItemAdd(kind, description.trim());
+      const result = await api.generateItemAdd(
+        kind,
+        description.trim(),
+        authoring ? { authoring } : undefined,
+      );
       if (result.ok) {
         setDraft(result.item);
       } else {

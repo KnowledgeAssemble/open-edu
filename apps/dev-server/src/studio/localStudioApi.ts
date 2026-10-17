@@ -3,8 +3,6 @@ import type {
   AiItemAddResult,
   AiItemEditResult,
   CourseDraftResult,
-  ItemIntent,
-  ItemIntentParams,
 } from './ai/types.js';
 import type { LibraryEntry } from './library/types.js';
 import type { LoadedPackage } from '@open-edu/core';
@@ -179,20 +177,25 @@ export function createLocalStudioApi(): StudioApi {
         method: 'POST',
         body: JSON.stringify({ draftId }),
       }),
-    generateItemAdd: (kind: 'lesson' | 'quiz' | 'practice', description: string) =>
+    generateItemAdd: (kind, description, options) =>
       aiRequest<AiItemAddResult>('/item/add', {
         method: 'POST',
-        body: JSON.stringify({ kind, description }),
+        body: JSON.stringify({
+          kind,
+          description,
+          ...(options?.authoring ? { authoring: options.authoring } : {}),
+        }),
       }),
-    generateItemEdit: (
-      kind: 'lesson' | 'quiz' | 'practice',
-      intent: ItemIntent,
-      currentContent: string,
-      params?: ItemIntentParams,
-    ) =>
+    generateItemEdit: (kind, intent, currentContent, params, options) =>
       aiRequest<AiItemEditResult>('/item/edit', {
         method: 'POST',
-        body: JSON.stringify({ kind, intent, currentContent, params }),
+        body: JSON.stringify({
+          kind,
+          intent,
+          currentContent,
+          params,
+          ...(options?.authoring ? { authoring: options.authoring } : {}),
+        }),
       }),
     getLibrary: () => libraryRequest<LibraryResult>(''),
     openLibraryCourse: (relativePath: string) =>
