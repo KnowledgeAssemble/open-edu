@@ -1,6 +1,8 @@
-import { Card, CardContent, CardDescription, CardTitle } from '@open-edu/design-system';
+import { Button, Card, CardContent, CardDescription, CardTitle } from '@open-edu/design-system';
 import { useTranslation } from '@open-edu/i18n';
-import type { AuthoringContext, PackDiagnostic } from '@open-edu/packs';
+import type { AuthoringContext, ObjectiveCoverage, PackDiagnostic } from '@open-edu/packs';
+import { useStudioAssistant } from '../ai';
+import type { AuthoringDrift } from '../packs/authoringRestore.js';
 
 function truncationLabel(section: string, t: (key: string) => string): string {
   switch (section) {
@@ -21,15 +23,40 @@ export function PackBrowserPanel({
   authoring,
   warnings,
   capabilityGaps,
+  restored = false,
+  drift = null,
+  coverage = [],
 }: {
   authoring: AuthoringContext | null;
   warnings: PackDiagnostic[];
   capabilityGaps: string[];
+  restored?: boolean;
+  drift?: AuthoringDrift | null;
+  coverage?: ObjectiveCoverage[];
 }) {
   const { t } = useTranslation();
+  const { openWithPreset } = useStudioAssistant();
 
   return (
     <div className="space-y-4 p-4" aria-label={t('studio.packs.panelTitle')}>
+      {restored ? (
+        <div
+          role="status"
+          className="border-outline-variant bg-surface-container-high text-on-surface rounded-lg border px-4 py-3 text-sm"
+        >
+          <p>{t('studio.packs.restoredFromProvenance')}</p>
+          {drift?.packDiffs.map((d) => (
+            <p key={d.id}>
+              {t('studio.packs.driftPackVersion', {
+                pack: d.id,
+                recorded: d.recorded,
+                current: d.current,
+              })}
+            </p>
+          ))}
+          {drift?.fingerprintChanged ? <p>{t('studio.packs.driftFingerprint')}</p> : null}
+        </div>
+      ) : null}
       <Card className="border-outline-variant bg-surface">
         <CardTitle className="text-on-surface px-4 pt-4">
           {t('studio.packs.packsHeading')}
@@ -142,6 +169,51 @@ export function PackBrowserPanel({
           )}
         </CardContent>
       </Card>
+
+      {!authoring ? (
+        <p className="text-on-surface-variant px-1 text-sm">{t('studio.packs.coverageNone')}</p>
+      ) : null}
+      {authoring && authoring.objectives.length > 0 ? (
+        <section aria-label={t('studio.packs.coverageHeading')}>
+          <h3 className="text-on-surface px-1 text-sm font-semibold">
+            {t('studio.packs.coverageHeading')}
+          </h3>
+          <div className="mt-2 space-y-3">
+            {coverage.map((row) => (
+              <div key={row.id} className="flex items-center justify-between gap-2 px-1">
+                <div>
+                  <p className="text-on-surface text-sm">{row.description}</p>
+                  <p role="status" className="text-on-surface-variant text-xs">
+                    {row.covered
+                      ? t('studio.packs.coverageCovered')
+                      : t('studio.packs.coverageUncovered')}
+                  </p>
+                  {row.satisfiedBy.length > 0 ? (
+                    <p className="text-on-surface-variant text-xs">{row.satisfiedBy.join(', ')}</p>
+                  ) : null}
+                </div>
+                {!row.covered ? (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() =>
+                      openWithPreset({
+                        message: t('studio.packs.coveragePreset', {
+                          description: row.description,
+                          intents: row.requiresIntents.join(', '),
+                        }),
+                        prefill: true,
+                      })
+                    }
+                  >
+                    {t('studio.packs.generateActivityChip')}
+                  </Button>
+                ) : null}
+              </div>
+            ))}
+          </div>
+        </section>
+      ) : null}
 
       <Card className="border-outline-variant bg-surface">
         <CardTitle className="text-on-surface px-4 pt-4">{t('studio.packs.gapsHeading')}</CardTitle>

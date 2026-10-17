@@ -7,3 +7,4 @@ export * from './context.js';
 export * from './objectives.js';
 export * from './resolve.js';
 export * from './blueprint.js';
+export * from './coverage.js';

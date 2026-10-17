@@ -1,4 +1,10 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
+
+vi.mock('../ai', () => ({
+  useStudioAssistant: () => ({
+    openWithPreset: vi.fn(),
+  }),
+}));
 import { render, screen } from '@testing-library/react';
 import axe from 'axe-core';
 import { I18nProvider } from '@open-edu/i18n';

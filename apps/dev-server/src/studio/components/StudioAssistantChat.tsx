@@ -148,14 +148,18 @@ export function StudioAssistantChat() {
         await applyDraft(api, item, {
           mode: 'buffer',
           applyToEditor: currentEditor.applyToEditor,
+          authoring: context?.authoring ?? null,
         });
         appendAssistantNote(t('studio.assistant.draft.appliedEditor'));
       } else if (siblings.length > 1 && mode === 'file') {
-        await applyDraftBatch(api, siblings);
+        await applyDraftBatch(api, siblings, { authoring: context?.authoring ?? null });
         appendAssistantNote(t('studio.assistant.draft.appliedOutline'));
         onOutlineChanged?.();
       } else {
-        await applyDraft(api, item, { mode: 'file' });
+        await applyDraft(api, item, {
+          mode: 'file',
+          authoring: context?.authoring ?? null,
+        });
         appendAssistantNote(t('studio.assistant.draft.appliedOutline'));
         onOutlineChanged?.();
       }

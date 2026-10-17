@@ -86,6 +86,9 @@ vi.mock('./localStudioApi.js', () => ({
     importCourseFolder: vi.fn(),
     createUnit: vi.fn(),
     exportUnitOep: vi.fn(),
+    listPacks: vi.fn().mockResolvedValue([]),
+    getPackDetail: vi.fn(),
+    setAuthoringSelection: vi.fn().mockResolvedValue({ context: {}, warnings: [] }),
   }),
 }));
 

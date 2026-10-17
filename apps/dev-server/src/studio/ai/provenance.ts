@@ -3,6 +3,7 @@ import { getProfile } from '@open-edu/domain-guidance';
 import { validateBlueprint, type AuthoringContext, type BlueprintFacts } from '@open-edu/packs';
 import { fingerprintAuthoringContext } from '@open-edu/packs/fingerprint';
 import type { AuthoringScope, ReproductionRecord } from '@open-edu/schemas';
+import { normalizeDescription } from './objectiveMatch.js';
 
 function modelLessons(model: CourseModel): CourseModel['modules'][number]['lessons'] {
   return model.modules.flatMap((module) => module.lessons);
@@ -34,13 +35,6 @@ function scopeFromContext(authoring: AuthoringContext): AuthoringScope | undefin
     ...(authoring.learner ? { learner: authoring.learner } : {}),
     ...(authoring.locale ? { locale: authoring.locale } : {}),
   };
-}
-
-function normalizeDescription(text: string): string {
-  return text
-    .toLowerCase()
-    .replace(/[^\p{L}\p{N}]+/gu, ' ')
-    .trim();
 }
 
 function matchLessonObjective(

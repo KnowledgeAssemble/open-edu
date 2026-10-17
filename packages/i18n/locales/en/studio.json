@@ -531,5 +531,14 @@
   "packs.sectionConcepts": "Concepts",
   "packs.sectionUnitTitle": "Unit title",
   "packs.sectionAvailableActivities": "Available activities",
-  "packs.assistantPreset": "Create a course based on the selected curriculum unit: {{unit}} ({{curriculum}}). Ground every lesson in the provided concepts and satisfy each objective's required learning intents using only the available activities."
+  "packs.assistantPreset": "Create a course based on the selected curriculum unit: {{unit}} ({{curriculum}}). Ground every lesson in the provided concepts and satisfy each objective's required learning intents using only the available activities.",
+  "packs.restoredFromProvenance": "Authoring context restored from course provenance",
+  "packs.driftPackVersion": "{{pack}}: recorded {{recorded}}, current {{current}}",
+  "packs.driftFingerprint": "Pack content has changed since this course was generated (context fingerprint differs)",
+  "packs.coverageHeading": "Objective coverage",
+  "packs.coverageCovered": "Covered",
+  "packs.coverageUncovered": "Not yet covered",
+  "packs.generateActivityChip": "Generate activity",
+  "packs.coveragePreset": "Draft an activity that satisfies this objective: {{description}}. Required intents: {{intents}}.",
+  "packs.coverageNone": "Select a curriculum pack to see objective coverage."
 }
