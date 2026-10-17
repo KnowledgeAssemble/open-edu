@@ -41,7 +41,11 @@ describe('renderItemAuthoringSection', () => {
 
 describe('item add prompts', () => {
   it('inserts the authoring section above the course context when provided', () => {
-    const prompt = buildLessonAddPrompt('Explain fractions', 'COURSE CONTEXT', 'AUTHORING CONTEXT…');
+    const prompt = buildLessonAddPrompt(
+      'Explain fractions',
+      'COURSE CONTEXT',
+      'AUTHORING CONTEXT…',
+    );
     const authIdx = prompt.indexOf('AUTHORING CONTEXT…');
     const ctxIdx = prompt.indexOf('COURSE CONTEXT');
     expect(authIdx).toBeGreaterThan(-1);

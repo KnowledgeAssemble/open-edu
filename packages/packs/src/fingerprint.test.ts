@@ -2,11 +2,7 @@ import { createHash } from 'node:crypto';
 import { describe, expect, it } from 'vitest';
 import { LearningIntent } from '@open-edu/widgets/intents';
 import type { AuthoringContext } from './context.js';
-import {
-  canonicalizeContext,
-  fingerprintAuthoringContext,
-  sha256Hex,
-} from './fingerprint.js';
+import { canonicalizeContext, fingerprintAuthoringContext, sha256Hex } from './fingerprint.js';
 
 const baseContext: AuthoringContext = {
   packs: [{ id: 'nios-math-level-a', version: '0.1.0', type: 'curriculum' }],
