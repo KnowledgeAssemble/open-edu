@@ -86,8 +86,12 @@ export type {
   WidgetGuideConfigField,
 } from './widget-catalog.js';
 
-export { ReproductionNodeSchema, ReproductionRecordSchema } from './provenance.js';
-export type { ReproductionRecord } from './provenance.js';
+export {
+  ReproductionNodeSchema,
+  ReproductionRecordSchema,
+  AuthoringScopeSchema,
+} from './provenance.js';
+export type { ReproductionRecord, AuthoringScope } from './provenance.js';
 
 export {
   WidgetManifestSchema,

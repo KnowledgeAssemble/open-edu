@@ -126,4 +126,22 @@ describe('buildProvenance', () => {
     const { record } = buildProvenance(custom, customModel, 'now');
     expect(record.nodes[0]!.objectives).toEqual(['like-denominators']);
   });
+
+  it('records authoringScope derived from the authoring context', () => {
+    const { record } = buildProvenance(authoring, model(), 'now');
+    expect(record.authoringScope).toEqual({
+      curriculum: 'nios-math-level-a',
+      unit: 'fractions',
+      learner: authoring.learner,
+    });
+  });
+
+  it('omits authoringScope when no curriculum pack is selected', () => {
+    const noCurriculum = {
+      ...authoring,
+      packs: authoring.packs.filter((p) => p.type !== 'curriculum'),
+    };
+    const { record } = buildProvenance(noCurriculum, model(), 'now');
+    expect(record.authoringScope).toBeUndefined();
+  });
 });

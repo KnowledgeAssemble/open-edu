@@ -2,7 +2,7 @@ import type { CourseModel, WidgetActivity } from '@open-edu/course-compiler';
 import { getProfile } from '@open-edu/domain-guidance';
 import { validateBlueprint, type AuthoringContext, type BlueprintFacts } from '@open-edu/packs';
 import { fingerprintAuthoringContext } from '@open-edu/packs/fingerprint';
-import type { ReproductionRecord } from '@open-edu/schemas';
+import type { AuthoringScope, ReproductionRecord } from '@open-edu/schemas';
 
 function modelLessons(model: CourseModel): CourseModel['modules'][number]['lessons'] {
   return model.modules.flatMap((module) => module.lessons);
@@ -22,6 +22,17 @@ export function factsFromModel(model: CourseModel): BlueprintFacts {
       objectives: l.objectives.map((o) => o.description),
       widgetIds: widgetIds(l),
     })),
+  };
+}
+
+function scopeFromContext(authoring: AuthoringContext): AuthoringScope | undefined {
+  const curriculum = authoring.packs.find((p) => p.type === 'curriculum');
+  if (!curriculum) return undefined;
+  return {
+    curriculum: curriculum.id,
+    ...(authoring.curriculumUnit ? { unit: authoring.curriculumUnit } : {}),
+    ...(authoring.learner ? { learner: authoring.learner } : {}),
+    ...(authoring.locale ? { locale: authoring.locale } : {}),
   };
 }
 
@@ -95,6 +106,7 @@ export function buildProvenance(
       packs: authoring.packs,
       generatedAt,
       contextFingerprint: fingerprintAuthoringContext(authoring),
+      ...(scopeFromContext(authoring) ? { authoringScope: scopeFromContext(authoring) } : {}),
       nodes,
     },
   };
