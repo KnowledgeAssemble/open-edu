@@ -6,6 +6,7 @@ import studioEn from '@open-edu/i18n/locales/en/studio.json';
 import { AiAddDialog } from './AiAddDialog';
 import type { StudioApi } from '../studioApi.js';
 import type { DraftItem } from '../ai/types.js';
+import { authoringFixture } from '../test/authoringFixture.js';
 
 vi.mock('./ItemDraftPreview.js', () => ({
   ItemDraftPreview: ({ item }: { item: DraftItem }) => (
@@ -145,6 +146,33 @@ describe('AiAddDialog', () => {
     await waitFor(() => expect(generateButton).toBeEnabled());
     await userEvent.click(generateButton);
     expect(await screen.findByText(/AI couldn’t draft that item/)).toBeInTheDocument();
+  });
+
+  it('passes authoring to generateItemAdd when provided', async () => {
+    const api = makeApi();
+    const description = 'Explain fractions using pizza slice examples for beginners';
+    render(
+      wrap(
+        <AiAddDialog
+          api={api}
+          authoring={authoringFixture}
+          open
+          onOpenChange={() => {}}
+          onAccept={() => {}}
+          onError={() => {}}
+        />,
+      ),
+    );
+    await userEvent.type(
+      await screen.findByLabelText(/describe what you want to create/i),
+      description,
+    );
+    await userEvent.click(screen.getByRole('button', { name: /generate draft/i }));
+    await waitFor(() =>
+      expect(api.generateItemAdd).toHaveBeenCalledWith('lesson', description, {
+        authoring: authoringFixture,
+      }),
+    );
   });
 
   it('shows the unavailable hint and disables Generate when AI is unavailable', async () => {

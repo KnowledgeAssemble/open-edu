@@ -1,5 +1,23 @@
 import { describe, it, expect, vi } from 'vitest';
+import { LearningIntent } from '@open-edu/widgets/intents';
+import type { AuthoringContext } from '@open-edu/packs';
 import { draftActivity, generateCourseDraftTool } from './tools';
+
+const authoringFixture: AuthoringContext = {
+  packs: [{ id: 'nios-math-level-a', version: '0.1.0', type: 'curriculum' }],
+  availableActivities: [
+    {
+      id: 'math.number-line',
+      name: 'Number Line',
+      intents: [LearningIntent.Practice],
+      subjectTags: [],
+    },
+  ],
+  concepts: [],
+  objectives: [],
+  budget: { maxChars: 20000, usedChars: 0, truncated: [] },
+  provenance: [],
+};
 
 vi.mock('../itemGenerate', () => ({
   generateItemAdd: vi.fn(),
@@ -41,6 +59,24 @@ describe('draftActivity', () => {
       expect(result.items).toHaveLength(1);
       expect(result.items[0]!.kind).toBe('lesson');
     }
+  });
+
+  it('forwards authoring from ToolCallRequest to generateItemAdd', async () => {
+    const { generateItemAdd } = await import('../itemGenerate');
+    vi.mocked(generateItemAdd).mockResolvedValueOnce({
+      ok: true,
+      item: { kind: 'lesson', title: 'T', content: '# T\n' },
+    });
+    await draftActivity({
+      type: 'draft_new',
+      kind: 'lesson',
+      description: 'x',
+      packageDir: '/pkg',
+      authoring: authoringFixture,
+    });
+    expect(generateItemAdd).toHaveBeenCalledWith(
+      expect.objectContaining({ authoring: authoringFixture }),
+    );
   });
 
   it('wraps generateItemEdit for existing activity edits', async () => {

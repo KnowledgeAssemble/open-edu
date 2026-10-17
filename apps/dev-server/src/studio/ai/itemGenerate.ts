@@ -1,5 +1,6 @@
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
+import { AuthoringContextSchema, type AuthoringContext } from '@open-edu/packs';
 import { ContentNodeSchema, ExerciseNodeSchema } from '@open-edu/schemas';
 import { detectActivityKind, titleFromMarkdown, titleFromQuizJson } from '../outlineModel.js';
 import { completeWithLlm, isAiAvailable } from './studioLlm.js';
@@ -13,6 +14,7 @@ import {
   buildPracticeEditPrompt,
   renderCourseContext,
 } from './prompts/index.js';
+import { renderItemAuthoringSection } from './prompts/authoringContext.js';
 import { parseExerciseNode, serializeExerciseNode } from '../widgets/exerciseNode.js';
 import { getCuratedWidget } from '../widgets/curatedCatalog.js';
 import type { ItemIntent, ItemIntentParams } from './types.js';
@@ -29,6 +31,7 @@ const INTENTS_BY_KIND: Record<ItemKind, ItemIntent[]> = {
 
 export interface ItemValidationOptions {
   expectedOptionCount: number;
+  availableActivityIds?: ReadonlySet<string>;
 }
 
 export interface ItemAddRequest {
@@ -39,6 +42,7 @@ export interface ItemAddRequest {
   existingTitles?: string[];
   /** AbortSignal to cancel the LLM call on timeout or client disconnect. */
   signal?: AbortSignal;
+  authoring?: AuthoringContext;
 }
 
 export interface ItemEditRequest {
@@ -51,6 +55,7 @@ export interface ItemEditRequest {
   existingTitles?: string[];
   /** AbortSignal to cancel the LLM call on timeout or client disconnect. */
   signal?: AbortSignal;
+  authoring?: AuthoringContext;
 }
 
 export class ItemRequestError extends Error {
@@ -170,6 +175,9 @@ export function validateItemDraft(item: DraftItem, opts: ItemValidationOptions):
   if (!getCuratedWidget(node.widget)) {
     return `Widget "${node.widget}" is not in the curated catalog`;
   }
+  if (opts.availableActivityIds && !opts.availableActivityIds.has(node.widget)) {
+    return `Widget "${node.widget}" is not in the selected pack's available activities`;
+  }
   let parsedJson: unknown;
   try {
     parsedJson = JSON.parse(item.content);
@@ -260,15 +268,22 @@ export async function generateItemAdd(request: ItemAddRequest): Promise<AiItemAd
   const context = renderCourseContext(
     request.existingTitles ?? readCourseContext(request.packageDir),
   );
+  const authoringSection = request.authoring
+    ? renderItemAuthoringSection(request.authoring)
+    : undefined;
+  const availableActivityIds =
+    request.authoring && request.authoring.availableActivities.length > 0
+      ? new Set(request.authoring.availableActivities.map((a) => a.id))
+      : undefined;
   const expectedOptionCount = request.kind === 'quiz' ? 4 : 1;
   const buildPrompt = () => {
     switch (request.kind) {
       case 'lesson':
-        return buildLessonAddPrompt(request.description, context);
+        return buildLessonAddPrompt(request.description, context, authoringSection);
       case 'quiz':
-        return buildQuizAddPrompt(request.description, context);
+        return buildQuizAddPrompt(request.description, context, authoringSection);
       case 'practice':
-        return buildPracticeAddPrompt(request.description, context);
+        return buildPracticeAddPrompt(request.description, context, authoringSection);
     }
   };
 
@@ -279,7 +294,10 @@ export async function generateItemAdd(request: ItemAddRequest): Promise<AiItemAd
       const raw = await completeWithLlm(prompt, request.signal);
       const parsed = parseRaw(raw);
       const item = mapToDraftItem(request.kind, parsed);
-      const validationError = validateItemDraft(item, { expectedOptionCount });
+      const validationError = validateItemDraft(item, {
+        expectedOptionCount,
+        availableActivityIds,
+      });
       if (!validationError) {
         return { ok: true, item };
       }
@@ -295,11 +313,12 @@ export async function generateItemAdd(request: ItemAddRequest): Promise<AiItemAd
 async function generateQuizBatch(
   currentContent: string,
   context: string,
-  params: ItemIntentParams | undefined,
+  authoringSection?: string,
+  params?: ItemIntentParams,
   signal?: AbortSignal,
 ): Promise<AiItemEditResult> {
   const buildPrompt = () =>
-    buildQuizEditPrompt('add-questions', currentContent, 4, context, params);
+    buildQuizEditPrompt('add-questions', currentContent, 4, context, params, authoringSection);
 
   let prompt = buildPrompt();
   let lastError = 'AI draft failed validation after retry';
@@ -342,9 +361,22 @@ export async function generateItemEdit(request: ItemEditRequest): Promise<AiItem
   const context = renderCourseContext(
     request.existingTitles ?? readCourseContext(request.packageDir),
   );
+  const authoringSection = request.authoring
+    ? renderItemAuthoringSection(request.authoring)
+    : undefined;
+  const availableActivityIds =
+    request.authoring && request.authoring.availableActivities.length > 0
+      ? new Set(request.authoring.availableActivities.map((a) => a.id))
+      : undefined;
 
   if (request.kind === 'quiz' && request.intent === 'add-questions') {
-    return generateQuizBatch(request.currentContent, context, request.params, request.signal);
+    return generateQuizBatch(
+      request.currentContent,
+      context,
+      authoringSection,
+      request.params,
+      request.signal,
+    );
   }
 
   const sourceOptionCount = request.kind === 'quiz' ? countQuizOptions(request.currentContent) : 1;
@@ -358,6 +390,7 @@ export async function generateItemEdit(request: ItemEditRequest): Promise<AiItem
           request.currentContent,
           context,
           request.params,
+          authoringSection,
         );
       case 'quiz':
         return buildQuizEditPrompt(
@@ -366,6 +399,7 @@ export async function generateItemEdit(request: ItemEditRequest): Promise<AiItem
           sourceOptionCount,
           context,
           request.params,
+          authoringSection,
         );
       case 'practice':
         return buildPracticeEditPrompt(
@@ -373,6 +407,7 @@ export async function generateItemEdit(request: ItemEditRequest): Promise<AiItem
           request.currentContent,
           context,
           request.params,
+          authoringSection,
         );
     }
   };
@@ -384,7 +419,10 @@ export async function generateItemEdit(request: ItemEditRequest): Promise<AiItem
       const raw = await completeWithLlm(prompt, request.signal);
       const parsed = parseRaw(raw);
       const item = mapToDraftItem(request.kind, parsed);
-      const validationError = validateItemDraft(item, { expectedOptionCount });
+      const validationError = validateItemDraft(item, {
+        expectedOptionCount,
+        availableActivityIds,
+      });
       if (!validationError) {
         return { ok: true, items: [item] };
       }
@@ -397,15 +435,24 @@ export async function generateItemEdit(request: ItemEditRequest): Promise<AiItem
   return retryFailed(lastError);
 }
 
+function parseAuthoring(value: unknown): AuthoringContext | undefined {
+  if (value === undefined || value === null) return undefined;
+  const parsed = AuthoringContextSchema.safeParse(value);
+  if (!parsed.success) throw invalidRequest('Invalid authoring context');
+  return parsed.data;
+}
+
 export function assertItemAddBody(body: unknown): {
   kind: ItemKind;
   description: string;
   existingTitles?: string[];
+  authoring?: AuthoringContext;
 } {
   const candidate = (body ?? {}) as {
     kind?: unknown;
     description?: unknown;
     existingTitles?: unknown;
+    authoring?: unknown;
   };
   if (candidate.kind !== 'lesson' && candidate.kind !== 'quiz' && candidate.kind !== 'practice') {
     throw invalidRequest('kind must be one of lesson, quiz, practice');
@@ -414,10 +461,12 @@ export function assertItemAddBody(body: unknown): {
     throw invalidRequest('description must be a non-empty string');
   }
   const existingTitles = normalizeExistingTitles(candidate.existingTitles);
+  const authoring = parseAuthoring(candidate.authoring);
   return {
     kind: candidate.kind,
     description: candidate.description,
     ...(existingTitles ? { existingTitles } : {}),
+    ...(authoring ? { authoring } : {}),
   };
 }
 
@@ -427,6 +476,7 @@ export function assertItemEditBody(body: unknown): {
   currentContent: string;
   params?: ItemIntentParams;
   existingTitles?: string[];
+  authoring?: AuthoringContext;
 } {
   const candidate = (body ?? {}) as {
     kind?: unknown;
@@ -434,6 +484,7 @@ export function assertItemEditBody(body: unknown): {
     currentContent?: unknown;
     params?: unknown;
     existingTitles?: unknown;
+    authoring?: unknown;
   };
   if (candidate.kind !== 'lesson' && candidate.kind !== 'quiz' && candidate.kind !== 'practice') {
     throw invalidRequest('kind must be one of lesson, quiz, practice');
@@ -443,6 +494,7 @@ export function assertItemEditBody(body: unknown): {
     throw invalidRequest(`Unsupported intent for kind "${candidate.kind}"`);
   }
   const intent = candidate.intent as ItemIntent;
+  const authoring = parseAuthoring(candidate.authoring);
   if (
     typeof candidate.currentContent !== 'string' ||
     candidate.currentContent.trim().length === 0
@@ -467,6 +519,7 @@ export function assertItemEditBody(body: unknown): {
       ...(normalizeExistingTitles(candidate.existingTitles)
         ? { existingTitles: normalizeExistingTitles(candidate.existingTitles) }
         : {}),
+      ...(authoring ? { authoring } : {}),
     };
   }
   if (intent === 'difficulty') {
@@ -485,6 +538,7 @@ export function assertItemEditBody(body: unknown): {
       ...(normalizeExistingTitles(candidate.existingTitles)
         ? { existingTitles: normalizeExistingTitles(candidate.existingTitles) }
         : {}),
+      ...(authoring ? { authoring } : {}),
     };
   }
   if (candidate.params !== undefined && candidate.params !== null) {
@@ -495,9 +549,11 @@ export function assertItemEditBody(body: unknown): {
     intent: ItemIntent;
     currentContent: string;
     existingTitles?: string[];
+    authoring?: AuthoringContext;
   } = { kind: candidate.kind, intent, currentContent: candidate.currentContent };
   const existingTitles = normalizeExistingTitles(candidate.existingTitles);
   if (existingTitles) result.existingTitles = existingTitles;
+  if (authoring) result.authoring = authoring;
   return result;
 }
 

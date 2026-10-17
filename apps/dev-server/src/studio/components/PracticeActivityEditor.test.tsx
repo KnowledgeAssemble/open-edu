@@ -7,6 +7,15 @@ import { PracticeActivityEditor } from './PracticeActivityEditor';
 import { EditorBridgeProvider } from '../ai/EditorBridgeContext';
 import type { StudioApi } from '../studioApi.js';
 import type { CuratedWidget } from '../widgets/curatedCatalog.js';
+import { authoringFixture } from '../test/authoringFixture.js';
+
+const { refreshProvenanceMock } = vi.hoisted(() => ({
+  refreshProvenanceMock: vi.fn().mockResolvedValue(undefined),
+}));
+
+vi.mock('../ai/provenanceRefresh.js', () => ({
+  refreshProvenanceAfterApply: refreshProvenanceMock,
+}));
 
 vi.mock('../../editor/WidgetPreviewPanel.js', () => ({
   WidgetPreviewPanel: () => <div data-testid="preview" />,
@@ -130,6 +139,7 @@ function renderEditor(
 describe('PracticeActivityEditor', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    refreshProvenanceMock.mockClear();
   });
 
   it('renders the title, settings form, and preview stub after loading an exercise node', async () => {
@@ -163,6 +173,27 @@ describe('PracticeActivityEditor', () => {
       interactive: true,
     });
     expect(onSaved).toHaveBeenCalled();
+  });
+
+  it('refreshes provenance after save when authoring is provided', async () => {
+    const api = makeApi(validNodeContent);
+    render(
+      wrap(
+        <PracticeActivityEditor
+          api={api}
+          path="nodes/p.json"
+          authoring={authoringFixture}
+          onSaved={() => {}}
+          onError={() => {}}
+        />,
+      ),
+    );
+    await screen.findByDisplayValue('Planets quiz');
+    await userEvent.click(screen.getByRole('button', { name: /save/i }));
+    expect(refreshProvenanceMock).toHaveBeenCalled();
+    const [, applied, authoring] = refreshProvenanceMock.mock.calls[0]!;
+    expect(applied[0].path).toBe('nodes/p.json');
+    expect(authoring).toBe(authoringFixture);
   });
 
   it('seeds default settings for an empty config and shows a coaching banner', async () => {

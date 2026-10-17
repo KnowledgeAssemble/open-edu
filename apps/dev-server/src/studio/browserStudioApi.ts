@@ -764,12 +764,13 @@ export function createBrowserStudioApi(options: BrowserStudioApiOptions = {}): S
       await aiClient.discardDraft(draftId);
       return { success: true };
     },
-    generateItemAdd: async (kind, description): Promise<AiItemAddResult> => {
+    generateItemAdd: async (kind, description, options): Promise<AiItemAddResult> => {
       const existingTitles = await readActiveCourseTitles();
       const result = await aiClient.generateItem({
         kind,
         description,
         ...(existingTitles ? { existingTitles } : {}),
+        ...(options?.authoring ? { authoring: options.authoring } : {}),
       });
       const item = (result as { item?: unknown }).item;
       if (item) {
@@ -777,7 +778,13 @@ export function createBrowserStudioApi(options: BrowserStudioApiOptions = {}): S
       }
       return { ok: false, code: 'item-retry-failed', error: 'Item generation failed.' };
     },
-    generateItemEdit: async (kind, intent, currentContent, params): Promise<AiItemEditResult> => {
+    generateItemEdit: async (
+      kind,
+      intent,
+      currentContent,
+      params,
+      options,
+    ): Promise<AiItemEditResult> => {
       const existingTitles = await readActiveCourseTitles();
       const result = await aiClient.generateItem({
         kind,
@@ -785,6 +792,7 @@ export function createBrowserStudioApi(options: BrowserStudioApiOptions = {}): S
         currentContent,
         ...(params ? { params } : {}),
         ...(existingTitles ? { existingTitles } : {}),
+        ...(options?.authoring ? { authoring: options.authoring } : {}),
       });
       const items = (result as { items?: unknown }).items;
       if (Array.isArray(items)) {

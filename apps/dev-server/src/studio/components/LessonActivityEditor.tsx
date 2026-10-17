@@ -13,6 +13,8 @@ import { ArrowLeft } from 'lucide-react';
 import { useTranslation } from '@open-edu/i18n';
 import { EditorCoachingPanel } from './EditorCoachingPanel.js';
 import { useEditorBridge, readTextareaSelection } from '../ai/EditorBridgeContext';
+import type { AuthoringContext } from '@open-edu/packs';
+import { refreshProvenanceAfterApply } from '../ai/provenanceRefresh.js';
 import type { StudioApi } from '../studioApi.js';
 import type { DraftItem } from '../ai/types.js';
 
@@ -30,12 +32,14 @@ function syncHeading(content: string, title: string): string {
 export function LessonActivityEditor({
   api,
   path,
+  authoring = null,
   onSaved,
   onError,
   onCancel,
 }: {
   api: StudioApi;
   path: string;
+  authoring?: AuthoringContext | null;
   onSaved: () => void;
   onError: (message: string) => void;
   onCancel?: () => void;
@@ -99,6 +103,7 @@ export function LessonActivityEditor({
     setSaving(true);
     try {
       await api.writeFile(path, body);
+      void refreshProvenanceAfterApply(api, [{ path, title, content: body }], authoring ?? null);
       setBaseline(body);
       setSaved(true);
       window.setTimeout(() => setSaved(false), 2000);

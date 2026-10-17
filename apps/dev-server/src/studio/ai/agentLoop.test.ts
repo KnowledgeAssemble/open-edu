@@ -16,6 +16,7 @@ import { InMemoryToolRegistry } from './toolRegistry.js';
 import { defaultPermissionPolicy } from './permissionPolicy.js';
 import { createSkillResolver } from './skills/resolveSkills.js';
 import { InMemorySkillRegistry } from './skillRegistry.js';
+import { authoringFixture } from '../test/authoringFixture.js';
 
 const mockDraftActivity = vi.fn();
 const mockGenerateCourseDraftTool = vi.fn();
@@ -419,6 +420,77 @@ describe('runAgentLoop — model-driven loop (Phase 6.5)', () => {
     expect(captured[0]!.input).toEqual({ kind: 'quiz', description: 'A quiz about fractions' });
     expect(captured[0]!.ctx.packageDir).toBe('/pkg');
     expect(captured[0]!.ctx.completeText).toBe(completeText);
+  });
+
+  it('injects request.context.authoring into model-loop tool execution', async () => {
+    const captured: Array<{ input: unknown; ctx: Record<string, unknown> }> = [];
+    const tool: CompanionTool = {
+      id: 'generate_item',
+      description: 'Draft item',
+      inputSchema: z.object({ kind: z.string(), description: z.string() }),
+      permission: { id: 'item.generate', kind: 'propose' },
+      async execute(input, ctx) {
+        captured.push({ input, ctx });
+        return { ok: true, value: [] };
+      },
+    };
+    const runtime = new FakeRuntime([
+      [
+        {
+          type: 'tool.call',
+          toolCallId: 'c1',
+          tool: 'generate_item',
+          input: { kind: 'lesson', description: 'x' },
+        },
+        { type: 'text.complete' },
+      ],
+      [{ type: 'text.complete' }],
+    ]);
+
+    await collect(
+      runAgentLoop(
+        {
+          ...requestFor('explain'),
+          context: { ...context, authoring: authoringFixture },
+        },
+        {
+          runtime,
+          tools: new InMemoryToolRegistry([tool]),
+          policy: defaultPermissionPolicy,
+          packageDir: '/pkg',
+        },
+      ),
+    );
+
+    expect(captured[0]!.ctx.authoring).toEqual(authoringFixture);
+  });
+
+  it('passes request.context.authoring to draftActivity on the deterministic generate_item path', async () => {
+    mockDraftActivity.mockResolvedValue({
+      ok: true,
+      items: [{ kind: 'quiz', title: 'Q', content: '{}' }],
+    });
+    const { tool } = recordingTool('generate_item', 'item.generate');
+    const runtime = new FakeRuntime([[]]);
+
+    await collect(
+      runAgentLoop(
+        {
+          ...requestFor('create a quiz about photosynthesis'),
+          context: { ...context, authoring: authoringFixture },
+        },
+        {
+          runtime,
+          tools: new InMemoryToolRegistry([tool]),
+          policy: defaultPermissionPolicy,
+          packageDir: '/pkg',
+        },
+      ),
+    );
+
+    expect(mockDraftActivity).toHaveBeenCalledWith(
+      expect.objectContaining({ authoring: authoringFixture }),
+    );
   });
 
   it('preserves the provided conversation history as the model seed', async () => {

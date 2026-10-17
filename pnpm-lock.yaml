@@ -863,6 +863,9 @@ importers:
 
   packages/i18n:
     dependencies:
+      '@open-edu/schemas':
+        specifier: workspace:^
+        version: link:../schemas
       zod:
         specifier: ^3.22.0
         version: 3.25.76
@@ -993,12 +996,9 @@ importers:
 
   packages/packs:
     dependencies:
-      '@open-edu/i18n':
-        specifier: workspace:*
-        version: link:../i18n
-      '@open-edu/widgets':
-        specifier: workspace:*
-        version: link:../widgets
+      '@open-edu/schemas':
+        specifier: workspace:^
+        version: link:../schemas
       zod:
         specifier: ^3.22.0
         version: 3.25.76

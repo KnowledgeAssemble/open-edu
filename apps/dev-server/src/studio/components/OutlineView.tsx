@@ -28,7 +28,9 @@ import { OutlineHealthStrip } from './OutlineHealthStrip.js';
 import { buildReadyCheck, isReadyToExport } from '../readyCheck.js';
 import { useStudioAssistant } from '../ai';
 import type { ActivitySummary } from '../types.js';
+import { refreshProvenanceAfterApply } from '../ai/provenanceRefresh.js';
 import type { DraftItem } from '../ai/types.js';
+import type { AuthoringContext } from '@open-edu/packs';
 import type { StudioApi } from '../studioApi.js';
 
 function newLessonContent(): string {
@@ -52,12 +54,14 @@ function newQuizContent(): string {
 
 export function OutlineView({
   api,
+  authoring = null,
   onEdit,
   onError,
   onTitleChange,
   onShare,
 }: {
   api: StudioApi;
+  authoring?: AuthoringContext | null;
   onEdit: (path: string) => void;
   onError: (message: string) => void;
   onTitleChange?: (title: string) => void;
@@ -208,6 +212,11 @@ export function OutlineView({
     const path = `nodes/${item.kind}-${stamp}${ext}`;
     try {
       await api.writeFile(path, item.content);
+      void refreshProvenanceAfterApply(
+        api,
+        [{ path, title: item.title, content: item.content }],
+        authoring ?? null,
+      );
       const next: ActivitySummary[] = [
         ...activities,
         { id: path, path, title: item.title, kind: item.kind },
@@ -353,6 +362,7 @@ export function OutlineView({
         {!assistantEnabled ? (
           <AiAddDialog
             api={api}
+            authoring={authoring}
             open={aiDialogOpen}
             onOpenChange={setAiDialogOpen}
             onAccept={(item) => void addAiDraft(item)}

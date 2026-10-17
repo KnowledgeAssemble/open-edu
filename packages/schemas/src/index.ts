@@ -86,8 +86,12 @@ export type {
   WidgetGuideConfigField,
 } from './widget-catalog.js';
 
-export { ReproductionNodeSchema, ReproductionRecordSchema } from './provenance.js';
-export type { ReproductionRecord } from './provenance.js';
+export {
+  ReproductionNodeSchema,
+  ReproductionRecordSchema,
+  AuthoringScopeSchema,
+} from './provenance.js';
+export type { ReproductionRecord, AuthoringScope } from './provenance.js';
 
 export {
   WidgetManifestSchema,
@@ -222,6 +226,14 @@ export type {
   AnimationConfigInput,
   AnimationEffectConfigInput,
 } from './animation.js';
+
+export { LearningIntent, LEARNING_INTENTS } from './learning-intents.js';
+
+export { SUPPORTED_LOCALES, DEFAULT_LOCALE, isValidLocale } from './locale.js';
+export type { Locale } from './locale.js';
+
+export { matchesIntentTagFilters } from './intent-tags.js';
+export type { IntentTagEntry, IntentTagFilters } from './intent-tags.js';
 
 export const SCHEMAS_VERSION = '0.1.0';
 

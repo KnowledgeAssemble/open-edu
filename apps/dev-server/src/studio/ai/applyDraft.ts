@@ -1,5 +1,7 @@
+import type { AuthoringContext } from '@open-edu/packs';
 import type { StudioApi } from '../studioApi';
 import type { DraftItem } from './types';
+import { refreshProvenanceAfterApply } from './provenanceRefresh.js';
 import { applyChangeSet } from './applyChangeSet';
 import { buildItemChangeSet } from './buildItemChangeSet';
 import { diffChangeSet, type FileDiff } from './changeSet';
@@ -11,6 +13,7 @@ export interface ApplyDraftOptions {
   path?: string;
   applyToEditor?: (d: DraftItem) => void;
   openInEditor?: boolean;
+  authoring?: AuthoringContext | null;
 }
 
 export interface ApplyDraftResult {
@@ -39,6 +42,7 @@ export async function applyDraft(
 export async function applyDraftBatch(
   api: StudioApi,
   drafts: DraftItem[],
+  options?: { authoring?: AuthoringContext | null },
 ): Promise<ApplyDraftResult> {
   const workspace = await api.getWorkspace();
   const changeSet = buildItemChangeSet(drafts, []);
@@ -49,6 +53,15 @@ export async function applyDraftBatch(
   }
   const paths = changeSet.changes.map((c) => c.path);
   await appendToOutline(api, paths);
+  void refreshProvenanceAfterApply(
+    api,
+    changeSet.changes.map((c, i) => ({
+      path: c.path,
+      title: drafts[i]?.title,
+      content: drafts[i]?.content ?? '',
+    })),
+    options?.authoring ?? null,
+  );
   return { paths, preview, changeSetId: changeSet.id };
 }
 
@@ -67,6 +80,13 @@ async function applyDraftToFile(
   }
   const path = changeSet.changes[0]?.path ?? options.path;
   await appendToOutline(api, path ? [path] : []);
+  if (path) {
+    void refreshProvenanceAfterApply(
+      api,
+      [{ path, title: draft.title, content: draft.content }],
+      options.authoring ?? null,
+    );
+  }
   return { path, paths: path ? [path] : [], preview, changeSetId: changeSet.id };
 }
 

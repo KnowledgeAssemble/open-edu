@@ -52,6 +52,8 @@ import type { LearnerProfile } from './ai/context.js';
 import type { AuthoringContext, PackDiagnostic } from '@open-edu/packs';
 import { nextAuthoringScope, restoreInitialAuthoring } from './authoringScope.js';
 import { readStoredPackAuthoring, writeStoredPackAuthoring } from './studioSession.js';
+import { computeAuthoringDrift, type AuthoringDrift } from './packs/authoringRestore.js';
+import { coverageFromPackage } from './packs/coverageFromPackage.js';
 
 export function StudioApp({
   loadedPackage,
@@ -95,6 +97,15 @@ export function StudioApp({
     initialAuthoring.warnings,
   );
   const [capabilityGaps, setCapabilityGaps] = useState<string[]>([]);
+  const [authoringDrift, setAuthoringDrift] = useState<AuthoringDrift | null>(null);
+  const [restoredFromProvenance, setRestoredFromProvenance] = useState(false);
+  const authoringRef = useRef<AuthoringContext | null>(authoring);
+  authoringRef.current = authoring;
+  const restoredCourseKeyRef = useRef<string | null>(null);
+  const coverage = useMemo(
+    () => coverageFromPackage(loadedPackage, authoring),
+    [loadedPackage, authoring],
+  );
   const prevCourseKeyRef = useRef<string | null>(courseKey);
   useEffect(() => {
     const previousCourseKey = prevCourseKeyRef.current;
@@ -114,6 +125,8 @@ export function StudioApp({
     setAuthoring(null);
     setAuthoringWarnings([]);
     setCapabilityGaps([]);
+    setAuthoringDrift(null);
+    setRestoredFromProvenance(false);
     writeStoredPackAuthoring(null);
   }, [courseKey]);
   const filesPaneRef = useRef<PackageSourcePaneHandle>(null);
@@ -133,6 +146,37 @@ export function StudioApp({
   }, [targetLearnerKind]);
 
   const api = useMemo(() => apiProp ?? createLocalStudioApi(), [apiProp]);
+
+  useEffect(() => {
+    if (courseKey === null) return;
+    if (restoredCourseKeyRef.current === courseKey) return;
+    restoredCourseKeyRef.current = courseKey;
+    if (readStoredPackAuthoring()) return;
+    const record = loadedPackage?.provenance;
+    const scope = record?.authoringScope;
+    if (!record || !scope) return;
+    let cancelled = false;
+    void (async () => {
+      try {
+        const { context, warnings } = await api.setAuthoringSelection({
+          curriculum: scope.curriculum,
+          unit: scope.unit,
+          learner: scope.learner,
+          locale: scope.locale,
+        });
+        if (cancelled || authoringRef.current !== null) return;
+        setAuthoring(context);
+        setAuthoringWarnings(warnings);
+        setAuthoringDrift(computeAuthoringDrift(record, context));
+        setRestoredFromProvenance(true);
+      } catch {
+        // Advisory: an unresolvable scope leaves the context unselected.
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [courseKey, api, loadedPackage]);
 
   useEffect(() => {
     let cancelled = false;
@@ -295,6 +339,9 @@ export function StudioApp({
           authoring={authoring}
           authoringWarnings={authoringWarnings}
           capabilityGaps={capabilityGaps}
+          authoringDrift={authoringDrift}
+          restoredFromProvenance={restoredFromProvenance}
+          coverage={coverage}
         />
       );
       break;
@@ -303,6 +350,7 @@ export function StudioApp({
         <ActivityEditorRouter
           api={api}
           path={selectedPath}
+          authoring={authoring}
           onSaved={() => {}}
           onError={handleError}
           onCancel={() => handleNavigate('outline')}
@@ -356,6 +404,7 @@ export function StudioApp({
         <StudioChatProvider
           courseId={loadedPackage?.manifest.id}
           api={api}
+          authoring={authoring}
           onOpenPath={handleOpenPath}
           onError={handleError}
           onOutlineChanged={() => {

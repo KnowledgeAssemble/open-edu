@@ -23,6 +23,8 @@ import type { CuratedWidget } from '../widgets/curatedCatalog.js';
 import { WidgetPicker } from './WidgetPicker.js';
 import { WidgetGuidePanel } from './WidgetGuidePanel.js';
 import { useEditorBridge } from '../ai/EditorBridgeContext';
+import type { AuthoringContext } from '@open-edu/packs';
+import { refreshProvenanceAfterApply } from '../ai/provenanceRefresh.js';
 import type { StudioApi } from '../studioApi.js';
 import type { DraftItem } from '../ai/types.js';
 
@@ -56,12 +58,14 @@ function seedConfigFor(widget: CuratedWidget): Record<string, unknown> {
 export function PracticeActivityEditor({
   api,
   path,
+  authoring = null,
   onSaved,
   onError,
   onCancel,
 }: {
   api: StudioApi;
   path: string;
+  authoring?: AuthoringContext | null;
   onSaved: () => void;
   onError: (message: string) => void;
   onCancel?: () => void;
@@ -208,8 +212,14 @@ export function PracticeActivityEditor({
         widget: widgetId,
         config,
       };
-      await api.writeFile(path, serializeExerciseNode(node));
-      setBaseline(serializeExerciseNode(node));
+      const content = serializeExerciseNode(node);
+      await api.writeFile(path, content);
+      void refreshProvenanceAfterApply(
+        api,
+        [{ path, title: title || widgetId, content }],
+        authoring ?? null,
+      );
+      setBaseline(content);
       setSaved(true);
       if (savedTimer.current) clearTimeout(savedTimer.current);
       savedTimer.current = setTimeout(() => setSaved(false), 2000);

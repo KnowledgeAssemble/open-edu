@@ -7,17 +7,20 @@ import { ReflectionActivityEditor } from './ReflectionActivityEditor.js';
 import { RawActivityEditor } from './RawActivityEditor.js';
 import { detectActivityKind } from '../outlineModel.js';
 import type { ActivityKind } from '../types.js';
+import type { AuthoringContext } from '@open-edu/packs';
 import type { StudioApi } from '../studioApi.js';
 
 export function ActivityEditorRouter({
   api,
   path,
+  authoring = null,
   onSaved,
   onError,
   onCancel,
 }: {
   api: StudioApi;
   path: string;
+  authoring?: AuthoringContext | null;
   onSaved: () => void;
   onError: (message: string) => void;
   onCancel?: () => void;
@@ -53,6 +56,7 @@ export function ActivityEditorRouter({
       <LessonActivityEditor
         api={api}
         path={path}
+        authoring={authoring}
         onSaved={onSaved}
         onError={onError}
         onCancel={onCancel}
@@ -65,6 +69,7 @@ export function ActivityEditorRouter({
       <QuizActivityEditor
         api={api}
         path={path}
+        authoring={authoring}
         onSaved={onSaved}
         onError={onError}
         onCancel={onCancel}
@@ -77,6 +82,7 @@ export function ActivityEditorRouter({
       <PracticeActivityEditor
         api={api}
         path={path}
+        authoring={authoring}
         onSaved={onSaved}
         onError={onError}
         onCancel={onCancel}

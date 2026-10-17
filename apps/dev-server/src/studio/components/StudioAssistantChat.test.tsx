@@ -5,6 +5,11 @@ import { I18nProvider } from '@open-edu/i18n';
 import studioEn from '@open-edu/i18n/locales/en/studio.json';
 import { StudioAssistantChat } from './StudioAssistantChat';
 import type { CourseDraftResult, DraftItem } from '../ai/types';
+import { authoringFixture } from '../test/authoringFixture.js';
+
+const { applyDraftMock } = vi.hoisted(() => ({
+  applyDraftMock: vi.fn().mockResolvedValue({ path: 'nodes/a.md' }),
+}));
 
 const sendMessage = vi.fn();
 const appendAssistantNote = vi.fn();
@@ -42,6 +47,7 @@ vi.mock('../ai', () => ({
       locale: 'en',
       aiAvailable: true,
       course: { id: 'c1', title: 'C', activityCount: 0, outline: [] },
+      authoring: authoringFixture,
     },
     pendingDrafts: null,
     setPendingDrafts: vi.fn(),
@@ -74,10 +80,10 @@ vi.mock('../ai/EditorBridgeContext', () => ({
 }));
 
 vi.mock('../ai/applyDraft', () => ({
-  applyDraft: vi.fn(async () => {
+  applyDraft: async (...args: unknown[]) => {
     handleUseDraft();
-    return { path: 'nodes/a.md' };
-  }),
+    return applyDraftMock(...args);
+  },
   applyDraftBatch: vi.fn(async () => {
     handleUseDraft();
   }),
@@ -118,6 +124,15 @@ describe('StudioAssistantChat next-step actions', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Apply this draft' }));
     await waitFor(() => expect(handleUseDraft).toHaveBeenCalled());
     expect(sendMessage).not.toHaveBeenCalled();
+  });
+
+  it('forwards authoring into applyDraft when applying a file draft', async () => {
+    applyDraftMock.mockClear();
+    wrap(<StudioAssistantChat />);
+    await userEvent.click(screen.getByRole('button', { name: 'Apply this draft' }));
+    await waitFor(() => expect(applyDraftMock).toHaveBeenCalled());
+    const options = applyDraftMock.mock.calls[0]![2] as { authoring?: unknown };
+    expect(options.authoring).toBe(authoringFixture);
   });
 
   it('sends non-action chips as chat messages', async () => {

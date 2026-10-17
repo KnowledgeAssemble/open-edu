@@ -6,6 +6,7 @@ import {
   generateItemInput,
 } from './toolCatalog.js';
 import { draftActivity, generateCourseDraftTool } from './tools.js';
+import { authoringFixture } from '../../test/authoringFixture.js';
 
 vi.mock('./tools.js', () => ({
   draftActivity: vi.fn(),
@@ -116,5 +117,70 @@ describe('companionToolCatalog', () => {
 
     expect(result.ok).toBe(false);
     expect(generateCourseDraftTool).not.toHaveBeenCalled();
+  });
+
+  it('generate_course forwards ctx.authoring and locale into generateCourseDraftTool', async () => {
+    vi.mocked(generateCourseDraftTool).mockResolvedValueOnce({
+      ok: true,
+      courseDraft: {
+        success: true,
+        title: 'Course',
+        outlinePreview: [],
+        quality: [],
+        draftId: 'd1',
+      },
+    });
+    const tool = companionToolCatalog.find((t) => t.id === 'generate_course')!;
+    const completeText = vi.fn();
+    await tool.execute(
+      { notes: 'Build a course' },
+      { packageDir: '/pkg', completeText, authoring: authoringFixture },
+    );
+    expect(generateCourseDraftTool).toHaveBeenCalledWith({
+      notes: 'Build a course',
+      packageDir: '/pkg',
+      completeText,
+      authoring: authoringFixture,
+      locale: authoringFixture.locale,
+    });
+  });
+
+  it('generate_item forwards ctx.authoring into draftActivity', async () => {
+    vi.mocked(draftActivity).mockResolvedValueOnce({
+      ok: true,
+      items: [{ kind: 'lesson', title: 'L', content: '# L' }],
+    });
+    const tool = companionToolCatalog.find((t) => t.id === 'generate_item')!;
+    await tool.execute(
+      { kind: 'lesson', description: 'Explain fractions' },
+      { packageDir: '/pkg', authoring: authoringFixture },
+    );
+    expect(draftActivity).toHaveBeenCalledWith({
+      type: 'draft_new',
+      kind: 'lesson',
+      description: 'Explain fractions',
+      packageDir: '/pkg',
+      authoring: authoringFixture,
+    });
+  });
+
+  it('edit_item forwards ctx.authoring into draftActivity', async () => {
+    vi.mocked(draftActivity).mockResolvedValueOnce({
+      ok: true,
+      items: [{ kind: 'lesson', title: 'L', content: '# L' }],
+    });
+    const tool = companionToolCatalog.find((t) => t.id === 'edit_item')!;
+    await tool.execute(
+      { kind: 'lesson', intent: 'rewrite', currentContent: '# Hi' },
+      { packageDir: '/pkg', authoring: authoringFixture },
+    );
+    expect(draftActivity).toHaveBeenCalledWith({
+      type: 'edit_existing',
+      kind: 'lesson',
+      intent: 'rewrite',
+      currentContent: '# Hi',
+      packageDir: '/pkg',
+      authoring: authoringFixture,
+    });
   });
 });

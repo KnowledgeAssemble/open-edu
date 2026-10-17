@@ -224,6 +224,7 @@ export async function* runAgentLoop(
           // provider callback (the input schemas intentionally omit them).
           packageDir: options.packageDir ?? '',
           completeText: options.completeText,
+          authoring: request.context.authoring,
         });
         yield { type: 'tool.completed', toolCallId: event.toolCallId, result };
         if (result.ok) {
@@ -330,6 +331,7 @@ export async function* runDeterministicTool(
       kind: route.kind,
       description: route.description,
       packageDir: options.packageDir,
+      ...(request.context.authoring ? { authoring: request.context.authoring } : {}),
     });
     yield { type: 'tool.completed', toolCallId: callId, result };
     if (result.ok) {
@@ -365,6 +367,7 @@ export async function* runDeterministicTool(
       intent: route.intent,
       params: route.params,
       packageDir: options.packageDir,
+      ...(request.context.authoring ? { authoring: request.context.authoring } : {}),
     });
     yield { type: 'tool.completed', toolCallId: callId, result };
     if (result.ok) {

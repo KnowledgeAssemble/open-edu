@@ -68,6 +68,7 @@ export function buildQuizEditPrompt(
   sourceOptionCount: number,
   context: string,
   params?: ItemIntentParams,
+  authoringSection?: string,
 ): string {
   const paramsSection = renderParamsSection(params);
 
@@ -96,6 +97,7 @@ export function buildQuizEditPrompt(
       '',
       paramsSection,
       '',
+      ...(authoringSection ? [authoringSection, ''] : []),
       context,
     ].join('\n');
   }
@@ -115,6 +117,7 @@ export function buildQuizEditPrompt(
     '',
     paramsSection,
     '',
+    ...(authoringSection ? [authoringSection, ''] : []),
     context,
   ].join('\n');
 }
@@ -124,6 +127,7 @@ export function buildLessonEditPrompt(
   currentContent: string,
   context: string,
   params?: ItemIntentParams,
+  authoringSection?: string,
 ): string {
   const paramsSection = renderParamsSection(params);
   return [
@@ -145,6 +149,7 @@ export function buildLessonEditPrompt(
     '',
     paramsSection,
     '',
+    ...(authoringSection ? [authoringSection, ''] : []),
     context,
   ].join('\n');
 }
@@ -154,6 +159,7 @@ export function buildPracticeEditPrompt(
   currentContent: string,
   context: string,
   params?: ItemIntentParams,
+  authoringSection?: string,
 ): string {
   const paramsSection = renderParamsSection(params);
   return [
@@ -178,6 +184,7 @@ export function buildPracticeEditPrompt(
     '',
     paramsSection,
     '',
+    ...(authoringSection ? [authoringSection, ''] : []),
     context,
   ].join('\n');
 }

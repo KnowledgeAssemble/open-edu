@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { SUPPORTED_LOCALES, isValidLocale } from '@open-edu/i18n/locale';
+import { SUPPORTED_LOCALES, isValidLocale } from '@open-edu/schemas/locale';
 
 export const PACK_FORMAT = 'openedu-pack' as const;
 export const PACK_FORMAT_VERSION = 1 as const;

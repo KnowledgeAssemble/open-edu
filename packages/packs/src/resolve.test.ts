@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { LearningIntent } from '@open-edu/widgets/intents';
+import { LearningIntent } from '@open-edu/schemas/learning-intents';
 import { loadPacksDir } from './loader.js';
 import { resolveAuthoringContext, resolveConcept } from './resolve.js';
 import { fingerprintAuthoringContext } from './fingerprint.js';

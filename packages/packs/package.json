@@ -34,8 +34,7 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "@open-edu/i18n": "workspace:*",
-    "@open-edu/widgets": "workspace:*",
+    "@open-edu/schemas": "workspace:^",
     "zod": "^3.22.0"
   },
   "devDependencies": {

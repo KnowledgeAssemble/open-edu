@@ -7,6 +7,7 @@ import { OutlineView } from './OutlineView';
 import type { StudioApi } from '../studioApi.js';
 import type { ActivitySummary } from '../types.js';
 import type { CuratedWidget } from '../widgets/curatedCatalog.js';
+import { authoringFixture } from '../test/authoringFixture.js';
 
 const { mockCatalog } = vi.hoisted(() => {
   const multipleChoice: CuratedWidget = {
@@ -58,8 +59,13 @@ vi.mock('./AiAddDialog.js', () => ({
   },
 }));
 
-const { mockAssistantContext } = vi.hoisted(() => ({
+const { mockAssistantContext, refreshProvenanceMock } = vi.hoisted(() => ({
   mockAssistantContext: { panelOpen: false, openWithPreset: vi.fn(), enabled: true },
+  refreshProvenanceMock: vi.fn().mockResolvedValue(undefined),
+}));
+
+vi.mock('../ai/provenanceRefresh.js', () => ({
+  refreshProvenanceAfterApply: refreshProvenanceMock,
 }));
 
 vi.mock('../ai', () => ({
@@ -115,6 +121,7 @@ describe('OutlineView', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     mockAssistantContext.enabled = true;
+    refreshProvenanceMock.mockClear();
   });
 
   it('loads and renders activities with kind badges', async () => {
@@ -252,6 +259,42 @@ describe('OutlineView', () => {
     const path = writeCall.mock.calls[0]![0] as string;
     expect(path).toMatch(/^nodes\/quiz-\d+\.json$/);
     expect(api.saveOutlineOrder).toHaveBeenCalled();
+    mockAssistantContext.enabled = true;
+  });
+
+  it('refreshes provenance after accepting an AI draft when authoring is set', async () => {
+    mockAssistantContext.enabled = false;
+    const api = makeApi();
+    const draftContent = JSON.stringify({
+      type: 'quiz',
+      question: 'Drafted?',
+      options: [
+        { id: 'a', text: 'A', correct: true },
+        { id: 'b', text: 'B', correct: false },
+        { id: 'c', text: 'C', correct: false },
+        { id: 'd', text: 'D', correct: false },
+      ],
+    });
+    render(
+      wrap(
+        <OutlineView api={api} authoring={authoringFixture} onEdit={() => {}} onError={() => {}} />,
+      ),
+    );
+    await screen.findByText('Intro');
+
+    await act(async () => {
+      mockAcceptDraft({
+        kind: 'quiz',
+        title: 'Drafted quiz',
+        content: draftContent,
+      });
+    });
+
+    await waitFor(() => expect(refreshProvenanceMock).toHaveBeenCalled());
+    const [, applied, authoring] = refreshProvenanceMock.mock.calls[0]!;
+    expect(applied[0].title).toBe('Drafted quiz');
+    expect(applied[0].content).toBe(draftContent);
+    expect(authoring).toBe(authoringFixture);
     mockAssistantContext.enabled = true;
   });
 

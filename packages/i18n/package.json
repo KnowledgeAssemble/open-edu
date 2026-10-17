@@ -46,6 +46,7 @@
     "zod": "^3.22.0"
   },
   "dependencies": {
+    "@open-edu/schemas": "workspace:^",
     "zod": "^3.22.0"
   }
 }

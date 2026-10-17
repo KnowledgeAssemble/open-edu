@@ -3,6 +3,13 @@ import { MemoryWorkspace } from '@open-edu/storage';
 import { applyDraft, applyDraftBatch } from './applyDraft';
 import type { DraftItem } from './types';
 import type { CourseWorkspace } from '@open-edu/storage';
+import { authoringFixture } from '../test/authoringFixture.js';
+
+vi.mock('./provenanceRefresh.js', () => ({
+  refreshProvenanceAfterApply: vi.fn().mockResolvedValue(undefined),
+}));
+
+import { refreshProvenanceAfterApply } from './provenanceRefresh.js';
 
 function fakeApi(workspace: CourseWorkspace) {
   return {
@@ -32,6 +39,7 @@ describe('applyDraft', () => {
       ]),
     });
     api = fakeApi(ws);
+    vi.mocked(refreshProvenanceAfterApply).mockClear();
   });
 
   it('commits a single draft file via the workspace transaction', async () => {
@@ -80,6 +88,23 @@ describe('applyDraft', () => {
     expect(applyToEditor).toHaveBeenCalledWith(draft);
     expect(api.getWorkspace).not.toHaveBeenCalled();
     expect(result.path).toBeUndefined();
+    expect(refreshProvenanceAfterApply).not.toHaveBeenCalled();
+  });
+
+  it('refreshes provenance after a successful file apply', async () => {
+    const draft: DraftItem = {
+      kind: 'lesson',
+      title: 'New Lesson',
+      content: '# New Lesson\n\nContent',
+    };
+    await applyDraft(api as never, draft, { mode: 'file', authoring: authoringFixture });
+    expect(refreshProvenanceAfterApply).toHaveBeenCalledWith(
+      api,
+      expect.arrayContaining([
+        expect.objectContaining({ content: draft.content, title: draft.title }),
+      ]),
+      authoringFixture,
+    );
   });
 });
 
@@ -133,5 +158,21 @@ describe('applyDraftBatch', () => {
     expect(result.preview.length).toBe(2);
     expect(result.preview.every((d) => d.marker === 'added')).toBe(true);
     expect(result.changeSetId).toBeTruthy();
+  });
+
+  it('batch applies one refresh with all paths', async () => {
+    const drafts: DraftItem[] = [
+      { kind: 'lesson', title: 'L1', content: '# L1' },
+      { kind: 'quiz', title: 'Q1', content: '{}' },
+    ];
+    await applyDraftBatch(api as never, drafts, { authoring: authoringFixture });
+    expect(refreshProvenanceAfterApply).toHaveBeenCalledWith(
+      api,
+      expect.arrayContaining([
+        expect.objectContaining({ content: '# L1' }),
+        expect.objectContaining({ content: '{}' }),
+      ]),
+      authoringFixture,
+    );
   });
 });

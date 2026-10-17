@@ -13,6 +13,7 @@ import { ConversationStore } from './ConversationStore';
 import { setConversationId } from './assistantStorage';
 import type { StudioContextSnapshot } from './context';
 import type { StudioApi } from '../studioApi';
+import { authoringFixture } from '../test/authoringFixture.js';
 
 function sseResponse(chunks: Array<Record<string, unknown>>): Response {
   const body = chunks.map((chunk) => `data: ${JSON.stringify(chunk)}\n\n`).join('');
@@ -292,6 +293,53 @@ describe('StudioChatProvider single-endpoint transport', () => {
     };
     expect(body.messages[0]).toMatchObject({ role: 'user', content: 'Add this quiz to course' });
     expect(chunkText(chunks)).toBe('Here is a draft');
+  });
+
+  it('forwards authoring into generateItemEdit from runIntent', async () => {
+    const generateItemEdit = vi.fn().mockResolvedValue({
+      ok: true,
+      items: [{ kind: 'lesson', title: 'T', content: '# T\n' }],
+    });
+    function IntentRunner() {
+      const { runIntent } = useStudioChat();
+      return (
+        <button
+          type="button"
+          onClick={() => void runIntent('lesson', 'rewrite', '# Title\n\nBody')}
+        >
+          Run intent
+        </button>
+      );
+    }
+    render(
+      <I18nProvider
+        locale="en"
+        dictionaries={{ en: { studio: studioEn as Record<string, string> } }}
+      >
+        <StudioAssistantProvider>
+          <EditorBridgeProvider>
+            <StudioChatProvider
+              courseId="course-x"
+              api={{ generateItemEdit } as unknown as StudioApi}
+              authoring={authoringFixture}
+            >
+              <ContextSeeder snapshot={snapshot}>
+                <IntentRunner />
+              </ContextSeeder>
+            </StudioChatProvider>
+          </EditorBridgeProvider>
+        </StudioAssistantProvider>
+      </I18nProvider>,
+    );
+    await userEvent.click(screen.getByRole('button', { name: 'Run intent' }));
+    await waitFor(() => expect(generateItemEdit).toHaveBeenCalled());
+    expect(generateItemEdit).toHaveBeenCalledWith(
+      'lesson',
+      'rewrite',
+      '# Title\n\nBody',
+      undefined,
+      { authoring: authoringFixture },
+    );
   });
 
   it('always targets the loop endpoint regardless of intent', async () => {

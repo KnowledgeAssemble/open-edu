@@ -4,6 +4,8 @@ import { Check, ArrowLeft } from 'lucide-react';
 import { useTranslation } from '@open-edu/i18n';
 import { EditorCoachingPanel } from './EditorCoachingPanel.js';
 import { useEditorBridge, readTextareaSelection } from '../ai/EditorBridgeContext';
+import type { AuthoringContext } from '@open-edu/packs';
+import { refreshProvenanceAfterApply } from '../ai/provenanceRefresh.js';
 import type { StudioApi } from '../studioApi.js';
 import type { DraftItem } from '../ai/types.js';
 
@@ -39,12 +41,14 @@ function serializeQuiz(
 export function QuizActivityEditor({
   api,
   path,
+  authoring = null,
   onSaved,
   onError,
   onCancel,
 }: {
   api: StudioApi;
   path: string;
+  authoring?: AuthoringContext | null;
   onSaved: () => void;
   onError: (message: string) => void;
   onCancel?: () => void;
@@ -152,6 +156,11 @@ export function QuizActivityEditor({
     try {
       const content = serializeQuiz(question, options, correctIndex);
       await api.writeFile(path, content);
+      void refreshProvenanceAfterApply(
+        api,
+        [{ path, title: question, content }],
+        authoring ?? null,
+      );
       setBaseline(content);
       setSaved(true);
       window.setTimeout(() => setSaved(false), 2000);
