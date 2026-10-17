@@ -1,8 +1,8 @@
 # OpenEdu Pack System
 
 **Status:** Proposed (revised, source-verified)
-**Version:** 0.3
-**Supersedes:** 0.2 (revisions 0.1 and 0.2 were earlier drafts of this same file)
+**Version:** 0.4
+**Supersedes:** 0.3 (revisions 0.1–0.3 were earlier drafts of this same file)
 **Audience:** OpenEdu Studio, AI agents, curriculum designers, content authors, engine/plugin developers
 **Scope:** Knowledge, curriculum, activity capabilities, learner profiles, authoring context, course-generation integration
 
@@ -64,6 +64,18 @@ The first column is the claim as previously written. Rows tagged **0.3** were fo
 | **0.3** "0.7 is the only Phase 1 gate"                                 | Phase 1 is gated on P0-1 **and** P0-7 (§6.5, §13.2)                                                                                                               |
 | **0.3** "Every field except `packs` is optional"                       | Inverted — `packs` is defaulted, `budget` is required (§17.1)                                                                                                     |
 | **0.3** One name for the duplicated guide renderer                     | The private duplicate is `renderGuideMarkdown`, not `renderWidgetGuideMarkdown` (§6.3)                                                                            |
+
+### 0.2 What revision 0.4 adds (Phase 3)
+
+Phases 0 and 1 are landed. Revision 0.4 adds **Phase 3 — lifecycle grounding**, which extends pack/AI-companion grounding from course creation across the full Studio content-creation lifecycle:
+
+- **§20.2** — `authoringScope` on the reproduction record so a pack-generated course can re-attach its `AuthoringContext` on reopen; provenance now also refreshes on AI item apply, not only on AI course commit (OQ4 resolved).
+- **§21.4** — item-level grounding: `authoring` threads through `/item/add`, `/item/edit`, the chat tools, and the item prompts, with pack-whitelist validation for practice widgets.
+- **§22.4** — restore via provenance: opening a course with an `authoringScope` re-resolves the context and surfaces pack-version / fingerprint drift.
+- **§22.5** — live objective coverage in the Packs tab, with "generate activity" remediation chips that prefill the assistant for uncovered objectives.
+- **§27 / §28** — Phase 3 stories 3.1–3.8 and their acceptance criteria.
+
+All Phase 3 changes are additive and optional at every stage: a course without packs, or a request without `authoring`, behaves exactly as in Phase 1.
 
 ---
 
@@ -1014,6 +1026,12 @@ A course generated from packs records which pack content produced which node:
   ],
   "generatedAt": "2026-01-15T10:22:00.000Z",
   "contextFingerprint": "sha256:9f2c…",
+  "authoringScope": {
+    "curriculum": "nios-math-level-a",
+    "unit": "fractions",
+    "learner": "neurotypical",
+    "locale": "en"
+  },
   "nodes": [
     {
       "path": "nodes/lesson-1.md",
@@ -1038,6 +1056,10 @@ This answers, with no new infrastructure:
 None of this is possible today. `DistributionManifestSchema` has a `checksum` (SHA-256 of the sorted content path list, not of file bytes) and a `signature.status` that is recorded but never verified — neither carries authoring lineage.
 
 `contextFingerprint` = SHA-256 of the canonical JSON serialization of the resolved `AuthoringContext`, excluding `budget.usedChars` and `budget.truncated` (which are properties of the consumer, not the context).
+
+`authoringScope` (optional, Phase 3) records the _selection inputs_ — exactly the four fields of the Studio's `setAuthoringSelection` call (§22.2) — so reopening the course can re-resolve the full `AuthoringContext` from the packs on hand rather than storing the entire context blob in the course. It is written whenever the course was generated with an authoring context and omitted otherwise. `schemaVersion` stays `1`: the field is additive and optional, and the lenient loader (§20.2, story 1.10) ignores unknown keys on read.
+
+**Refresh policy (resolves OQ4).** `provenance.json` is written on AI course commit (Phase 1) and **refreshed by merge on AI item apply** (Phase 3): accepting an AI-drafted or AI-edited lesson/quiz/practice upserts that node's entry (`path`-keyed) and updates `generatedAt`, while `packs`, `authoringScope`, and `contextFingerprint` are preserved. Manual edits through the file pane remain outside the record — the record stays authoritative for AI-generated lineage and _advisory_ for hand edits, exactly as OQ4's Phase 1 answer intended, now stated for the item path too.
 
 ---
 
@@ -1078,6 +1100,28 @@ The skill teaches the model to satisfy each objective with an activity whose `le
 ### 21.3 Grounding is not invention prevention
 
 The model can still produce a blueprint that references a concept not in the context. §23.2 validates the output; the prompt reduces the error rate, the validator catches it. Do not treat prompt wording as a correctness mechanism.
+
+### 21.4 Item-level grounding (Phase 3)
+
+Phase 1 grounded course generation only. Phase 3 threads the same optional `AuthoringContext` through item generation so single-activity drafts honor the pack selection too:
+
+```text
+/item/add  ·  /item/edit        body gains optional `authoring`
+    ↓
+itemGenerate.ts                 `ItemAddRequest` / `ItemEditRequest` gain `authoring?`
+    ↓
+itemAddPrompts · itemEditPrompts  compact AUTHORING SECTION block (packs, unit, objectives
+                                  with requiresIntents, available activities) above the
+                                  existing course context
+    ↓
+validateItemDraft                when `authoring.availableActivities` is non-empty,
+                                  a practice draft's `widget` must be one of those ids
+                                  (pack whitelist), checked after the curated-catalog check
+```
+
+The chat path mirrors this with server-owned injection, following the existing `packageDir`/`completeText` pattern (`agentLoop.ts` injects via `ToolContext`; the model never supplies `authoring`): the deterministic `generate_item`/`edit_item` branches pass `request.context.authoring`, the model-loop tool execution injects the same, and `toolCatalog.ts` forwards it into `draftActivity` / `generateCourseDraftTool`. The `objective-intent` skill (§21.2) extends its `tools` list to `['generate_course', 'generate_item', 'edit_item']`; tool filtering remains union-semantics, so no tool is ever locked out when the skill is absent.
+
+Back-compat invariant: without `authoring`, prompts, validation, and tool outputs are byte-identical to Phase 1.
 
 ---
 
@@ -1143,6 +1187,46 @@ Packs are **read-only inputs**, so browser mode reads them from the bundle or fe
 This is a deliberate limitation: in browser mode a user cannot install a new pack without rebuilding Studio. That matches how `widget-catalog-data.json` is already handled (generated at build time, not fetched). For the committed Phase 1 fixture, the bundler input is `OPEN_EDU_PACKS_DIR=examples/packs` (§7).
 
 One constraint on the implementation: `eduPackageLoader` must keep reading pack data through the filesystem and serializing it into the virtual module. If it is later refactored to import a loader from `@open-edu/packs`, that import must use a **subpath export** rather than the package index — `vite.config.ts` is exactly the import chain that causes `ERR_MODULE_NOT_FOUND` for workspace packages whose `dist` files carry extensionless relative imports (see `AGENTS.md`, "ESM Extensionless Imports in Vite Config Loading"; the `@open-edu/widgets/catalog` pattern is the precedent).
+
+### 22.4 Restore via provenance (Phase 3)
+
+Opening a course that carries `provenance.json` with an `authoringScope` (§20.2) re-attaches the authoring context without the user re-picking packs:
+
+```text
+course opened (courseKey set)
+    ↓
+api.getPreviewPackage()?.provenance          (lenient parse, story 1.10 — already loaded)
+    ↓ authoringScope present?
+api.setAuthoringSelection(authoringScope)    (re-resolves against packs on hand)
+    ↓
+computeAuthoringDrift(record, context)
+    packDiffs:        record.packs[] vs context.packs[]  (id+version)
+    fingerprintChanged: record.contextFingerprint vs fingerprint(context)
+    ↓
+authoring state set + Packs tab shows "Restored from provenance"
+                     + any drift as a visible warning
+```
+
+Precedence rules: an explicit pending pack selection (session storage, Phase 1) always wins over provenance restore; provenance restore is single-shot per course open; a record without `authoringScope`, or a scope that fails to resolve (pack missing), restores nothing and surfaces a warning rather than failing the open. Drift is informational — it never mutates the course or the record. Fingerprint comparison is possible in both Studio modes because the Phase 3 fingerprint implementation is isomorphic (pure TypeScript; identical `sha256:<hex>` values as the Phase 1 `node:crypto` implementation).
+
+### 22.5 Objective coverage & remediation (Phase 3)
+
+The Packs tab computes **live** objective coverage from the current course state — the same intent-satisfaction semantics as blueprint check 2 (§23.2), evaluated over the loaded package's practice widgets versus the restored/selected context's `availableActivities`:
+
+```text
+getPreviewPackage()  →  nodes[].data.widget (practice nodes)
+    ↓
+computeObjectiveCoverage(authoring, lessons)   (pure, @open-edu/packs)
+    → [{ id, description, requiresIntents, covered, satisfiedBy[] }]
+    ↓
+Packs tab: one row per objective (covered ✓ / uncovered)
+    uncovered objective → "Generate activity" chip
+    ↓
+chip opens the Author Assistant with a preset message for that objective
+(precedent: PackSelectionPanel's assistantPreset, Phase 1 story 1.6)
+```
+
+Coverage refreshes on course open, outline mutation, and provenance refresh after item apply. Remediation chips only craft the preset prompt — generation itself stays in the assistant, so the objective-intent skill and §21.4 item grounding do the actual satisfying. Coverage is check-2 only: concept/prose coverage remains the spec's Phase 2 question (§23.2).
 
 ---
 
@@ -1281,6 +1365,22 @@ Deliverables P0-1–P0-7 in §6.5. Independent of everything below. Each is a sm
 - Bloom level surviving into the package.
 - Community-contributed packs.
 
+### Phase 3 — Lifecycle grounding (Studio)
+
+Extends pack/AI grounding from course creation across the full content-creation lifecycle (§20.2 refresh, §21.4, §22.4, §22.5). All stories are additive; no-authoring behavior is unchanged.
+
+| #   | Story                                                                                                                    | Package                         | Depends on |
+| --- | ------------------------------------------------------------------------------------------------------------------------ | ------------------------------- | ---------- |
+| 3.1 | `ReproductionRecordSchema.authoringScope` (optional) + `buildProvenance` writes it from the generation authoring context | `@open-edu/schemas`, dev-server | 1.10       |
+| 3.2 | Isomorphic fingerprint: pure-TS SHA-256 replacing `node:crypto`, byte-identical outputs                                  | `@open-edu/packs`               | 1.9        |
+| 3.3 | Item grounding: `authoring` on `ItemAddRequest`/`ItemEditRequest`, prompt section, practice whitelist validation         | dev-server                      | 1.7        |
+| 3.4 | Chat parity: `toolCatalog` / `agentLoop` / `draftActivity` thread `authoring`; `objective-intent` skill covers items     | dev-server                      | 3.3        |
+| 3.5 | Client pass-through: `StudioApi.generateItemAdd`/`generateItemEdit` options + authoring props to editors/dialog          | dev-server                      | 3.3        |
+| 3.6 | Provenance merge on AI item apply: browser-safe `provenanceMerge` upserts node entries (§20.2 refresh policy)            | dev-server                      | 3.1        |
+| 3.7 | Restore via provenance: re-resolve `authoringScope` on course open + drift display (§22.4)                               | dev-server                      | 3.1, 3.2   |
+| 3.8 | Live objective coverage panel + "generate activity" remediation chips (§22.5)                                            | `@open-edu/packs`, dev-server   | 3.7        |
+| 3.9 | Vitest coverage for every story; full verification loop                                                                  | all                             | each       |
+
 ---
 
 # 28. Acceptance Criteria
@@ -1333,6 +1433,37 @@ Deliverables P0-1–P0-7 in §6.5. Independent of everything below. Each is a sm
 - [ ] `capabilityGaps` is surfaced in the Studio
 - [ ] The reproduction record pins packs, versions, activities, and `contextFingerprint` for identical inputs (lineage, not replay — §18.4)
 
+### Phase 3
+
+**Provenance & restore**
+
+- [ ] A course generated with packs records `authoringScope`; one generated without it has no such key
+- [ ] Opening a pack-generated course re-attaches the authoring context without re-picking packs
+- [ ] A pending explicit pack selection wins over provenance restore
+- [ ] Pack-version drift and fingerprint drift are both surfaced when the packs on hand differ from the record
+- [ ] The fingerprint implementation is mode-agnostic and produces identical values to the Phase 1 implementation
+
+**Item grounding**
+
+- [ ] `/item/add` and `/item/edit` accept and honor `authoring`; without it, behavior is byte-identical to Phase 1
+- [ ] Item prompts include the authoring section when the context is present
+- [ ] A practice draft referencing a widget outside `availableActivities` fails validation and retries, then surfaces `item-retry-failed`
+- [ ] Chat tool calls (deterministic and model-loop) pass the snapshot's authoring to item and course generation
+- [ ] The `objective-intent` skill applies to item tools and never removes tools from the model's toolset
+
+**Provenance refresh**
+
+- [ ] Accepting an AI item draft (add or edit, chat or dialog) upserts that node's entry in `provenance.json`
+- [ ] `packs`, `authoringScope`, and `contextFingerprint` are preserved across item refreshes
+- [ ] Manual file-pane edits do not touch `provenance.json`
+
+**Coverage & remediation**
+
+- [ ] The Packs tab shows every context objective as covered or uncovered against the live course
+- [ ] Coverage matches blueprint check-2 semantics (intent union over emitted practice widgets)
+- [ ] An uncovered objective offers a "generate activity" chip that opens the assistant with a preset targeting that objective
+- [ ] Coverage refreshes after an AI item apply updates the course
+
 ---
 
 # 29. Out of Scope for Phase 1
@@ -1357,11 +1488,11 @@ Deliverables P0-1–P0-7 in §6.5. Independent of everything below. Each is a sm
 
 # 30. Open Questions
 
-| #   | Question                                                                                                  | Blocks  | Owner suggestion                                                                                                                         |
-| --- | --------------------------------------------------------------------------------------------------------- | ------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
-| 1   | Does a curriculum pack need its own `subject`/`level` taxonomy, or does `RegistryMetadataSchema` suffice? | 1.1     | Keep `subject`/`level` as free strings for Phase 1; no enum until a second curriculum proves the first was wrong                         |
-| 2   | Should `ConceptSchema.summary` cap at 2000 chars, or should the cap live only in the context budget?      | 1.3     | Budget only — a hard schema cap prevents a pack from storing richer content for non-AI consumers. Revisit after Phase 1 data             |
-| 3   | Is `derivedFrom: 'document'` on the manifest the right gate for required provenance, or per-concept?      | 1.1     | Manifest-level. Per-concept is more precise but adds a field to every concept                                                            |
-| 4   | Should the Studio write `provenance.json` on AI commit only, or also on manual `writeFile`?               | 1.10    | AI commit only in Phase 1. Manual edits make the record advisory, not authoritative — say so in the doc rather than pretending otherwise |
-| 5   | Do `Adult` and `Family` profiles get authored, or removed from `LearnerProfileKindSchema`?                | §15.1   | Not a pack question, but the two vocabularies are already drifting and packs will expose it                                              |
-| 6   | Should `provenance.json` ship inside `.oep`?                                                              | Phase 2 | Yes, under `contentRoot`. It is course data                                                                                              |
+| #   | Question                                                                                                  | Blocks  | Owner suggestion                                                                                                                                                                                  |
+| --- | --------------------------------------------------------------------------------------------------------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | Does a curriculum pack need its own `subject`/`level` taxonomy, or does `RegistryMetadataSchema` suffice? | 1.1     | Keep `subject`/`level` as free strings for Phase 1; no enum until a second curriculum proves the first was wrong                                                                                  |
+| 2   | Should `ConceptSchema.summary` cap at 2000 chars, or should the cap live only in the context budget?      | 1.3     | Budget only — a hard schema cap prevents a pack from storing richer content for non-AI consumers. Revisit after Phase 1 data                                                                      |
+| 3   | Is `derivedFrom: 'document'` on the manifest the right gate for required provenance, or per-concept?      | 1.1     | Manifest-level. Per-concept is more precise but adds a field to every concept                                                                                                                     |
+| 4   | Should the Studio write `provenance.json` on AI commit only, or also on manual `writeFile`?               | 1.10    | **Resolved in 0.4 (Phase 3):** AI commit _and_ AI item apply (path-keyed merge/upsert, §20.2). Manual `writeFile` stays out — the record is authoritative for AI lineage, advisory for hand edits |
+| 5   | Do `Adult` and `Family` profiles get authored, or removed from `LearnerProfileKindSchema`?                | §15.1   | Not a pack question, but the two vocabularies are already drifting and packs will expose it                                                                                                       |
+| 6   | Should `provenance.json` ship inside `.oep`?                                                              | Phase 2 | Yes, under `contentRoot`. It is course data                                                                                                                                                       |
