@@ -11,6 +11,7 @@ import {
 import type { CourseWorkspace } from '@open-edu/storage';
 import { readFile, readdir, stat } from 'node:fs/promises';
 import { resolve, join } from 'node:path';
+import { authoringFixture } from './test/authoringFixture.js';
 
 const FIXTURE_DIR = resolve(__dirname, '../../../../packages/core/src/__fixtures__/browser-studio');
 
@@ -407,6 +408,47 @@ describe('BrowserStudioApi', () => {
         existingTitles: ['The Water Cycle', 'The Water Cycle Check'],
       }),
     );
+  });
+
+  it('generateItemAdd includes authoring in the gateway body when provided', async () => {
+    const store = createBrowserCourseStore({ nonPersistent: true });
+    const session = createBrowserStudioSession();
+    const generateItem = vi.fn().mockResolvedValue({
+      item: { kind: 'lesson', title: 'L', content: '# L' },
+    });
+    const api = createBrowserStudioApi({
+      store,
+      session,
+      aiClient: { generateItem } as unknown as BrowserAiGateway,
+    });
+    await api.applyTemplate('lesson-quiz');
+    await api.openLibraryCourse('lesson-quiz');
+    await api.generateItemAdd('lesson', 'Explain fractions', { authoring: authoringFixture });
+    expect(generateItem).toHaveBeenCalledWith(
+      expect.objectContaining({
+        kind: 'lesson',
+        description: 'Explain fractions',
+        authoring: authoringFixture,
+      }),
+    );
+  });
+
+  it('generateItemAdd omits authoring when absent (back-compat)', async () => {
+    const store = createBrowserCourseStore({ nonPersistent: true });
+    const session = createBrowserStudioSession();
+    const generateItem = vi.fn().mockResolvedValue({
+      item: { kind: 'lesson', title: 'L', content: '# L' },
+    });
+    const api = createBrowserStudioApi({
+      store,
+      session,
+      aiClient: { generateItem } as unknown as BrowserAiGateway,
+    });
+    await api.applyTemplate('lesson-quiz');
+    await api.openLibraryCourse('lesson-quiz');
+    await api.generateItemAdd('lesson', 'Explain fractions');
+    const body = generateItem.mock.calls[0]![0] as Record<string, unknown>;
+    expect(body.authoring).toBeUndefined();
   });
 
   it('committing an AI draft touches only draft files and never replaces the course', async () => {

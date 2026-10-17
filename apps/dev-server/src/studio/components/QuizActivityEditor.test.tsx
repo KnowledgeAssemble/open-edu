@@ -6,6 +6,15 @@ import studioEn from '@open-edu/i18n/locales/en/studio.json';
 import { QuizActivityEditor } from './QuizActivityEditor';
 import { EditorBridgeProvider } from '../ai/EditorBridgeContext';
 import type { StudioApi } from '../studioApi.js';
+import { authoringFixture } from '../test/authoringFixture.js';
+
+const { refreshProvenanceMock } = vi.hoisted(() => ({
+  refreshProvenanceMock: vi.fn().mockResolvedValue(undefined),
+}));
+
+vi.mock('../ai/provenanceRefresh.js', () => ({
+  refreshProvenanceAfterApply: refreshProvenanceMock,
+}));
 
 function wrap(ui: React.ReactElement) {
   return (
@@ -34,6 +43,7 @@ function makeApi(overrides: Partial<StudioApi> = {}): StudioApi {
 describe('QuizActivityEditor', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    refreshProvenanceMock.mockClear();
   });
 
   it('loads existing quiz content', async () => {
@@ -118,6 +128,27 @@ describe('QuizActivityEditor', () => {
     const parsed = JSON.parse(writeCall.mock.calls[0]![1] as string);
     const trueCount = parsed.options.filter((o: { correct: boolean }) => o.correct).length;
     expect(trueCount).toBe(1);
+  });
+
+  it('refreshes provenance after save when authoring is provided', async () => {
+    const api = makeApi();
+    render(
+      wrap(
+        <QuizActivityEditor
+          api={api}
+          path="nodes/q.json"
+          authoring={authoringFixture}
+          onSaved={() => {}}
+          onError={() => {}}
+        />,
+      ),
+    );
+    await screen.findByLabelText(/question/i);
+    await userEvent.click(screen.getByRole('button', { name: /save/i }));
+    expect(refreshProvenanceMock).toHaveBeenCalled();
+    const [, applied, authoring] = refreshProvenanceMock.mock.calls[0]!;
+    expect(applied[0].path).toBe('nodes/q.json');
+    expect(authoring).toBe(authoringFixture);
   });
 
   it('disables save and warns when no correct answer is selected', async () => {

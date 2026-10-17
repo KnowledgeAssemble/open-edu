@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { createLocalStudioApi } from './localStudioApi';
+import { authoringFixture } from './test/authoringFixture.js';
 
 describe('localStudioApi client', () => {
   const fetchMock = vi.fn();
@@ -109,6 +110,39 @@ describe('localStudioApi client', () => {
       description: 'Explain fractions',
     });
     expect(result).toMatchObject({ ok: true });
+  });
+
+  it('generateItemAdd includes authoring in the body when provided', async () => {
+    fetchMock.mockResolvedValueOnce(
+      new Response(
+        JSON.stringify({ ok: true, item: { kind: 'lesson', title: 'L', content: '# L' } }),
+        { status: 200 },
+      ),
+    );
+    const api = createLocalStudioApi();
+    await api.generateItemAdd('lesson', 'Explain fractions', { authoring: authoringFixture });
+    const [, init] = fetchMock.mock.calls[0]!;
+    expect(JSON.parse(init?.body as string)).toEqual({
+      kind: 'lesson',
+      description: 'Explain fractions',
+      authoring: authoringFixture,
+    });
+  });
+
+  it('generateItemAdd omits authoring when absent (back-compat)', async () => {
+    fetchMock.mockResolvedValueOnce(
+      new Response(
+        JSON.stringify({ ok: true, item: { kind: 'lesson', title: 'L', content: '# L' } }),
+        { status: 200 },
+      ),
+    );
+    const api = createLocalStudioApi();
+    await api.generateItemAdd('lesson', 'Explain fractions');
+    const [, init] = fetchMock.mock.calls[0]!;
+    expect(JSON.parse(init?.body as string)).toEqual({
+      kind: 'lesson',
+      description: 'Explain fractions',
+    });
   });
 
   it('generateItemEdit posts kind + intent + currentContent + params to /item/edit', async () => {

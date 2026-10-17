@@ -1,8 +1,14 @@
 import { describe, it, expect, vi } from 'vitest';
+import userEvent from '@testing-library/user-event';
+import type { ObjectiveCoverage } from '@open-edu/packs';
+
+const { openWithPresetMock } = vi.hoisted(() => ({
+  openWithPresetMock: vi.fn(),
+}));
 
 vi.mock('../ai', () => ({
   useStudioAssistant: () => ({
-    openWithPreset: vi.fn(),
+    openWithPreset: openWithPresetMock,
   }),
 }));
 import { render, screen } from '@testing-library/react';
@@ -74,6 +80,70 @@ describe('PackBrowserPanel', () => {
     expect(screen.getByText('No pack provenance recorded yet.')).toBeInTheDocument();
     expect(screen.getByText('The context fits the prompt budget.')).toBeInTheDocument();
     expect(screen.getByText('No capability gaps.')).toBeInTheDocument();
+  });
+
+  const coverageFixture: ObjectiveCoverage[] = [
+    {
+      id: 'represent-fraction',
+      description: 'Represent three-quarters.',
+      requiresIntents: [LearningIntent.Practice],
+      covered: true,
+      satisfiedBy: ['math.number-line'],
+    },
+    {
+      id: 'compare-fraction',
+      description: 'Compare fractions',
+      requiresIntents: [LearningIntent.Compare],
+      covered: false,
+      satisfiedBy: [],
+    },
+  ];
+
+  it('renders one row per objective with covered status', () => {
+    render(
+      wrap(
+        <PackBrowserPanel
+          authoring={authoring}
+          warnings={[]}
+          capabilityGaps={[]}
+          coverage={coverageFixture}
+        />,
+      ),
+    );
+    expect(screen.getByText('Represent three-quarters.')).toBeInTheDocument();
+    expect(screen.getByText('Covered')).toBeInTheDocument();
+    expect(screen.getByText('Not yet covered')).toBeInTheDocument();
+  });
+
+  it('offers a generate chip for uncovered objectives and presets the assistant', async () => {
+    openWithPresetMock.mockClear();
+    const user = userEvent.setup();
+    render(
+      wrap(
+        <PackBrowserPanel
+          authoring={authoring}
+          warnings={[]}
+          capabilityGaps={[]}
+          coverage={coverageFixture}
+        />,
+      ),
+    );
+    await user.click(screen.getByRole('button', { name: 'Generate activity' }));
+    expect(openWithPresetMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        prefill: true,
+        message: expect.stringContaining('Compare fractions'),
+      }),
+    );
+  });
+
+  it('shows the empty-state hint without authoring', () => {
+    render(
+      wrap(<PackBrowserPanel authoring={null} warnings={[]} capabilityGaps={[]} coverage={[]} />),
+    );
+    expect(
+      screen.getByText('Select a curriculum pack to see objective coverage.'),
+    ).toBeInTheDocument();
   });
 
   it('has no axe violations', async () => {

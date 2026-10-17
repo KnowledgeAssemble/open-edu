@@ -6,6 +6,15 @@ import studioEn from '@open-edu/i18n/locales/en/studio.json';
 import { LessonActivityEditor } from './LessonActivityEditor';
 import { EditorBridgeProvider } from '../ai/EditorBridgeContext';
 import type { StudioApi } from '../studioApi.js';
+import { authoringFixture } from '../test/authoringFixture.js';
+
+const { refreshProvenanceMock } = vi.hoisted(() => ({
+  refreshProvenanceMock: vi.fn().mockResolvedValue(undefined),
+}));
+
+vi.mock('../ai/provenanceRefresh.js', () => ({
+  refreshProvenanceAfterApply: refreshProvenanceMock,
+}));
 
 function wrap(ui: React.ReactElement) {
   return (
@@ -34,6 +43,7 @@ function makeApi(overrides: Partial<StudioApi> = {}): StudioApi {
 describe('LessonActivityEditor', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    refreshProvenanceMock.mockClear();
   });
 
   it('applies a draft via editor bridge by replacing the body and re-syncing the title', async () => {
@@ -104,6 +114,28 @@ describe('LessonActivityEditor', () => {
     await userEvent.click(screen.getByRole('button', { name: /save/i }));
     const writeCall = api.writeFile as ReturnType<typeof vi.fn>;
     expect(writeCall).toHaveBeenCalledWith('nodes/l.md', '# Title\n\nBody');
+  });
+
+  it('refreshes provenance after save when authoring is provided', async () => {
+    const api = makeApi();
+    render(
+      wrap(
+        <LessonActivityEditor
+          api={api}
+          path="nodes/l.md"
+          authoring={authoringFixture}
+          onSaved={() => {}}
+          onError={() => {}}
+        />,
+      ),
+    );
+    await screen.findByDisplayValue('Title');
+    await userEvent.click(screen.getByRole('button', { name: /save/i }));
+    expect(refreshProvenanceMock).toHaveBeenCalledWith(
+      api,
+      [{ path: 'nodes/l.md', title: 'Title', content: '# Title\n\nBody' }],
+      authoringFixture,
+    );
   });
 
   it('cancels without writing when onCancel is provided', async () => {

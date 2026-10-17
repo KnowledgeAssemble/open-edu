@@ -1,10 +1,13 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, within } from '@testing-library/react';
+import { render, screen, within, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { I18nProvider } from '@open-edu/i18n';
 import studioEn from '@open-edu/i18n/locales/en/studio.json';
 import { StudioApp } from './StudioApp';
 import type { LoadedPackage } from '@open-edu/core';
+import { authoringFixture } from './test/authoringFixture.js';
+import { readStoredPackAuthoring, writeStoredPackAuthoring } from './studioSession.js';
+import type { ReproductionRecord } from '@open-edu/schemas';
 
 function wrap(ui: React.ReactElement) {
   return (
@@ -27,6 +30,10 @@ const readFileMock = vi
   .mockImplementation((path: string) =>
     Promise.resolve({ path, content: path.endsWith('.json') ? '{"type":"quiz"}' : '# Hi' }),
   );
+const { setAuthoringSelectionMock } = vi.hoisted(() => ({
+  setAuthoringSelectionMock: vi.fn(),
+}));
+
 const writeFileMock = vi.fn().mockResolvedValue({ success: true });
 const saveOutlineOrderMock = vi.fn().mockResolvedValue({ success: true });
 const getAiStatusMock = vi.fn().mockResolvedValue({ available: false });
@@ -88,7 +95,7 @@ vi.mock('./localStudioApi.js', () => ({
     exportUnitOep: vi.fn(),
     listPacks: vi.fn().mockResolvedValue([]),
     getPackDetail: vi.fn(),
-    setAuthoringSelection: vi.fn().mockResolvedValue({ context: {}, warnings: [] }),
+    setAuthoringSelection: setAuthoringSelectionMock,
   }),
 }));
 
@@ -106,6 +113,20 @@ const mockPkg: LoadedPackage = {
   cards: null,
   nodes: [],
   assetPaths: [],
+};
+
+const provenanceRecord: ReproductionRecord = {
+  schemaVersion: 1,
+  packs: [{ id: 'nios-math-level-a', version: '0.1.0', type: 'curriculum' }],
+  generatedAt: '2026-01-01T00:00:00.000Z',
+  contextFingerprint: 'sha256:a',
+  authoringScope: { curriculum: 'nios-math-level-a', unit: 'fractions' },
+  nodes: [],
+};
+
+const mockPkgWithProvenance: LoadedPackage = {
+  ...mockPkg,
+  provenance: provenanceRecord,
 };
 
 vi.mock('@dotlottie/react-player', () => ({
@@ -129,6 +150,7 @@ vi.mock('@ai-sdk/react', () => ({
 describe('StudioApp', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    setAuthoringSelectionMock.mockResolvedValue({ context: authoringFixture, warnings: [] });
     getAiStatusMock.mockResolvedValue({ available: false });
     generateFromNotesMock.mockResolvedValue({
       success: false,
@@ -325,5 +347,49 @@ describe('StudioApp', () => {
     await screen.findByText('Intro');
     await userEvent.click(screen.getByRole('tab', { name: 'Files' }));
     expect(screen.getByRole('tab', { name: 'Files' })).toHaveAttribute('data-state', 'active');
+  });
+
+  it('restores authoring from provenance on course open when no selection is stored', async () => {
+    expect(readStoredPackAuthoring()).toBeNull();
+    render(wrap(<StudioApp loadedPackage={mockPkgWithProvenance} />));
+    await waitFor(() =>
+      expect(setAuthoringSelectionMock).toHaveBeenCalledWith({
+        curriculum: 'nios-math-level-a',
+        unit: 'fractions',
+        learner: undefined,
+        locale: undefined,
+      }),
+    );
+    await userEvent.click(await screen.findByRole('button', { name: /outline/i }));
+    await userEvent.click(screen.getByRole('tab', { name: 'Packs' }));
+    expect(
+      await screen.findByText('Authoring context restored from course provenance'),
+    ).toBeInTheDocument();
+  });
+
+  it('skips restore when a stored pack selection exists', async () => {
+    writeStoredPackAuthoring({
+      courseKey: '/test::test',
+      pending: false,
+      context: authoringFixture,
+      warnings: [],
+    });
+    render(wrap(<StudioApp loadedPackage={mockPkgWithProvenance} />));
+    await waitFor(() => expect(screen.getByText('OpenEdu Studio')).toBeInTheDocument());
+    expect(setAuthoringSelectionMock).not.toHaveBeenCalled();
+  });
+
+  it('surfaces pack version drift in the Packs panel', async () => {
+    const contextNewer = {
+      ...authoringFixture,
+      packs: [{ id: 'nios-math-level-a', version: '0.2.0', type: 'curriculum' as const }],
+    };
+    setAuthoringSelectionMock.mockResolvedValue({ context: contextNewer, warnings: [] });
+    render(wrap(<StudioApp loadedPackage={mockPkgWithProvenance} />));
+    await waitFor(() => expect(setAuthoringSelectionMock).toHaveBeenCalled());
+    await userEvent.click(await screen.findByRole('button', { name: /outline/i }));
+    await userEvent.click(screen.getByRole('tab', { name: 'Packs' }));
+    expect(await screen.findByText(/recorded 0\.1\.0/i)).toBeInTheDocument();
+    expect(screen.getByText(/current 0\.2\.0/i)).toBeInTheDocument();
   });
 });
