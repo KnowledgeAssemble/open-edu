@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { LearningIntent } from '@open-edu/widgets/intents';
+import { LearningIntent } from '@open-edu/schemas/learning-intents';
 import { AuthoringContextSchema } from './context.js';
 
 const budget = { maxChars: 20000, usedChars: 0, truncated: [] as string[] };

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { LearningIntent } from '@open-edu/widgets/intents';
+import { LearningIntent } from '@open-edu/schemas/learning-intents';
 import type { AvailableActivity } from './context.js';
 import type { Concept } from './concept.js';
 import { resolveObjectiveCandidates } from './objectives.js';

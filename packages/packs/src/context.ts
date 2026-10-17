@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { LearningIntent } from '@open-edu/widgets/intents';
+import { LearningIntent } from '@open-edu/schemas/learning-intents';
 import { ConceptRefSchema } from './curriculum.js';
 
 export const PackRefSchema = z.object({

@@ -1,4 +1,4 @@
-import { matchesIntentTagFilters } from '@open-edu/widgets/search';
+import { matchesIntentTagFilters } from '@open-edu/schemas/intent-tags';
 import type { AvailableActivity, AuthoringContext } from './context.js';
 import type { Concept } from './concept.js';
 

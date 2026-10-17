@@ -12,6 +12,18 @@
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
+    },
+    "./learning-intents": {
+      "types": "./dist/learning-intents.d.ts",
+      "import": "./dist/learning-intents.js"
+    },
+    "./locale": {
+      "types": "./dist/locale.d.ts",
+      "import": "./dist/locale.js"
+    },
+    "./intent-tags": {
+      "types": "./dist/intent-tags.d.ts",
+      "import": "./dist/intent-tags.js"
     }
   },
   "files": [

@@ -1,6 +1,6 @@
 import { createHash } from 'node:crypto';
 import { describe, expect, it } from 'vitest';
-import { LearningIntent } from '@open-edu/widgets/intents';
+import { LearningIntent } from '@open-edu/schemas/learning-intents';
 import type { AuthoringContext } from './context.js';
 import { canonicalizeContext, fingerprintAuthoringContext, sha256Hex } from './fingerprint.js';
 

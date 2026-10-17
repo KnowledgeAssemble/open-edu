@@ -227,6 +227,14 @@ export type {
   AnimationEffectConfigInput,
 } from './animation.js';
 
+export { LearningIntent, LEARNING_INTENTS } from './learning-intents.js';
+
+export { SUPPORTED_LOCALES, DEFAULT_LOCALE, isValidLocale } from './locale.js';
+export type { Locale } from './locale.js';
+
+export { matchesIntentTagFilters } from './intent-tags.js';
+export type { IntentTagEntry, IntentTagFilters } from './intent-tags.js';
+
 export const SCHEMAS_VERSION = '0.1.0';
 
 export { LocalizedSchema, localizedField, isLocalized, extractLocalized } from './localized.js';
