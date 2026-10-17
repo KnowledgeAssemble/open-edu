@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { AuthoringContext } from '@open-edu/packs';
+import { fingerprintAuthoringContext } from '@open-edu/packs/fingerprint';
 import { computeAuthoringDrift } from './authoringRestore.js';
 
 const authoringFixture: AuthoringContext = {
@@ -26,5 +27,20 @@ describe('computeAuthoringDrift', () => {
       { id: 'nios-math-level-a', recorded: '0.1.0', current: '0.2.0' },
     ]);
     expect(drift.fingerprintChanged).toBe(true);
+  });
+
+  it('reports no drift for identical packs and fingerprint', () => {
+    const fingerprint = fingerprintAuthoringContext(authoringFixture);
+    const record = {
+      schemaVersion: 1 as const,
+      packs: [{ id: 'nios-math-level-a', version: '0.2.0', type: 'curriculum' as const }],
+      generatedAt: 'now',
+      contextFingerprint: fingerprint,
+      authoringScope: { curriculum: 'nios-math-level-a' },
+      nodes: [],
+    };
+    const drift = computeAuthoringDrift(record, authoringFixture);
+    expect(drift.packDiffs).toEqual([]);
+    expect(drift.fingerprintChanged).toBe(false);
   });
 });
